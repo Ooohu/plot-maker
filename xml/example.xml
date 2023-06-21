@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Example of a valid XML file -->
+	
+<!-- Plot Configurations -->
+<alias>
+	<name>"alias1"</name>
+	<definition>"definition1"</definition>
+</alias>
+
+
+<plotsetting style = "hist" fillstyle = "" stacked = "true" > 
+    <file tag="tag1">
+	<name>"path_file1"</name>
+	<branches>
+		<branch>"branch1"</branch>
+		<branch>"branch2"</branch>
+	</branches>
+	<color>"color1"</color>
+	<definition>
+		<cut>"definition1"<cut>
+	</definition>
+    </file>
+
+</plotsetting>
+
+<variable>
+	<name>"variable1"</name>
+	<definition>"definition1"</definition>
+	<binning>"binning1"</binning>
+	<logscale>"logscale1"</logscale>
+</variable>
