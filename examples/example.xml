@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Example of a valid XML file -->
+	
+<!-- Plot Configurations -->
+<alias name="alias1">
+	<definition>definition1</definition>
+</alias>
+
+
+<plotstyle name="1dhist">
+	<style binstyle="hist" fillstyle="" fillcolor="" liencolor=""> 
+	<stacked>0</stacked>
+</plotstyle>
+
+<plotstyle name="2dhist">
+	<style fillstyle="COLZ" fillcolor="" > 
+	<stacked>0</stacked>
+</plotstyle>
+
+
+
+<file tag="tag2" path="path_file2" branch="vertex_tree" legend="" >
+	<definition>
+		<cut>"definition2"<cut>
+	</definition>
+
+	<POT>1</POT>
+	<Triggers>1</Triggers>
+
+	<weight>ppfx</weight>
+
+	<plot_order>0</plot_order>
+	<scale_factor>1</scale_factor>
+
+	<fillstyle>fillstyle</fillstyle>
+	<binstyle>binstyle</binstyle>
+
+	<friend>
+		<path>path_friend</path>	
+		<branch>branch_friend</branch>
+	</friend>
+
+</file>
+
+<variable group="1" axis_label="axis_name" binning="(10,0,10)" definition="">
+	<custombinning>0</custombinning>
+	<logscale>0</logscale>
+</variable>
