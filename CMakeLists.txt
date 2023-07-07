@@ -36,6 +36,7 @@ add_subdirectory(rootplot/src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/rootplot/inc/)
 include_directories(${ROOT_INCDIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/tinyxml/)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/xgboost/)
 
 
 #file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/xml/default.xml DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/build/src/)

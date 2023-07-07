@@ -1,5 +1,5 @@
 # plot-maker
-Breakdown hellstrom_hive into modules that don't need compilation.
+Breakdown hellstrom_hive into modules that are optional as independent projects.
 
 ## Usage
 ```
@@ -8,5 +8,5 @@ cd build
 cmake ..
 make
 ```
-Hopefully, you will see the executable '../bin/hive`
+Hopefully, you will see the executable `../bin/hive`
 
