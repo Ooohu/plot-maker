@@ -1,12 +1,5 @@
 # plot-maker
-Breakdown hellstrom_hive into modules that are optional as independent projects.
+No compiler, just Marco
 
 ## Usage
-```
-mkdir build
-cd build
-cmake ..
-make
-```
-Hopefully, you will see the executable `../bin/hive`
-
+Make copys of target Scripts.
