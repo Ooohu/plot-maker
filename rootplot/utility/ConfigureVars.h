@@ -1,30 +1,35 @@
+#ifndef CONFIGUREVARS_H
+#define CONFIGUREVARS_H
+
 
 // Build a class for storing variables, cuts, and Binnings
-class Var {
+class Vars {
 public:
 
   // Constructor
-  Var (TString AxisLabel, TString VarName, std::vector<double> Binning, bool isLog = false) {
-	this->AxisLabel = AxisLabel;
-	this->VarName = VarName;
-	this->Binning = Binning;
-	this->isLog = isLog;
+  Vars (TString AxisLabel, TString VarName, std::vector<double> Binning, bool isLog = false) {
+	this->v_AxisLabel = AxisLabel;
+	this->v_VarName = VarName;
+	this->v_Binning = Binning;
+	this->v_isLog = isLog;
   }
 
 	//getters
-	TString GetAxisLabel() {return AxisLabel;}
-	TString GetVarName() {return VarName;}
-	std::vector<double> GetBinning() {return Binning;}
+	TString GetAxisLabel() {return v_AxisLabel;}
+	TString GetVarName() {return v_VarName;}
+	std::vector<double> GetBinning() {return v_Binning;}
 
-  ~Var() {}
+  ~Vars() {}
 
 
 private:
 
-	TString AxisLabel;
+	TString v_AxisLabel;
 
-	TString VarName;
+	TString v_VarName;
 
-	std::vector<double> Binning;
-	bool isLog;
+	std::vector<double> v_Binning;
+	bool v_isLog;
 };
+
+#endif
