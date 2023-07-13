@@ -5,8 +5,70 @@
 #include "ConfigureVars.h"
 #include "Gadgets.h"
 
+//Template for drawing different hists
+template <typename T>
+void ExportPNG(T hist, TString name, TString Xaxis, TString Yaxis= "Events"){
+	TCanvas* c = new TCanvas("c","c",800,600);
+	hist->Draw("colz");
+	hist->GetXaxis()->SetTitle(Xaxis);
+	hist->GetYaxis()->SetTitle(Yaxis);
+	c->SaveAs("./output/"+name+".png");
+	delete c;
+}
+
+void ExportPNGwLegendOL(THStack* hist, TH1D* hist2, TString name, TLegend *leg, TString Xaxis, TString Yaxis= "Events"){
+	TCanvas* c = new TCanvas("c","c",800,600);
+	TPad *padD = new TPad("padD","padD",0,   0,  1,   1);
+	TPad *padT = new TPad("padT","padT",0, 0.85, 1,   1);
+
+	padD->Draw();
+	padD->cd();
+	padD->SetTopMargin(0.2);
+	hist->Draw("hist");
+	hist2->Draw("E1P same");
+	hist2->SetMarkerSize(2);//data
+	hist2->SetMarkerSize(20);//data
+	hist->GetXaxis()->SetTitle(Xaxis);
+	hist->GetYaxis()->SetTitle(Yaxis);
+
+	c->cd();
+	padT->Draw();
+	padT->cd();
+	leg->Draw();
+	c->SaveAs("./output/"+name+".png");
+	delete c;
+}
+
+//Template for drawing different hists
+template <typename T>
+void ExportPNGwLegend(T hist, TString name, TLegend *leg, TString Xaxis, TString Yaxis= "Events"){
+	TCanvas* c = new TCanvas("c","c",800,600);
+	TPad *padD = new TPad("padD","padD",0,   0,  1,   1);
+	TPad *padT = new TPad("padT","padT",0, 0.85, 1,   1);
+
+	padD->Draw();
+	padD->cd();
+	padD->SetTopMargin(0.2);
+	hist->Draw("hist");
+	hist->GetXaxis()->SetTitle(Xaxis);
+	hist->GetYaxis()->SetTitle(Yaxis);
+
+	c->cd();
+	padT->Draw();
+	padT->cd();
+	leg->Draw();
+	c->SaveAs("./output/"+name+".png");
+	delete c;
+}
+
+void SetHist(TH1D* hist, int line, int fill, int style){
+	hist->SetLineColor(kBlack);
+	if(fill>0) hist->SetFillColor(fill);
+	if(style>0) hist->SetFillStyle(style);
+}
+
 	//Draw a TH1D
-TH1D* drawTH1D(Samples sample, Vars var)
+TH1D* drawTH1D(Samples &sample, Vars &var)
 {
 	//spell out contents that we need from two classes
 	TString variable = var.GetVarName();
@@ -20,17 +82,12 @@ TH1D* drawTH1D(Samples sample, Vars var)
 	TH1D* h = new TH1D(RandomName(), "", binnings[0], binnings[1], binnings[2]);
 	ttree->Draw(variable+">>"+h->GetName(), cuts);
 
-	h->SetLineColor(linecolor);
-	h->SetFillColor(linecolor);
-	h->SetFillStyle(fillstyle);
+	if(linecolor>0){
+		h->SetLineColor(linecolor);
+		h->SetFillColor(linecolor);
+	}
+	if(fillstyle > 0) h->SetFillStyle(fillstyle);
 	return h;
 }
-
-//void FillStack(THStack* stack, Samples sample, Vars var, double final_pot)
-//{
-//	TH1D* h = drawTH1D(sample, var);
-//	h->Scale(sample.GetPOT()/final_pot);
-//	stack->Add(h);
-//}
 
 #endif
