@@ -25,6 +25,16 @@ public:
 		this->s_fillstyle = fillstyle;
 	}
 	
+	//Add Friends
+	void AddFriend(TString friend_path, TString friend_name)
+	{
+		this->s_ttree->AddFriend(friend_name, friend_path);
+		double nEntries = this->s_ttree->GetEntries();
+		double nEntriesFriend = this->s_ttree->GetFriend(friend_name)->GetEntries();
+		if(nEntries != nEntriesFriend) std::cout<<"WARNING: Entries of the friend tree " <<nEntriesFriend<<" is not the same as the main tree "<<nEntries<<"!"<<std::endl;
+
+	}
+
 	//Update definitions
 	void AddDefinition(TString def)
 	{
@@ -54,10 +64,16 @@ public:
 		this->s_POT = POT;
 	}
 
+	void SetWeight(TString weight)
+	{
+		this->s_weight = weight;
+	}
+
 	//getter
 	double GetPOT(){ return this->s_POT;};
 	TTree* GetSampleTree(){ return this->s_ttree;}
 	TString GetSampleName(){ return this->s_SampleName;}
+	TString GetWeight(){ return this->s_weight;}
 	TString GetFilePath(){ return this->s_file_path;}
 	TString GetBranchName(){ return this->s_branch_name;}
 	TString GetDefinition(){ return this->s_definition;}
@@ -72,6 +88,7 @@ private:
 	TString s_branch_name;
 
 	TString s_definition;//Definition of the event
+	TString s_weight= "1";
 
 	double s_POT;
 

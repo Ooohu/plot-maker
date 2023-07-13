@@ -3,6 +3,8 @@
 void TTree2StackOverlays(){
 	//Configure class Samples: name, input file, tree name, cut
 	Samples signal("sample_sig","./input/glee_ntuple.root", "singlephotonana/vertex_tree","reco_asso_showers>-1");
+	signal.AddFriend("./input/glee_ntuple.root", "singlephotonana/vertex_tree");
+	signal.SetWeight("1");
 	signal.SetPlotStyle(kRed-5, 3245);
 	signal.SetPOT(1.0e20);
 
@@ -34,7 +36,7 @@ void TTree2StackOverlays(){
 		sample.AddDefinition(Precut);
 
 		TH1D* hist = drawTH1D(sample, var1);
-		hist->Scale(data.GetPOT()/sample.GetPOT());
+		hist->Scale(signal.GetPOT()/sample.GetPOT());
 
 		TString leg_title = sample.GetSampleName() + Form(" %.1lf",hist->Integral());
 		leg->AddEntry(hist, leg_title ,"fl");
@@ -52,7 +54,7 @@ void TTree2StackOverlays(){
 	TH1D* hdata = drawTH1D(signal, var1);
 	hdata->SetMarkerSize(2);//data
 	hdata->SetMarkerStyle(20);//data
-	TString leg_title = data.GetSampleName() + Form(" %.0lf",hdata->Integral());
+	TString leg_title = signal.GetSampleName() + Form(" %.0lf",hdata->Integral());
 	leg->AddEntry( hdata, leg_title, "fl");
 
 

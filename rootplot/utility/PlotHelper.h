@@ -83,7 +83,9 @@ TH1D* drawTH1D(Samples &sample, Vars &var)
 	std::vector<double> binnings = var.GetBinning();
 
 	TTree* ttree = sample.GetSampleTree();
-	TString cuts = sample.GetDefinition();
+	TString cuts = "("+sample.GetDefinition()+")*("+sample.GetWeight()+")";
+	std::cout<<"Draw with cuts "<<cuts<<std::endl;
+
 	int linecolor = sample.GetCol();
 	int fillstyle = sample.GetFillStyle();
 	//default is (nbins, bmin, bmax);
