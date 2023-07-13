@@ -24,33 +24,45 @@ void TTree2StackOverlays(){
 	TLegend *leg = new TLegend(0.05,0.01,0.95,0.95);
 	leg->SetFillStyle(0);
 	leg->SetLineWidth(0);
-
+	leg->SetNColumns(3);
+	
 	//Fill THStack & Legend
 	std::vector< Samples > vecSamples = {signal, bkg};
+	TH1D* errorHist = 0;
+
 	for(auto &sample : vecSamples){
 		sample.AddDefinition(Precut);
 
 		TH1D* hist = drawTH1D(sample, var1);
-		hist->Scale(sample.GetPOT()/signal.GetPOT());
-		leg->AddEntry(hist,sample.GetSampleName(),"fl");
+		hist->Scale(data.GetPOT()/sample.GetPOT());
+
+		TString leg_title = sample.GetSampleName() + Form(" %.1lf",hist->Integral());
+		leg->AddEntry(hist, leg_title ,"fl");
 
 		hs->Add(hist);
+
+		if(errorHist){
+			errorHist->Add(hist);
+		} else{
+			errorHist = (TH1D*) hist->Clone();
+		}
 	}
 	
-	//Create TH1 and configure it
-//	TH1D *hsignal = signal.drawTH1D(var1.GetVarName(), var1.GetBinning());
-//	hsignal->Scale(2e20/ signal.GetPOT());
-//	hs->Add(hsignal);
-//
-//	TH1D *hbkg = bkg.drawTH1D(var1.GetVarName(), var1.GetBinning());
-//	hbkg->Scale(2e20/ signal.GetPOT());
-//	hs->Add(hbkg);
+	signal.AddDefinition(Precut);
+	TH1D* hdata = drawTH1D(signal, var1);
+	hdata->SetMarkerSize(2);//data
+	hdata->SetMarkerStyle(20);//data
+	TString leg_title = data.GetSampleName() + Form(" %.0lf",hdata->Integral());
+	leg->AddEntry( hdata, leg_title, "fl");
 
 
-//	leg->AddEntry(hsignal,signal.GetSampleName(),"fl");
-//	leg->AddEntry(hbkg,bkg.GetSampleName(), "fl");
+	//errorHist style
+	errorHist->SetMarkerSize(0);
+	errorHist->SetFillStyle(3454);
+	errorHist->SetLineWidth(2);
+	errorHist->SetLineColor(kBlack);
+	errorHist->SetFillColor(kBlack);
+	leg->AddEntry(errorHist, "Stat. Error", "fl");
 
-	//Draw THStack
-//	ExportPNG(hs, "test", var1.GetAxisLabel());
-	ExportPNGwLegend(hs, "testwL", leg, var1.GetAxisLabel());
+	ExportPNG_StackData(hs, hdata, errorHist, leg, "testwLOL", var1.GetAxisLabel());
 	}
