@@ -28,6 +28,11 @@ void ExportPNGwLegendOL(THStack* hist, TH1D* hist2, TString name, TLegend *leg, 
 	hist2->Draw("E1P same");
 	hist2->SetMarkerSize(2);//data
 	hist2->SetMarkerSize(20);//data
+	//Adjust maximum based on two histograms
+	double max = hist->GetMaximum();
+	if(hist2->GetMaximum() > max) max = hist2->GetMaximum();
+	hist->SetMaximum(max*1.2);
+
 	hist->GetXaxis()->SetTitle(Xaxis);
 	hist->GetYaxis()->SetTitle(Yaxis);
 
