@@ -16,7 +16,7 @@ void ExportPNG(T hist, TString name, TString Xaxis, TString Yaxis= "Events"){
 	delete c;
 }
 
-void ExportPNGwLegendOL(THStack* hist, TH1D* hist2, TString name, TLegend *leg, TString Xaxis, TString Yaxis= "Events"){
+void ExportPNG_StackData(THStack* hist, TH1D* hist2, TH1D* errorHist, TLegend *leg, TString name,  TString Xaxis, TString Yaxis= "Events"){
 	TCanvas* c = new TCanvas("c","c",800,600);
 	TPad *padD = new TPad("padD","padD",0,   0,  1,   1);
 	TPad *padT = new TPad("padT","padT",0, 0.85, 1,   1);
@@ -26,8 +26,9 @@ void ExportPNGwLegendOL(THStack* hist, TH1D* hist2, TString name, TLegend *leg, 
 	padD->SetTopMargin(0.2);
 	hist->Draw("hist");
 	hist2->Draw("E1P same");
-	hist2->SetMarkerSize(2);//data
-	hist2->SetMarkerSize(20);//data
+	errorHist->Draw("same E2");
+
+
 	//Adjust maximum based on two histograms
 	double max = hist->GetMaximum();
 	if(hist2->GetMaximum() > max) max = hist2->GetMaximum();
@@ -35,6 +36,8 @@ void ExportPNGwLegendOL(THStack* hist, TH1D* hist2, TString name, TLegend *leg, 
 
 	hist->GetXaxis()->SetTitle(Xaxis);
 	hist->GetYaxis()->SetTitle(Yaxis);
+	hist->GetYaxis()->SetTitleOffset(1.5);
+
 
 	c->cd();
 	padT->Draw();
@@ -87,11 +90,10 @@ TH1D* drawTH1D(Samples &sample, Vars &var)
 	TH1D* h = new TH1D(RandomName(), "", binnings[0], binnings[1], binnings[2]);
 	ttree->Draw(variable+">>"+h->GetName(), cuts);
 
-	if(linecolor>0){
-		h->SetLineColor(linecolor);
-		h->SetFillColor(linecolor);
-	}
-	if(fillstyle > 0) h->SetFillStyle(fillstyle);
+	if(linecolor == 0 || fillstyle == 0) std::cout<<"Warning: "<<sample.GetSampleName()<<" histogram color/style is not set."<<std::endl;
+	h->SetLineColor(kBlack);
+	h->SetFillColor(linecolor);
+	h->SetFillStyle(fillstyle);
 	return h;
 }
 

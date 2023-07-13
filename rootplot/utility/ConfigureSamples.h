@@ -11,7 +11,7 @@ class Samples
 public:
 	//Constructor
 	Samples(TString SampleName, TString file_path, TString branch_name, TString definition)
-	: s_SampleName(SampleName), s_file_path(file_path), s_branch_name(branch_name), s_definition(definition) {
+	: s_SampleName(SampleName), s_file_path(file_path), s_branch_name(branch_name), s_definition("("+definition+")") {
 	this->s_ttree = GetTree(file_path, branch_name);
 	};
 
@@ -30,7 +30,7 @@ public:
 	{
 		this->s_definition += " && " + def;
 	}
-	
+
 	//Many ways to Set POT
 	//for data, POT = tgt_wcut i.e. triggers number from the target
 	//for EXT, POT = (data) tgt_wcut * NuMI_FEMBeamTrigger/ E1DCNT_wcut
@@ -75,8 +75,8 @@ private:
 
 	double s_POT;
 
-	int s_col;
-	int s_fillstyle;
+	int s_col = 0;
+	int s_fillstyle = 0;
 
 	TTree* s_ttree;
 };
