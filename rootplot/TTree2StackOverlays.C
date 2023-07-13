@@ -38,19 +38,8 @@ void TTree2StackOverlays(){
 	}
 	
 	//Create TH1 and configure it
-//	TH1D *hsignal = signal.drawTH1D(var1.GetVarName(), var1.GetBinning());
-//	hsignal->Scale(2e20/ signal.GetPOT());
-//	hs->Add(hsignal);
-//
-//	TH1D *hbkg = bkg.drawTH1D(var1.GetVarName(), var1.GetBinning());
-//	hbkg->Scale(2e20/ signal.GetPOT());
-//	hs->Add(hbkg);
-
-
-//	leg->AddEntry(hsignal,signal.GetSampleName(),"fl");
-//	leg->AddEntry(hbkg,bkg.GetSampleName(), "fl");
 
 	//Draw THStack
 //	ExportPNG(hs, "test", var1.GetAxisLabel());
-	ExportPNGwLegend(hs, "testwL", leg, var1.GetAxisLabel());
+	ExportPNG_StackData(hs, leg, "testwL", var1.GetAxisLabel());
 	}
