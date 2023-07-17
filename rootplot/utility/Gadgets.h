@@ -18,7 +18,26 @@ TTree* GetTree(TString filename, TString treename)
   return tree;
 }
 
+TString MakeSafeName(TString input){
+	std::string safe_name = input.Data();
 
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), '('), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), ')'), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), '\\'), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), '/'), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), '['), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), ']'), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), '+'), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), '-'), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), '*'), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), '.'), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), ' '), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), ','), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), '|'), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), ':'), safe_name.end());
+
+	return safe_name.c_str();
+};
 
 
 #endif

@@ -38,7 +38,7 @@ public:
 	//Update definitions
 	void AddDefinition(TString def)
 	{
-		this->s_definition += " && " + def;
+		this->s_definition += " && (" + def + ")";
 	}
 
 	//Many ways to Set POT
