@@ -49,6 +49,7 @@ public:
 		this->s_POT = POT;
 	}
 
+
 	void SetMCPOT(TString branch = "singlephotonana/run_subrun_tree")
 	{
 		double potbranch = 0;
@@ -64,6 +65,11 @@ public:
 		this->s_POT = POT;
 	}
 
+	void SetScale(double scale)
+	{
+		this->s_scale = scale;
+	}
+
 	void SetWeight(TString weight)
 	{
 		this->s_weight = weight;
@@ -71,6 +77,7 @@ public:
 
 	//getter
 	double GetPOT(){ return this->s_POT;};
+	double GetScale(){ return this->s_scale;};
 	TTree* GetSampleTree(){ return this->s_ttree;}
 	TString GetSampleName(){ return this->s_SampleName;}
 	TString GetWeight(){ return this->s_weight;}
@@ -91,6 +98,7 @@ private:
 	TString s_weight= "1";
 
 	double s_POT;
+	double s_scale = 1;
 
 	int s_col = 0;
 	int s_fillstyle = 0;

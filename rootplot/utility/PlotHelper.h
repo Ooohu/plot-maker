@@ -102,6 +102,7 @@ TH1D* drawTH1D(Samples &sample, Vars &var)
 	h->SetLineColor(kBlack);
 	h->SetFillColor(linecolor);
 	h->SetFillStyle(fillstyle);
+	h->Scale(sample.GetScale());
 	return h;
 }
 
