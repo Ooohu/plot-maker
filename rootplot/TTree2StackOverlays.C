@@ -16,7 +16,7 @@ void TTree2StackOverlays(){
 	TString Precut = "reco_asso_tracks == 1 && reco_asso_showers == 0";
 
 	//Configure class Vars: varaibles, axis name, binnings 
-	Vars var1("Reco. Vertex X", "reco_vertex_x", {10,0,500});
+	Vars var1("Reco. Vertex X", "reco_vertex_x", {10,0,500}, true);
 	
 
 	//Create THStack
@@ -66,5 +66,5 @@ void TTree2StackOverlays(){
 	errorHist->SetFillColor(kBlack);
 	leg->AddEntry(errorHist, "Stat. Error", "fl");
 
-	ExportPNG_StackData(hs, hdata, errorHist, leg, "testwLOL", var1.GetAxisLabel());
+	ExportPNG_StackData(hs, hdata, errorHist, leg, "testwLOL", var1.GetAxisLabel(), "Events", var1.GetIsLog());
 	}

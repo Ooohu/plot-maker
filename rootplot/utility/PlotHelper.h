@@ -16,7 +16,7 @@ void ExportPNG(T hist, TString name, TString Xaxis, TString Yaxis= "Events"){
 	delete c;
 }
 
-void ExportPNG_StackData(THStack* hist, TH1D* hist2, TH1D* errorHist, TLegend *leg, TString name,  TString Xaxis, TString Yaxis= "Events"){
+void ExportPNG_StackData(THStack* hist, TH1D* hist2, TH1D* errorHist, TLegend *leg, TString name,  TString Xaxis, TString Yaxis= "Events", bool logY = false){
 	TCanvas* c = new TCanvas("c","c",800,600);
 	TPad *padD = new TPad("padD","padD",0,   0,  1,   1);
 	TPad *padT = new TPad("padT","padT",0, 0.85, 1,   1);
@@ -24,6 +24,7 @@ void ExportPNG_StackData(THStack* hist, TH1D* hist2, TH1D* errorHist, TLegend *l
 	padD->Draw();
 	padD->cd();
 	padD->SetTopMargin(0.2);
+	if(logY) padD->SetLogy();
 	hist->Draw("hist");
 	hist2->Draw("E1P same");
 	errorHist->Draw("same E2");

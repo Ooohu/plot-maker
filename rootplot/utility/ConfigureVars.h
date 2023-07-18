@@ -15,6 +15,7 @@ public:
   }
 
 	//getters
+	bool GetIsLog() {return v_isLog;}
 	TString GetAxisLabel() {return v_AxisLabel;}
 	TString GetVarName() {return v_VarName;}
 	std::vector<double> GetBinning() {return v_Binning;}
