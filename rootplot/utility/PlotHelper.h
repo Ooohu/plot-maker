@@ -91,13 +91,7 @@ TH1D* drawTH1D(Samples &sample, Vars &var)
 	int fillstyle = sample.GetFillStyle();
 	//default is (nbins, bmin, bmax);
 	TH1D* h = new TH1D(RandomName(), "", binnings[0], binnings[1], binnings[2]);
-	std::cout<<"Sample has entries: "<<ttree->GetEntries()<<std::endl;
 	ttree->Draw(variable+">>"+h->GetName(), cuts);
-
-	std::cout<<"Histogram "<<h->GetName()<<std::endl;
-	std::cout<<"Bins "<<binnings[0]<<","<<binnings[1]<<","<<binnings[2]<<std::endl;
-	std::cout<<"Draw "<<variable<<" with cuts "<<cuts<<std::endl;
-	std::cout<<"Sum"<<h->Integral()<<std::endl;
 
 	if(linecolor == 0 || fillstyle == 0) std::cout<<"Warning: "<<sample.GetSampleName()<<" histogram color/style is not set."<<std::endl;
 	h->SetLineColor(kBlack);
