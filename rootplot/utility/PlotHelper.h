@@ -33,6 +33,7 @@ void ExportPNG_StackData(THStack* hist, TH1D* hist2, TH1D* errorHist, TLegend *l
 	//Adjust maximum based on two histograms
 	double max = hist->GetMaximum();
 	if(hist2->GetMaximum() > max) max = hist2->GetMaximum();
+	hist->SetMinimum(0.001);
 	hist->SetMaximum(max*1.2);
 
 	hist->GetXaxis()->SetTitle(Xaxis);
