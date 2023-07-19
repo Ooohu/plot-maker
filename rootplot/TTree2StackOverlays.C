@@ -31,12 +31,19 @@ void TTree2StackOverlays(){
 	//Fill THStack & Legend
 	std::vector< Samples > vecSamples = {signal, bkg};
 	TH1D* errorHist = 0;
-
+	
+	std::cout<<" Variable: "<<var1.GetVarName()<<std::endl;
 	for(auto &sample : vecSamples){
 		sample.AddDefinition(Precut);
 
 		TH1D* hist = drawTH1D(sample, var1);
 		hist->Scale(signal.GetPOT()/sample.GetPOT());
+		//Print histogram bin contents
+		for(int i=0; i<hist->GetNbinsX()+1; i++){
+			std::cout << hist->GetBinContent(i) << " ";
+		}
+		std::cout<<" sum: "<<hist->Integral()<<" at "<<sample.GetSampleName()<<std::endl;
+		
 
 		TString leg_title = sample.GetSampleName() + Form(" %.1lf",hist->Integral());
 		leg->AddEntry(hist, leg_title ,"fl");

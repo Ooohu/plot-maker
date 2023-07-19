@@ -20,6 +20,26 @@ public:
 	TString GetVarName() {return v_VarName;}
 	std::vector<double> GetBinning() {return v_Binning;}
 
+	//Print Summary
+	void PrintSummary() {
+		std::cout<<"Variable: "<<v_VarName;
+		std::cout<<" in binnings: ";
+		for (int i = 0; i < v_Binning.size(); i++) {
+			std::cout<<v_Binning[i]<<" ";
+		}
+		if(v_isLog) std::cout<<" in log scale";
+		std::cout<<std::endl;
+	}
+
+	void PrintBinEdges() {
+		double step = (binning[2] - binning[1])/binning[0];
+		double firstbin = binning[1];
+		while(firstbin < binning[2]) {
+			std::cout<<firstbin<<" ";
+			firstbin += step;
+		} 
+	}
+
   ~Vars() {}
 
 

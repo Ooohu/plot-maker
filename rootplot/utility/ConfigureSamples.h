@@ -87,6 +87,15 @@ public:
 	int GetCol(){ return this->s_col;}
 	int GetFillStyle(){ return this->s_fillstyle;}
 
+	//Print Summary
+	void PrintSummary() {
+		std::cout<<"Sample: "<<s_SampleName;
+		std::cout<<" with POT: "<<s_POT;
+		std::cout<<" entries: "<<s_ttree->GetEntries();
+		if(s_weight != "1")
+		std::cout<<" weight: "<<s_weight;
+		std::cout<<std::endl;
+	}
 //Private members
 private:
 
