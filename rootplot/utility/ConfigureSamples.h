@@ -89,11 +89,11 @@ public:
 
 	//Print Summary
 	void PrintSummary() {
-		std::cout<<"Sample: "<<s_SampleName;
-		std::cout<<" with POT: "<<s_POT;
-		std::cout<<" entries: "<<s_ttree->GetEntries();
-		if(s_weight != "1")
-		std::cout<<" weight: "<<s_weight;
+		std::cout<<"Sample: "<<this->s_SampleName;
+		std::cout<<" with POT: "<<this->s_POT;
+		std::cout<<" entries: "<<this->s_ttree->GetEntries(this->s_definition)<<" of "<<this->s_ttree->GetEntries();
+		if(this->s_weight != "1")
+		std::cout<<" weight: "<<this->s_weight;
 		std::cout<<std::endl;
 	}
 //Private members
