@@ -59,21 +59,20 @@ void ExportPNG_StackData2(std::vector< THStack*>  hists, TH1D* hist2, TH1D* erro
 	padD->SetTopMargin(0.2);
 	if(logY) padD->SetLogy();
 	for( auto &hist : hists){
-	hist->Draw("hist same");
+		hist->Draw("hist same");
 	}
-	hist2->Draw("E1P same");
 	//errorHist->Draw("same E2");
 
 
 	//Adjust maximum based on two histograms
-	double max = hist->GetMaximum();
-	if(hist2->GetMaximum() > max) max = hist2->GetMaximum();
-	hist->SetMinimum(0.001);
-	hist->SetMaximum(max*1.2);
+	double max = hists[0]->GetMaximum();
+	if(hists[0]->GetMaximum() > max) max = hists[0]->GetMaximum();
+	hists[0]->SetMinimum(0.001);
+	hists[0]->SetMaximum(max*1.2);
 
-	hist->GetXaxis()->SetTitle(Xaxis);
-	hist->GetYaxis()->SetTitle(Yaxis);
-	hist->GetYaxis()->SetTitleOffset(1.5);
+	hists[0]->GetXaxis()->SetTitle(Xaxis);
+	hists[0]->GetYaxis()->SetTitle(Yaxis);
+	hists[0]->GetYaxis()->SetTitleOffset(1.5);
 
 
 	c->cd();
