@@ -49,7 +49,7 @@ void ExportPNG_StackData(THStack* hist, TH1D* hist2, TH1D* errorHist, TLegend *l
 	delete c;
 }
 
-void ExportPNG_StackData2(std::vector< THStack*>  hists, TH1D* hist2, TH1D* errorHist, TLegend *leg, TString name,  TString Xaxis, TString Yaxis= "Events", bool logY = false){
+void ExportPNG_StackData2(std::vector< THStack>  &hists, TH1D* hist2, TH1D* errorHist, TLegend *leg, TString name,  TString Xaxis, TString Yaxis= "Events", bool logY = false){
 	TCanvas* c = new TCanvas("c","c",800,600);
 	TPad *padD = new TPad("padD","padD",0,   0,  1,   1);
 	TPad *padT = new TPad("padT","padT",0, 0.85, 1,   1);
@@ -58,21 +58,22 @@ void ExportPNG_StackData2(std::vector< THStack*>  hists, TH1D* hist2, TH1D* erro
 	padD->cd();
 	padD->SetTopMargin(0.2);
 	if(logY) padD->SetLogy();
-	for( auto &hist : hists){
-		hist->Draw("hist same");
+	for(int i=0; i<hists.size(); i++){
+		(i==0)? hists[i].Draw("hist"): hists[i].Draw("P0 same");
 	}
+	hist2->Draw("E1P same");
 	//errorHist->Draw("same E2");
 
 
 	//Adjust maximum based on two histograms
-	double max = hists[0]->GetMaximum();
-	if(hists[0]->GetMaximum() > max) max = hists[0]->GetMaximum();
-	hists[0]->SetMinimum(0.001);
-	hists[0]->SetMaximum(max*1.2);
+	double max = hists[1].GetMaximum();
+	if(hist2->GetMaximum() > max) max = hist2->GetMaximum();
+	hists[0].SetMinimum(0.001);
+	hists[0].SetMaximum(max*1.2);
 
-	hists[0]->GetXaxis()->SetTitle(Xaxis);
-	hists[0]->GetYaxis()->SetTitle(Yaxis);
-	hists[0]->GetYaxis()->SetTitleOffset(1.5);
+	hists[0].GetXaxis()->SetTitle(Xaxis);
+	hists[0].GetYaxis()->SetTitle(Yaxis);
+	hists[0].GetYaxis()->SetTitleOffset(1.5);
 
 
 	c->cd();
