@@ -43,7 +43,13 @@ void TTree2StackOverlays(){
 			std::cout << hist->GetBinContent(i) << " ";
 		}
 		std::cout<<" sum: "<<hist->Integral()<<" at "<<sample.GetSampleName()<<std::endl;
-		
+
+		std::cout<<"Error calculation: "<<std::endl;
+		for(int i=0; i<hist->GetNbinsX()+1; i++){
+			std::cout << hist->GetBinError(i) << " ";
+		}
+		std::cout<<std::endl;
+
 
 		TString leg_title = sample.GetSampleName() + Form(" %.1lf",hist->Integral());
 		leg->AddEntry(hist, leg_title ,"fl");
