@@ -39,5 +39,20 @@ TString MakeSafeName(TString input){
 	return safe_name.c_str();
 };
 
+//Histogram Helper
+
+void PrintHist(TH1D* tmp_hist){
+		std::cout<<" sum: "<<tmp_hist->Integral()<<std::endl;
+		std::cout<<"Bin : ";
+		for(int i=1; i<tmp_hist->GetNbinsX()+1; i++){
+			std::cout << tmp_hist->GetBinContent(i) << " ";
+		}
+
+		std::cout<<"SErr: ";
+		for(int i=1; i<tmp_hist->GetNbinsX()+1; i++){
+			std::cout << tmp_hist->GetBinError(i) << " ";
+		}
+		std::cout<<std::endl;
+}
 
 #endif

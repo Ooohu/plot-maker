@@ -128,7 +128,7 @@ TH1D* drawTH1D(Samples &sample, Vars &var)
 	TH1D* h = new TH1D(RandomName(), "", binnings[0], binnings[1], binnings[2]);
 	ttree->Draw(variable+">>"+h->GetName(), cuts);
 
-	if(linecolor == 0 || fillstyle == 0) std::cout<<"Warning: "<<sample.GetSampleName()<<" histogram color/style is not set."<<std::endl;
+//	if(linecolor == 0 || fillstyle == 0) std::cout<<"Warning: "<<sample.GetSampleName()<<" histogram color/style is not set."<<std::endl;
 	h->SetLineColor(kBlack);
 	h->SetFillColor(linecolor);
 	h->SetFillStyle(fillstyle);
