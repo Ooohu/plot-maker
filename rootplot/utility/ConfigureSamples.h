@@ -13,6 +13,7 @@ public:
 	Samples(TString SampleName, TString file_path, TString branch_name, TString definition)
 	: s_SampleName(SampleName), s_file_path(file_path), s_branch_name(branch_name), s_definition("("+definition+")") {
 	this->s_ttree = GetTree(file_path, branch_name);
+	std::cout<<"Loading sample: "<<SampleName<<std::endl;
 	};
 
 	//Destructor
@@ -67,6 +68,7 @@ public:
 
 	void SetScale(double scale)
 	{
+		std::cout<<" Set Scaling factor: "<<scale<<std::endl;
 		this->s_scale = scale;
 	}
 
