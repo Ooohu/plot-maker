@@ -26,7 +26,7 @@ std::vector< Vars> SetMultipleVars(){
 	Vars var77("Reconstructed Leading Shower Energy [GeV] Log","reco_shower_energy_max[i_shr[0]]/1000.0", {30,0.03,1}, true);
 
 //	std::vector< Vars> allVars = {varbdtL,varbdt};// , varbdts, varbdtL };
-	std::vector< Vars> allVars = {var666};
+	std::vector< Vars> allVars = {var7};
 //	std::vector< Vars> allVars = {varbdt, varbdts, varbdtL, var0, var00, var1, var2, var22, var3, var33, var4, var44, var5, var55, var6, var66, var7, var77};
 	
 	return allVars;
