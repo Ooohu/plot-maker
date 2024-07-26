@@ -1,17 +1,20 @@
 #include "utility/PlotHelper.h"
+#include "SampleLoader.h"
 
 void TTree2StackOverlays(){
 	//Configure class Samples: name, input file, tree name, cut
-	Samples signal("sample_sig","./input/glee_ntuple.root", "singlephotonana/vertex_tree","reco_asso_showers>-1");
-	signal.AddFriend("./input/glee_ntuple.root", "singlephotonana/vertex_tree");
-	signal.SetWeight("1");
-	signal.SetPlotStyle(kRed-5, 3245);
-	signal.SetPOT(1.0e20);
-
-	Samples bkg("sample_bkg","./input/glee_ntuple.root", "singlephotonana/vertex_tree","reco_vertex_y>0");
-	bkg.SetPlotStyle(kBlue-5, 3245);
-	bkg.SetMCPOT();
-
+//	Samples signal("sample_sig","./input/glee_ntuple.root", "singlephotonana/vertex_tree","reco_asso_showers>-1");
+//	signal.AddFriend("./input/glee_ntuple.root", "singlephotonana/vertex_tree");
+//	signal.SetWeight("1");
+//	signal.SetPlotStyle(kRed-5, 3245);
+//	signal.SetPOT(1.0e20);
+//
+//	Samples bkg("sample_bkg","./input/glee_ntuple.root", "singlephotonana/vertex_tree","reco_vertex_y>0");
+//	bkg.SetPlotStyle(kBlue-5, 3245);
+//	bkg.SetMCPOT();
+	
+	Samples signal = LoadAxions("ma003");
+	Samples bkg = LoadAxions("ma003");
 
 	TString Precut = "reco_asso_tracks == 1 && reco_asso_showers == 0";
 
@@ -79,5 +82,5 @@ void TTree2StackOverlays(){
 	errorHist->SetFillColor(kBlack);
 	leg->AddEntry(errorHist, "Stat. Error", "fl");
 
-	ExportPNG_StackData(hs, hdata, errorHist, leg, "testwLOL", var1.GetAxisLabel(), "Events", var1.GetIsLog());
+	ExportPNG_StackData_wLabel(hs, hdata, errorHist, leg, "testwLOL", var1.GetAxisLabel(), "Events", var1.GetIsLog());
 	}

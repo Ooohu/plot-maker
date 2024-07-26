@@ -18,45 +18,45 @@ void ExportPNG(T hist, TString name, TString Xaxis, TString Yaxis= "Events"){
 	delete c;
 }
 
-void ExportPNG_StackData(THStack* hist, TH1D* errorHist, TLegend *leg, TString name,  TString Xaxis, TString Yaxis= "Events", bool logY = false){
-	TCanvas* c = new TCanvas("c","c",800,600);
-	TPad *padD = new TPad("padD","padD",0,   0,  1,   1);
-	TPad *padT = new TPad("padT","padT",0, 0.85, 1,   1);
-
-	padD->Draw();
-	padD->cd();
-	padD->SetTopMargin(0.2);
-	if(logY) padD->SetLogy();
-	hist->Draw("hist");
-//	hist2->Draw("E1P same");
-	errorHist->Draw("same E2");
-
-
-	TLatex *labels_official;
-	labels_official = new TLatex(0.65,0.82, "MicroBooNE Simulation, In-Progress");
-	labels_official->SetNDC();
-	labels_official->SetTextColor(kBlack);
-	labels_official->SetTextSize(0.02);
-	labels_official->Draw();
-
-	//Adjust maximum based on two histograms
-	double max = hist->GetMaximum();
-//	if(hist2->GetMaximum() > max) max = hist2->GetMaximum();
-	hist->SetMinimum(0.0001);
-	hist->SetMaximum(errorHist->GetMaximum()*1.2);
-
-	hist->GetXaxis()->SetTitle(Xaxis);
-	hist->GetYaxis()->SetTitle(Yaxis);
-	hist->GetYaxis()->SetTitleOffset(1.5);
-
-
-	c->cd();
-	padT->Draw();
-	padT->cd();
-	leg->Draw();
-	c->SaveAs("./output/"+name+".png");
-	delete c;
-}
+//void ExportPNG_StackData(THStack* hist, TH1D* errorHist, TLegend *leg, TString name,  TString Xaxis, TString Yaxis= "Events", bool logY = false){
+//	TCanvas* c = new TCanvas("c","c",800,600);
+//	TPad *padD = new TPad("padD","padD",0,   0,  1,   1);
+//	TPad *padT = new TPad("padT","padT",0, 0.85, 1,   1);
+//
+//	padD->Draw();
+//	padD->cd();
+//	padD->SetTopMargin(0.2);
+//	if(logY) padD->SetLogy();
+//	hist->Draw("hist");
+////	hist2->Draw("E1P same");
+//	errorHist->Draw("same E2");
+//
+//
+//	TLatex *labels_official;
+//	labels_official = new TLatex(0.65,0.82, "MicroBooNE Simulation, In-Progress");
+//	labels_official->SetNDC();
+//	labels_official->SetTextColor(kBlack);
+//	labels_official->SetTextSize(0.02);
+//	labels_official->Draw();
+//
+//	//Adjust maximum based on two histograms
+//	double max = hist->GetMaximum();
+////	if(hist2->GetMaximum() > max) max = hist2->GetMaximum();
+//	hist->SetMinimum(0.0001);
+//	hist->SetMaximum(errorHist->GetMaximum()*1.2);
+//
+//	hist->GetXaxis()->SetTitle(Xaxis);
+//	hist->GetYaxis()->SetTitle(Yaxis);
+//	hist->GetYaxis()->SetTitleOffset(1.5);
+//
+//
+//	c->cd();
+//	padT->Draw();
+//	padT->cd();
+//	leg->Draw();
+//	c->SaveAs("./output/"+name+".png");
+//	delete c;
+//}
 
 void ExportPNG_StackData_wLabel(THStack* hist, TH1D* hist2, TH1D* errorHist, TLegend *leg, TString name,  TString Xaxis, TString Yaxis= "Events", bool logY = false){
 	//Add estimator
