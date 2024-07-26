@@ -1,6 +1,7 @@
 #include "utility/PlotHelper.h"
 #include "TTree2StackOverlays_axion_common.C"
 #include "LoadSamples.h"
+#include "LoadStyles.h"
 
 #include <iostream>
 #include <fstream>
@@ -43,17 +44,12 @@ void TTree2StackOverlays_run1axion_ma003(){
 // Start making histograms --------------------------------------------------------------------
 //--> Draw Stacked Histograms
 	for(Vars & temp_var : allVar){
-		//Create THStack
-		THStack *hs = new THStack(RandomName(), "");
-		//Add legends
-		TLegend *leg = new TLegend(0.05,0.01,0.95,0.95);
-		leg->SetFillStyle(0);
-		leg->SetLineWidth(0);
-		leg->SetNColumns(3);
+		THStack *hs = new THStack(RandomName(), "");// Create Stack
+		TLegend *leg = LoadLegend(); //Add legends
+		TH1D* errorHist = 0;// Create a empty hist for storing all bkgs
 
 		std::vector<Samples> vecSamples = {axion, nc1pi0, nc0pi0, ccnue, ccnumu1pi, ccnumu0pi, other, dirt, ext};
 		//	std::vector<Samples> vecSamples = {axion};
-		TH1D* errorHist = 0;
 
 		for(auto &sample : vecSamples){
 			sample.AddDefinition(Precut);
@@ -66,7 +62,6 @@ void TTree2StackOverlays_run1axion_ma003(){
 			leg->AddEntry(hist, leg_title ,"fl");
 			std::cout<<"\nSummary: "<< leg_title<<std::endl;
 			std::cout<<PrintHist(hist);
-			
 
 			hs->Add(hist);
 
@@ -74,8 +69,7 @@ void TTree2StackOverlays_run1axion_ma003(){
 				errorHist->Add(hist);
 			} else{
 				errorHist = (TH1D*) hist->Clone();
-				text_buffer<<"\nSummary: "<< leg_title<<std::endl;
-				text_buffer << PrintHist(hist);
+				text_buffer<<"\nSummary: "<< leg_title<<"\n"<<PrintHist(hist);
 			}
 		}
 
@@ -85,23 +79,19 @@ void TTree2StackOverlays_run1axion_ma003(){
 		hdata->Scale(PlotPOT/data.GetPOT());
 		hdata->SetMarkerSize(1);//data
 		hdata->SetMarkerStyle(20);//data
+
 		TString leg_title = data.GetSampleName() + Form(" %.0lf",hdata->Integral());
 		leg->AddEntry( hdata, leg_title, "fl");
 
-		text_buffer<<"\nSummary: "<< leg_title<<std::endl;
-		text_buffer<< PrintHist(hdata);
+		text_buffer<<"\nSummary: "<< leg_title<<"\n"<< PrintHist(hdata);
 
 
 		//errorHist style
-		errorHist->SetMarkerSize(0);
-		errorHist->SetFillStyle(3454);
-		errorHist->SetLineWidth(2);
-		errorHist->SetLineColor(kBlack);
-		errorHist->SetFillColor(kBlack);
+		SetErrorStyle(errorHist);
+
 		TString mc_leg_title = Form("Stat. Error | Total Pred.: %.1lf",errorHist->Integral());
 		leg->AddEntry(errorHist, mc_leg_title, "fl");
-		text_buffer<<"\nSummary total MC:"<<std::endl;
-		text_buffer<< PrintHist(errorHist);
+		text_buffer<<"\nSummary total MC:"<<"\n"<< PrintHist(errorHist);
 
 		std::ofstream outFile("output.txt");
 		std::string output_text = text_buffer.str();
@@ -110,6 +100,6 @@ void TTree2StackOverlays_run1axion_ma003(){
 		outFile.close();
 
 		ExportPNG_StackData_wLabel(hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
-	}
+	}//Next variable
 
 }
