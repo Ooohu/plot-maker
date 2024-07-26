@@ -1,5 +1,6 @@
 #ifndef GADGETS_H
 #define GADGETS_H
+#include <sstream>
 
 // generate random names for histograms
 TString RandomName(){
@@ -41,18 +42,21 @@ TString MakeSafeName(TString input){
 
 //Histogram Helper
 
-void PrintHist(TH1D* tmp_hist){
+std::string PrintHist(TH1D* tmp_hist){
 //		std::cout<<" sum: "<<tmp_hist->Integral()<<std::endl;
-		std::cout<<"Bin : ";
-		for(int i=1; i<tmp_hist->GetNbinsX()+1; i++){
-			std::cout << tmp_hist->GetBinContent(i) << ",";
-		}
+	std::stringstream text_buffer;
+	text_buffer<<"Bin : ";
+	for(int i=1; i<tmp_hist->GetNbinsX()+1; i++){
+		text_buffer << tmp_hist->GetBinContent(i) << ",";
+	}
 
-		std::cout<<"\nSErr: ";
-		for(int i=1; i<tmp_hist->GetNbinsX()+1; i++){
-			std::cout << tmp_hist->GetBinError(i) << ",";
-		}
-		std::cout<<std::endl;
+	text_buffer<<"\nSErr: ";
+	for(int i=1; i<tmp_hist->GetNbinsX()+1; i++){
+		text_buffer << tmp_hist->GetBinError(i) << ",";
+	}
+	text_buffer<<std::endl;
+
+	return text_buffer.str();
 }
 
 #endif

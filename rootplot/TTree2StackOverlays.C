@@ -1,5 +1,5 @@
 #include "utility/PlotHelper.h"
-#include "SampleLoader.h"
+#include "LoadSamples.h"
 
 void TTree2StackOverlays(){
 	//Configure class Samples: name, input file, tree name, cut
