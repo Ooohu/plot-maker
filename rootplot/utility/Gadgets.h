@@ -62,9 +62,9 @@ std::string PrintHist(TH1D* tmp_hist){
 void SetRatioStyle( TH1D* ratio){
 
 	//Take care of the Yaxis first;
-	ratio->SetMaximum(1+0.5);
-	ratio->SetMinimum(1-0.5);
-	ratio->GetYaxis()->SetNdivisions(205);
+	ratio->SetMaximum(1+1);
+	ratio->SetMinimum(1-1);
+	ratio->GetYaxis()->SetNdivisions(405);
 
 	ratio->SetStats(false);
 	ratio->GetYaxis()->SetLabelSize(0.08);//relative to the TPad size y~ 0.04*2, wheere 2=(0.8-0.3)/(0.3-0.05)

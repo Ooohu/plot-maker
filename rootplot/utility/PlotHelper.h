@@ -36,8 +36,8 @@ void DrawRatioPlot( TH1D* data, TH1D* MC, TString Xaxis, TString Yaxis="Data/Pre
 	TH1D* PerErr = (TH1D*) MC->Clone("MCPercentError");
 
 	for(int index=1; index<PerErr->GetNbinsX()+1;index++){
-		PerErr->SetBinContent(index, 1);
 		PerErr->SetBinError(index, PerErr->GetBinError(index)/PerErr->GetBinContent(index));
+		PerErr->SetBinContent(index, 1);
 	}
 
 	SetRatioStyle(ratioP);//defined in Gadgets.h
@@ -81,7 +81,7 @@ void ExportPNG_StackData_wLabel(THStack* hist, TH1D* hist2, TH1D* errorHist, TLe
 	//Adjust maximum based on two histograms
 	double max = hist->GetMaximum();
 	if(hist2->GetMaximum() > max) max = hist2->GetMaximum();
-	hist->SetMinimum(0.00001);
+	hist->SetMinimum(0.001);
 	hist->SetMaximum(max*1.2);
 	hist->GetYaxis()->SetTitle(Yaxis);
 	hist->GetYaxis()->SetLabelSize(0.04);//% of the TPad height
@@ -108,8 +108,6 @@ void ExportPNG_StackData_wLabel(THStack* hist, TH1D* hist2, TH1D* errorHist, TLe
 	padB->cd();
 	TLatex* estimators = GetEstimators( hist2, errorHist);
 	estimators->Draw();
-
-
 
 	c->SaveAs("./output/"+name+".png");
 	delete c;
