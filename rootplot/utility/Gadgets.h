@@ -122,13 +122,31 @@ TLatex *GetEstimators( TH1D* data, TH1D* MC){
 	double histdata_num = data->Integral();
 	double histMC_num = MC->Integral();
 	TString text_ratio; text_ratio.Form("Data/MC=%.2f   ",histdata_num/histMC_num); 
-	TString text_ks; text_ks.Form("KS: %.2f   ", MC->KolmogorovTest(data)); 
-	TString text_chi2; text_chi2.Form("#chi^{2}/n#it{DOF}=%.2f/%d p=%.2g   ", MC->Chi2Test(data,"UW CHI2"), 
-																			MC->GetNbinsX()-1, 
-																			MC->Chi2Test(data,"UW P"));
+
+
+	//chi2 will ignore 0 values, so replace it with something super small would be good.
+	double small_value = 1e-10;
+	TH1D *MC_copy = (TH1D*)MC->Clone("MC_copy");
+	for (int i = 1; i <= MC_copy->GetNbinsX(); i++) {
+		if (MC_copy->GetBinContent(i) == 0) {
+			MC_copy->SetBinContent(i, small_value);  // Replace zero with small value
+		}
+	}
+	TH1D *data_copy = (TH1D*)data->Clone("data_copy");
+	for (int i = 1; i <= data_copy->GetNbinsX(); i++) {
+		if (data_copy->GetBinContent(i) == 0) {
+			data_copy->SetBinContent(i, small_value);  // Replace zero with small value
+		}
+	}
+
+
+	TString text_ks; text_ks.Form("KS: %.2f   ", MC_copy->KolmogorovTest(data_copy)); 
+	TString text_chi2; text_chi2.Form("#chi^{2}/n#it{DOF}=%.2f/%d p=%.2g   ", MC_copy->Chi2Test(data_copy,"UW CHI2"), 
+																			MC_copy->GetNbinsX()-1, 
+																			MC_copy->Chi2Test(data_copy,"UW P"));
 
 	//soruce code at https://root.cern.ch/doc/master/TH1_8cxx_source.html#l01995
-	std::cout<<"Chi2Test Check "<< MC->Chi2Test(data,"WU CHI2")<<std::endl;
+	std::cout<<"Chi2Test Check "<< MC_copy->Chi2Test(data,"WU CHI2")<<std::endl;
 
 	TString combined = text_ratio + text_ks + text_chi2;
 	estimators = new TLatex(0.05, 0.6, combined);

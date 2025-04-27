@@ -11,8 +11,15 @@ Samples LoadAxions( TString tag ){
 //OLD Freind of BDT with 12 variables
 //	axion.AddFriend("../../../2022Nov_ub_gLEE_Ntuples/hellstroms_hive/hive/build_axion_general/NuMIFHCRun1Axion"+tag+"/NuMIFHCRun1Axion"+tag+"NCPionClassifiee_Axion"+tag+"_app.root","Axion"+tag+"_NuMIFHCRun1Axion"+tag+"NCPionClassifiee");
 //NEW Freind of BDT with 3 variables
-	axion.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_Axion"+tag+"_app.root","Axion"+tag+"_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
-	axion.SetScale(3*2.0/58560);
+	TString frdT = "../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_Axion"+tag+"_app.root";
+	if(!gSystem->AccessPathName(frdT)){
+			axion.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_Axion"+tag+"_app.root","Axion"+tag+"_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
+	} else{
+		std::cout<<frdT<<" does not exist"<<std::endl;
+	}
+
+//	axion.SetScale(3*2.0/58560);//for regular ma03 sample
+	axion.SetScale(5000.0*2/391750);
 	axion.SetPlotStyle(kYellow-3, 1001);
 	axion.SetPOT(2e21);
 	
@@ -22,7 +29,7 @@ Samples LoadAxions( TString tag ){
 
 Samples LoadNC1pi0( TString tag ){
 	Samples tmpSample("NC1#pi^{0}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/gleeNtuples_numi_run1MCoverlay_reweight_luis_goodweight.root","vertex_tree","mctruth_cc_or_nc==1&&mctruth_num_exiting_pi0==1 &&Entry$%2==0");
-	tmpSample.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NCPi0_app.root","NCPi0_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
+//	tmpSample.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NCPi0_app.root","NCPi0_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
 	tmpSample.SetPlotStyle(kRed-3,1001);
 	tmpSample.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
 	tmpSample.SetPOT(2.35e21);
@@ -34,7 +41,7 @@ Samples LoadNC1pi0( TString tag ){
 
 Samples LoadNC0pi0( TString tag ){
 	Samples tmpSample("NC0#pi^{0}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/gleeNtuples_numi_run1MCoverlay_reweight_luis_goodweight.root","vertex_tree","mctruth_cc_or_nc==1&&mctruth_num_exiting_pi0==0");
-	tmpSample.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NC0Pi0_app.root","NC0Pi0_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
+//	tmpSample.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NC0Pi0_app.root","NC0Pi0_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
 	tmpSample.SetPlotStyle(kBlue-3,1001);
 	tmpSample.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
 	tmpSample.SetPOT(2.35e21);
@@ -46,7 +53,7 @@ Samples LoadNC0pi0( TString tag ){
 Samples LoadCCnue( TString tag ){
 
 	Samples ccnue("CC#nu_{e}/#bar{#nu_{e}}Intrinsic", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/gleeNtuples_numi_run1MCoverlay_reweight_luis_goodweight.root","vertex_tree","mctruth_cc_or_nc==0&&fabs(mctruth_nu_pdg)==12");
-	ccnue.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NueOverlays_app.root","NueOverlays_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
+//	ccnue.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NueOverlays_app.root","NueOverlays_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
 	ccnue.SetPlotStyle(kGreen-8,1001);
 	ccnue.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
 	ccnue.SetPOT(2.35e21);
@@ -57,7 +64,7 @@ Samples LoadCCnue( TString tag ){
 
 Samples LoadCCnumu1pi( TString tag ){
 	Samples ccnumu1pi("CC#nu_{#mu}1#pi^{0}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/gleeNtuples_numi_run1MCoverlay_reweight_luis_goodweight.root","vertex_tree","mctruth_cc_or_nc==0&&mctruth_nu_pdg==14&&mctruth_num_exiting_pi0==1");
-	ccnumu1pi.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_CC1Pi0_app.root","CC1Pi0_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
+//	ccnumu1pi.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_CC1Pi0_app.root","CC1Pi0_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
 	ccnumu1pi.SetPlotStyle(kRed-6,1001);
 	ccnumu1pi.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
 	ccnumu1pi.SetPOT(2.35e21);
@@ -69,7 +76,7 @@ Samples LoadCCnumu1pi( TString tag ){
 Samples LoadCCnumu0pi( TString tag ){
 
 	Samples ccnumu0pi("CC#nu_{#mu}0#pi^{0}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/gleeNtuples_numi_run1MCoverlay_reweight_luis_goodweight.root","vertex_tree","mctruth_cc_or_nc==0&&mctruth_nu_pdg==14&&mctruth_num_exiting_pi0==0");
-	ccnumu0pi.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_CC0Pi0_app.root","CC0Pi0_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
+//	ccnumu0pi.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_CC0Pi0_app.root","CC0Pi0_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
 	ccnumu0pi.SetPlotStyle(kBlue-6,1001);
 	ccnumu0pi.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
 	ccnumu0pi.SetPOT(2.35e21);
@@ -88,7 +95,7 @@ Samples LoadOthers( TString tag ){
 	othercuts+= "&&!(mctruth_cc_or_nc==0&&mctruth_nu_pdg==14&&mctruth_num_exiting_pi0==0)";//ccnumu0pi
 
 	Samples other("InCryoOthers", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/gleeNtuples_numi_run1MCoverlay_reweight_luis_goodweight.root","vertex_tree",othercuts);
-	other.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NuMIOtherExtra_app.root","NuMIOtherExtra_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
+//	other.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NuMIOtherExtra_app.root","NuMIOtherExtra_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
 	other.SetPlotStyle(kGreen-2,1001);
 	other.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
 	other.SetPOT(2.35e21);
@@ -100,7 +107,7 @@ Samples LoadOthers( TString tag ){
 Samples LoadDirt( TString tag ){
 
 	Samples dirt("Dirt (OutsideCryo)  x.7","/pnfs/uboone/persistent/users/klin/MCC9/ntuples/gleeNtuples_numi_run1dirt_luis_goodweight.root","vertex_tree","1");
-	dirt.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_Dirt_app.root","Dirt_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
+//	dirt.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_Dirt_app.root","Dirt_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
 	dirt.SetPlotStyle(kOrange-7, 1001);
 	dirt.SetWeight("ppfx_cv_good*spline_tune_good");
 	dirt.SetPOT(1.55e21);
@@ -112,7 +119,7 @@ Samples LoadDirt( TString tag ){
 // New Categories
 Samples LoadRun1NCpi0( TString tag ){
 	Samples tmpSample("NC#pi^{0}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/gleeNtuples_numi_run1MCoverlay_reweight_luis_goodweight.root","vertex_tree","mctruth_cc_or_nc==1&&mctruth_num_exiting_pi0>0 &&Entry$%2==0");
-	tmpSample.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NCPi0_app.root","NCPi0_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
+//	tmpSample.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NCPi0_app.root","NCPi0_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
 	tmpSample.SetPlotStyle(kRed-3,1001);
 	tmpSample.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
 	tmpSample.SetPOT(2.35e21);
@@ -123,7 +130,7 @@ Samples LoadRun1NCpi0( TString tag ){
 
 Samples LoadRun1NC0pi0Other( TString tag ){
 	Samples tmpSample("NC0#pi^{0}Other", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/gleeNtuples_numi_run1MCoverlay_reweight_luis_goodweight.root","vertex_tree","mctruth_cc_or_nc==1&&mctruth_num_exiting_pi0==0");
-	tmpSample.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NCPi0_app.root","NCPi0_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
+//	tmpSample.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NCPi0_app.root","NCPi0_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
 	tmpSample.SetPlotStyle(kBlue-3,1001);
 	tmpSample.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
 	tmpSample.SetPOT(2.35e21);
@@ -133,7 +140,7 @@ Samples LoadRun1NC0pi0Other( TString tag ){
 
 Samples LoadRun1CCpi0( TString tag ){
 	Samples tmpSample("CC#pi^{0}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/gleeNtuples_numi_run1MCoverlay_reweight_luis_goodweight.root","vertex_tree","mctruth_cc_or_nc==0&&mctruth_num_exiting_pi0>0");
-	tmpSample.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NCPi0_app.root","NCPi0_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
+//	tmpSample.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NCPi0_app.root","NCPi0_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
 	tmpSample.SetPlotStyle(kRed-6,1001);
 	tmpSample.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
 	tmpSample.SetPOT(2.35e21);
@@ -143,7 +150,7 @@ Samples LoadRun1CCpi0( TString tag ){
 
 Samples LoadRun1CC0pi0Other( TString tag ){
 	Samples tmpSample("CC0#pi^{0}Other", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/gleeNtuples_numi_run1MCoverlay_reweight_luis_goodweight.root","vertex_tree","mctruth_cc_or_nc==0&&mctruth_num_exiting_pi0==0");
-	tmpSample.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NCPi0_app.root","NCPi0_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
+//	tmpSample.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NCPi0_app.root","NCPi0_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
 	tmpSample.SetPlotStyle(kGreen-8,1001);
 	tmpSample.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
 	tmpSample.SetPOT(2.35e21);
@@ -158,7 +165,7 @@ Samples LoadRun1CC0pi0Other( TString tag ){
 Samples LoadData( TString tag ){
 
 	Samples data("Data NuMI Run1 FHC","/pnfs/uboone/persistent/users/klin/MCC9/ntuples/gleeNtuples_numi_run1data_luis_full.root","singlephotonana/vertex_tree","(run_number<6748)||(run_number==6748 && subrun_number<22)");
-	data.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NuMIDataCANTTAKECUTS_app.root","NuMIDataCANTTAKECUTS_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
+//	data.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NuMIDataCANTTAKECUTS_app.root","NuMIDataCANTTAKECUTS_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
 	data.SetPOT(2.37e20);
 
 	return data;
@@ -168,7 +175,7 @@ Samples LoadData( TString tag ){
 Samples LoadEXT( TString tag ){
 
 	Samples ext("Run1 EXT x.98","/pnfs/uboone/persistent/users/klin/MCC9/ntuples/gleeNtuples_numi_run1EXT_luis_filtered.root","singlephotonana/vertex_tree","1");
-	ext.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NuMIextRun1_app.root","NuMIextRun1_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
+//	ext.AddFriend("../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRun1AxionV2"+tag+"/NuMIFHCRun1AxionV2"+tag+"NCPionClassifier_NuMIextRun1_app.root","NuMIextRun1_NuMIFHCRun1AxionV2"+tag+"NCPionClassifier");
 	ext.SetPlotStyle(kGreen-6, 3333);
 	ext.SetPOT(1.846e19*513630.025/426046.0);//2.2e19 POT
 	ext.SetScale(0.98);

@@ -36,10 +36,31 @@ public:
 
 	}
 
+	void AddFriendViaTag(TString fBDTFileTag, 
+		TString fClassifierTag,
+		TString fBDTTrainingDir, 
+		TString fBDTTrainingTag, 
+		TString fAmasstag){
+
+		TString frdTFile = fBDTTrainingDir+ fAmasstag + "/" + fBDTTrainingTag+fAmasstag+fClassifierTag + "_"+fBDTFileTag+"_app.root";
+		TString frdT = fBDTFileTag + "_"+ fBDTTrainingTag + fAmasstag + fClassifierTag;
+
+		if(!gSystem->AccessPathName(frdTFile)){
+			this->AddFriend(frdTFile, frdT);
+		} else{
+			std::cout<<frdTFile<<" does not exist"<<std::endl;
+		}
+	}
+
 	//Update definitions
 	void AddDefinition(TString def)
 	{
 		this->s_definition += " && (" + def + ")";
+	}
+
+	void SetDefinition(TString def)
+	{
+		this->s_definition = "(" + def + ")";
 	}
 
 	//Many ways to Set POT
