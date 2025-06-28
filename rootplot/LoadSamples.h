@@ -19,7 +19,7 @@ Samples LoadAxions( TString tag ){
 	}
 
 //	axion.SetScale(3*2.0/58560);//for regular ma03 sample
-	axion.SetScale(5000.0*2/391750);
+	axion.SetScale(50000.0*2/391750);
 	axion.SetPlotStyle(kYellow-3, 1001);
 	axion.SetPOT(2e21);
 	

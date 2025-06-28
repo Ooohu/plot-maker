@@ -25,14 +25,14 @@ public:
 		this->s_col = col;
 		this->s_fillstyle = fillstyle;
 	}
-	
+
 	//Add Friends
 	void AddFriend(TString friend_path, TString friend_name)
 	{
 		this->s_ttree->AddFriend(friend_name, friend_path);
 		double nEntries = this->s_ttree->GetEntries();
 		double nEntriesFriend = this->s_ttree->GetFriend(friend_name)->GetEntries();
-		if(nEntries != nEntriesFriend) std::cout<<"WARNING: Entries of the friend tree " <<nEntriesFriend<<" is not the same as the main tree "<<nEntries<<"!"<<std::endl;
+		if(nEntries != nEntriesFriend) std::cout<<"WARNING: Entries of the friend tree " <<nEntriesFriend<<" is not the same as the main tree "<<nEntries<<"! Check file: "<<friend_path<<std::endl;
 
 	}
 
