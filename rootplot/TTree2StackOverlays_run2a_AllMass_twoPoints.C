@@ -114,7 +114,8 @@ void TTree2StackOverlays_run2a_AllMass_twoPoints(){
 		//Now backgrounds are stacked
 		THStack *hs = new THStack(RandomName(), "");// Create Stack
 		TH1D* errorHist = 0;// Create a empty hist for storing all bkgs
-		std::vector<Samples> vecSamples = { Onepi0, NueCC, NumuCC, InCryoOther, dirt, ext};
+		std::vector<Samples> vecSamples = { ext, Onepi0, NueCC, NumuCC, InCryoOther, dirt};
+//		std::vector<Samples> vecSamples = { Onepi0, NueCC, NumuCC, InCryoOther, dirt, ext};
 		//	std::vector<Samples> vecSamples = {axion};
 		for(auto &sample : vecSamples){
 			sample.AddDefinition(Precut);

@@ -7,7 +7,7 @@
 //scalings_run3 = { "nu":1./(1.993661e21), "dirt":1.0*0.35/1.020e21, "beamoff": 0.98*(10714868.0/34147459.925000)}
 
 //Global AmassBDTTag for BDT variables
-TString BDTTrainingTag = "NuMIFHCRun1";
+TString BDTTrainingTag = "NuMIFHCRun1AxionV2_newCat_";
 TString BDTTrainingDir = "../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/" + BDTTrainingTag ;
 
 Samples LoadAxions003( TString AmassBDTTag ){
@@ -36,11 +36,45 @@ Samples LoadAxions003( TString AmassBDTTag ){
 
 //	axion.SetScale(3*2.0/58560);//for regular ma03 sample
 	axion.SetScale(5000.0/49000);
-	axion.SetPlotStyle(kYellow-3, 0);
+	axion.SetPlotStyle(kOrange, 0);
 	axion.SetPOT(2e21);
 	
 	return axion;
 };
+
+Samples LoadAxions003T( TString AmassBDTTag ){
+	Samples axion("0.03 GeV Axion (Training)","/pnfs/uboone/persistent/users/klin/MCC9/axions_localgpvm_storage/singlemasspoint/axions_numiRun1_mesonmixing_ma003_v1_zlt40m.root","singlephotonana/vertex_tree","subrun_number%3>0");
+
+	TString BDTFileTag = "Axionma003";
+	TString ClassifierTag = "PionClassifier";
+	TString frdTFile = BDTTrainingDir+AmassBDTTag+"/"+BDTTrainingTag+AmassBDTTag+ClassifierTag + "_"+BDTFileTag+"_app.root";
+	TString frdT = BDTFileTag + "_"+ BDTTrainingTag + AmassBDTTag + ClassifierTag;
+
+	if(!gSystem->AccessPathName(frdTFile)){
+		axion.AddFriend(frdTFile, frdT);
+	} else{
+		std::cout<<frdTFile<<" does not exist"<<std::endl;
+	}
+
+	ClassifierTag = "NueCCClassifier";
+	axion.AddFriendViaTag( BDTFileTag, ClassifierTag, BDTTrainingDir, BDTTrainingTag, AmassBDTTag);
+
+
+	ClassifierTag = "CosmicClassifier";
+	axion.AddFriendViaTag( BDTFileTag, ClassifierTag, BDTTrainingDir, BDTTrainingTag, AmassBDTTag);
+
+//	ClassifierTag = "AxionLikeClassifier";
+//	axion.AddFriendViaTag( BDTFileTag, ClassifierTag, BDTTrainingDir, BDTTrainingTag, AmassBDTTag);
+
+//	axion.SetScale(3*2.0/58560);//for regular ma03 sample
+	axion.SetScale(5000.0/49000*(1/ 1.9887640));
+	axion.SetPlotStyle(kOrange+10, 0);
+	axion.SetPOT(2e21);
+	
+	return axion;
+};
+
+
 
 Samples LoadAxions0146( TString AmassBDTTag ){
 	Samples axion("0.146 GeV Axion (RND)","/pnfs/uboone/persistent/users/klin/MCC9/axions_localgpvm_storage/singlemasspoint/axions_numiRun1_mesonmixing_ma0146_v1_zlt40m.root","singlephotonana/vertex_tree","subrun_number%3==0");
@@ -67,7 +101,7 @@ Samples LoadAxions0146( TString AmassBDTTag ){
 
 //	axion.SetScale(3*2.0/58560);//for regular ma03 sample
 	axion.SetScale(5000.0/35700);
-	axion.SetPlotStyle(kTeal+5, 0);
+	axion.SetPlotStyle(kTeal, 0);
 	axion.SetPOT(2e21);
 	
 	return axion;
@@ -99,14 +133,14 @@ Samples LoadAxions084( TString AmassBDTTag ){
 
 //	axion.SetScale(3*2.0/58560);//for regular ma03 sample
 	axion.SetScale(5000.0/46800);
-	axion.SetPlotStyle(kCyan+2, 0);
+	axion.SetPlotStyle(kMagenta, 0);
 	axion.SetPOT(2e21);
 	
 	return axion;
 };
 
 Samples LoadRun1All( TString AmassBDTTag ){
-	Samples tmpSample("AllMC", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCoverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","subrun_number%3==0");
+	Samples tmpSample("AllMC", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","subrun_number%3==0");
 
 
 	tmpSample.SetPlotStyle(kBlue+4,1001);
@@ -115,7 +149,7 @@ Samples LoadRun1All( TString AmassBDTTag ){
 	tmpSample.SetScale(2.9431896);
 
 	//Add Friends ~ Start
-	TString BDTFileTag = "NuBkg";
+	TString BDTFileTag = "NuR1Bkg";
 	TString ClassifierTag = "PionClassifier";
 
 	tmpSample.AddFriendViaTag( BDTFileTag, ClassifierTag, BDTTrainingDir, BDTTrainingTag, AmassBDTTag);
@@ -140,7 +174,7 @@ Samples LoadRun1All( TString AmassBDTTag ){
 
 //New Categories!
 Samples LoadRun1Onepi0( TString AmassBDTTag ){
-	Samples tmpSample("1#pi^{0}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCoverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","mctruth_num_exiting_pi0==1 &&subrun_number%3==0");
+	Samples tmpSample("1#pi^{0}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","mctruth_num_exiting_pi0==1 &&subrun_number%3==0");
 
 
 	tmpSample.SetPlotStyle(kRed-3,1001);
@@ -149,7 +183,7 @@ Samples LoadRun1Onepi0( TString AmassBDTTag ){
 	tmpSample.SetScale(2.9431896);
 
 	//Add Friends ~ Start
-	TString BDTFileTag = "NuBkg";
+	TString BDTFileTag = "NuR1Bkg";
 	TString ClassifierTag = "PionClassifier";
 
 	tmpSample.AddFriendViaTag( BDTFileTag, ClassifierTag, BDTTrainingDir, BDTTrainingTag, AmassBDTTag);
@@ -172,7 +206,7 @@ Samples LoadRun1Onepi0( TString AmassBDTTag ){
 
 Samples LoadRun1NueCC( TString AmassBDTTag ){
 
-	Samples tmpSample("CC#nu_{e}/#bar{#nu_{e}}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCoverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==12 && subrun_number%3==0");
+	Samples tmpSample("CC#nu_{e}/#bar{#nu_{e}}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==12 && subrun_number%3==0");
 
 	tmpSample.SetPlotStyle(kGreen-8,1001);
 	tmpSample.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
@@ -181,7 +215,7 @@ Samples LoadRun1NueCC( TString AmassBDTTag ){
 
 	
 	//Add Friends ~ Start
-	TString BDTFileTag = "NuBkg";
+	TString BDTFileTag = "NuR1Bkg";
 	TString ClassifierTag = "PionClassifier";
 
 	tmpSample.AddFriendViaTag( BDTFileTag, ClassifierTag, BDTTrainingDir, BDTTrainingTag, AmassBDTTag);
@@ -204,7 +238,7 @@ Samples LoadRun1NueCC( TString AmassBDTTag ){
 
 Samples LoadRun1NumuCC( TString AmassBDTTag ){
 
-	Samples tmpSample("CC#nu_{#mu}/#bar{#nu_{#mu}}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCoverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==14 && subrun_number%3==0");
+	Samples tmpSample("CC#nu_{#mu}/#bar{#nu_{#mu}}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==14 && subrun_number%3==0");
 
 	tmpSample.SetPlotStyle(kBlue-6,1001);
 	tmpSample.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
@@ -212,7 +246,7 @@ Samples LoadRun1NumuCC( TString AmassBDTTag ){
 	tmpSample.SetScale(2.9431896);
 	
 	//Add Friends ~ Start
-	TString BDTFileTag = "NuBkg";
+	TString BDTFileTag = "NuR1Bkg";
 	TString ClassifierTag = "PionClassifier";
 
 	tmpSample.AddFriendViaTag( BDTFileTag, ClassifierTag, BDTTrainingDir, BDTTrainingTag, AmassBDTTag);
@@ -238,7 +272,7 @@ Samples LoadRun1NumuCC( TString AmassBDTTag ){
 
 Samples LoadRun1OtherCC( TString AmassBDTTag ){//empty
 
-	Samples tmpSample("Other CC", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCoverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1 ) && mctruth_cc_or_nc==0&&!(fabs(mctruth_nu_pdg)==12) &&!(fabs(mctruth_nu_pdg)==14)&& subrun_number%3==0");
+	Samples tmpSample("Other CC", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1 ) && mctruth_cc_or_nc==0&&!(fabs(mctruth_nu_pdg)==12) &&!(fabs(mctruth_nu_pdg)==14)&& subrun_number%3==0");
 
 	tmpSample.SetPlotStyle(kGreen-2,1001);
 	tmpSample.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
@@ -246,7 +280,7 @@ Samples LoadRun1OtherCC( TString AmassBDTTag ){//empty
 	tmpSample.SetScale(2.9431896);
 	
 	//Add Friends ~ Start
-	TString BDTFileTag = "NuBkg";
+	TString BDTFileTag = "NuR1Bkg";
 	TString ClassifierTag = "PionClassifier";
 
 	tmpSample.AddFriendViaTag( BDTFileTag, ClassifierTag, BDTTrainingDir, BDTTrainingTag, AmassBDTTag);
@@ -269,13 +303,13 @@ Samples LoadRun1OtherCC( TString AmassBDTTag ){//empty
 
 
 Samples LoadRun1InCryoOther( TString AmassBDTTag ){
-	Samples tmpSample("InCryoOther", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCoverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1 ) && mctruth_cc_or_nc==1 && subrun_number%3==0");
+	Samples tmpSample("InCryoOther", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1 ) && mctruth_cc_or_nc==1 && subrun_number%3==0");
 
 	tmpSample.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
 	tmpSample.SetPOT(2.35e21);
 	tmpSample.SetScale(2.9431896);
 	//Add Friends ~ Start
-	TString BDTFileTag = "NuBkg";
+	TString BDTFileTag = "NuR1Bkg";
 	TString ClassifierTag = "PionClassifier";
 
 	tmpSample.AddFriendViaTag( BDTFileTag, ClassifierTag, BDTTrainingDir, BDTTrainingTag, AmassBDTTag);
@@ -363,8 +397,7 @@ Samples LoadRun1EXT( TString AmassBDTTag ){
 	Samples ext("Run1 EXT","/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1EXT_full_2s0t.root","vertex_tree","subrun_number%3==0");
 	ext.SetPlotStyle(kGreen-6, 3333);
 	ext.SetPOT(2.76e20*9.25e6/6.62e6);
-	ext.SetScale(0.98);
-	ext.SetScale(2.8049536);
+	ext.SetScale(0.98*2.8049536);
 
 	//Add Friends ~ Start
 	TString BDTFileTag = "NuMIextRun1";

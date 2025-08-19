@@ -36,6 +36,10 @@ TString MakeSafeName(TString input){
 	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), ','), safe_name.end());
 	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), '|'), safe_name.end());
 	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), ':'), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), '^'), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), '#'), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), '{'), safe_name.end());
+	safe_name.erase(std::remove(safe_name.begin(), safe_name.end(), '}'), safe_name.end());
 
 	return safe_name.c_str();
 };
@@ -62,7 +66,7 @@ std::string PrintHist(TH1D* tmp_hist){
 void SetRatioStyle( TH1D* ratio){
 
 	//Take care of the Yaxis first;
-	ratio->SetMaximum(1+1);
+	ratio->SetMaximum(1+2);
 	ratio->SetMinimum(1-1);
 	ratio->GetYaxis()->SetNdivisions(405);
 
@@ -124,12 +128,18 @@ TLatex *GetEstimators( TH1D* data, TH1D* MC){
 	TString text_ratio; text_ratio.Form("Data/MC=%.2f   ",histdata_num/histMC_num); 
 
 	TString text_ks; text_ks.Form("KS: %.2f   ", MC->KolmogorovTest(data)); 
-	TString text_chi2; text_chi2.Form("#chi^{2}/n#it{DOF}=%.2f/%d p=%.2g   ", MC->Chi2Test(data,"UW CHI2"), 
+//	TString text_chi2; text_chi2.Form("#chi^{2}/n#it{DOF}=%.2f/%d p=%.2g   ", MC->Chi2Test(data,"UW CHI2"), 
+//																			MC->GetNbinsX()-1, 
+//																			MC->Chi2Test(data,"UW P"));
+
+
+	TString text_chi2; text_chi2.Form("#chi^{2}/n#it{DOF}=%.2f/%d p=%.2g   ", data->Chi2Test(MC,"UW CHI2"), 
 																			MC->GetNbinsX()-1, 
-																			MC->Chi2Test(data,"UW P"));
+																			data->Chi2Test(MC,"UW P"));
 
 	//soruce code at https://root.cern.ch/doc/master/TH1_8cxx_source.html#l01995
 	std::cout<<"Chi2Test Check "<< MC->Chi2Test(data,"WU CHI2")<<std::endl;
+	std::cout<<"Chi2Test Check2 "<< data->Chi2Test(MC,"WU CHI2")<<std::endl;
 
 //	//chi2 will ignore 0 values, so replace it with something super small would be good.
 //	double small_value = 1e-10;

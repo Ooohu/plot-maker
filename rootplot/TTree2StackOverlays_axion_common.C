@@ -76,9 +76,17 @@ std::vector< Vars> SetMultipleVars(){
 	Vars var_clusterenergy("Proton Candidate CLuster Energy [MeV]","sss_candidate_energy",{20,0,20});
 	
 	//BDT variable
-	Vars var_bdtPion("Pion Focused BDT","NuMIRHCRun3Pre16880AxionV3ma003PionClassifier_mva",		{20,0,1});
-	Vars var_bdtNueCC("NueCC Focused BDT","NuMIRHCRun3Pre16880AxionV3ma003NueCCClassifier_mva",		{20,0,1});
-	Vars var_bdtCosmic("Cosmic Focused BDT","NuMIRHCRun3Pre16880AxionV3ma003CosmicClassifier_mva",	{20,0,1});
+	Vars var_R1bdtPion("Pion Focused BDT","NuMIFHCRuns_ma003PionClassifier_mva",		{20,0,1});
+	Vars var_R1bdtNueCC("NueCC Focused BDT","NuMIFHCRuns_ma003NueCCClassifier_mva",		{5,0,1});
+	Vars var_R1bdtCosmic("Cosmic Focused BDT","NuMIFHCRuns_ma003CosmicClassifier_mva",	{10,0,1});
+	Vars var_R1bdtPionL("Pion Focused BDT     LOGY","NuMIFHCRuns_ma003PionClassifier_mva",		{20,0,1}    , true);
+	Vars var_R1bdtNueCCL("NueCC Focused BDT   LOGY","NuMIFHCRuns_ma003NueCCClassifier_mva",		{5,0,1}, true);
+	Vars var_R1bdtCosmicL("Cosmic Focused BDT LOGY","NuMIFHCRuns_ma003CosmicClassifier_mva",	{10,0,1}, true);
+
+
+	Vars var_bdtPion("Pion Focused BDT","NuMIRHCRun3Pre16880AxionV3ma003PionClassifier_mva",		{10,0,1});
+	Vars var_bdtNueCC("NueCC Focused BDT","NuMIRHCRun3Pre16880AxionV3ma003NueCCClassifier_mva",		{10,0,1});
+	Vars var_bdtCosmic("Cosmic Focused BDT","NuMIRHCRun3Pre16880AxionV3ma003CosmicClassifier_mva",	{10,0,1});
 
 	Vars var_bdtAxionLike("AxionLike Focused BDT","NuMIRHCRun3Pre16880AxionV3ma003AxionLikeClassifier_mva", {24,-0.1,1.1});
 
@@ -95,6 +103,9 @@ std::vector< Vars> SetMultipleVars(){
 
 	std::vector< Vars> allVars = {varShrKalmandEdx21, varShrKalmandEdx22, varAI, varNME, varNMP,  varNMBeta, varNMBetaL, varMass,  varMassC, varMassCl, varCosOpnAng, varShrCosBeta1,  varShrBeta1, varShrTheta1, varShrCosBeta2, varShrE1, varShrE1l,  varShrE2, var_photonl1, var_photonl1l, var_photonl2, var_photonl2l, var_yness1, var_yness2};
 //	std::vector< Vars> allVars = {var_bdtPion, var_bdtNueCC, var_bdtCosmic,var_bdtPionL, var_bdtNueCCL, var_bdtCosmicL};
+//	std::vector< Vars> allVars = {var_R1bdtPion, var_R1bdtNueCC, var_R1bdtCosmic, var_R1bdtPionL, var_R1bdtNueCCL, var_R1bdtCosmicL};
+//  std::vector< Vars> allVars = {var_R1bdtNueCC, var_R1bdtNueCCL};
+//	std::vector< Vars> allVars = {var_R1bdtCosmic, var_R1bdtCosmicL};
 //	std::vector< Vars> allVars = {var_bdtPion, var_bdtNueCC, var_bdtCosmic};
 //std::vector< Vars> allVars = {var_runNum1, var_runNum2,var_runNum3,var_runNum4,var_runNum5};
 

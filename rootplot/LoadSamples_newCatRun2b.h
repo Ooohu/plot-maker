@@ -36,7 +36,7 @@ Samples LoadAxions003( TString AmassBDTTag ){
 
 //	axion.SetScale(3*2.0/58560);//for regular ma03 sample
 	axion.SetScale(5000.0/49000);
-	axion.SetPlotStyle(kYellow-3, 0);
+	axion.SetPlotStyle(kOrange, 0);
 	axion.SetPOT(2e21);
 	
 	return axion;
@@ -68,7 +68,7 @@ Samples LoadAxions084( TString AmassBDTTag ){
 
 //	axion.SetScale(3*2.0/58560);//for regular ma03 sample
 	axion.SetScale(5000.0/46800);
-	axion.SetPlotStyle(kCyan+2, 0);
+	axion.SetPlotStyle(kMagenta, 0);
 	axion.SetPOT(2e21);
 	
 	return axion;

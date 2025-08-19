@@ -6,17 +6,17 @@
 #include "Gadgets.h"
 
 //Template for drawing different hists
-template <typename T>
-void ExportPNG(T hist, TString name, TString Xaxis, TString Yaxis= "Events"){
-	TCanvas* c = new TCanvas("c","c",800,600);
-	hist->Draw("colz text");
-	hist->SetTitle(name);
-	hist->GetXaxis()->SetTitle(Xaxis);
-	hist->GetYaxis()->SetTitle(Yaxis);
-	hist->SetStats(false);
-	c->SaveAs("./output/"+name+".png");
-	delete c;
-}
+//template <typename T>
+//void ExportPNG(T hist, TString name, TString Xaxis, TString Yaxis= "Events"){
+//	TCanvas* c = new TCanvas("c","c",800,600);
+//	hist->Draw("colz text");
+//	hist->SetTitle(name);
+//	hist->GetXaxis()->SetTitle(Xaxis);
+//	hist->GetYaxis()->SetTitle(Yaxis);
+//	hist->SetStats(false);
+//	c->SaveAs("./output/"+name+".png");
+//	delete c;
+//}
 
 void DrawRatioPlot( TH1D* data, TH1D* MC, TString Xaxis, TString Yaxis="Data/Prediction"){
 	TH1D* ratioP = (TH1D*) data->Clone("DataVsErrorHist");
@@ -171,7 +171,7 @@ void ExportPNG_StackData_wLabel(
 	//Adjust maximum based on two histograms
 	double max = hist->GetMaximum();
 	if(hist2->GetMaximum() > max) max = hist2->GetMaximum();
-	hist->SetMinimum(0.001);
+	hist->SetMinimum(0.1);
 	hist->SetMaximum(max*1.2);
 	hist->GetYaxis()->SetTitle(Yaxis);
 	hist->GetYaxis()->SetLabelSize(0.04);//% of the TPad height
@@ -186,7 +186,8 @@ void ExportPNG_StackData_wLabel(
 	padR->cd();
 	//Data has point, error bar
 	//MC has shaded errors
-	DrawRatioPlot( hist2, errorHist, Xaxis, "Data/Prediction");
+	DrawRatioPlot( hist2, errorHist, Xaxis, "Ratio");
+//	DrawRatioPlot( hist2, errorHist, Xaxis, "Data/Prediction");
 
 
 //Draw the rest of the pads, on top of others;
@@ -203,6 +204,80 @@ void ExportPNG_StackData_wLabel(
 	delete c;
 }
 
+void ExportPNG_Overlays(
+		TH1D* hist, 
+		TH1D* hist2, 
+		TLegend *leg, 
+		TString name,  
+		TString Xaxis, 
+		TString Yaxis= "Events", 
+		bool logY = false){
+	//Add estimator
+	gStyle->SetPaintTextFormat("4.1f%%");//draw numbers with percentage
+
+
+	TCanvas* c = new TCanvas("c","c",800,600);
+	TPad *padT = new TPad("padT","padT",0 , 0.8		,1 ,   1); //Pad for legend, invaid margin 0.05 below
+	TPad *padH = new TPad("padH","padH",0 , 0.3		,1 ,   0.8);//Pad for Histograms, 
+	TPad *padR = new TPad("padR","padH",0 , 0.05	,1 ,   0.3);//Pad for Ratio, 
+	TPad *padB = new TPad("padB","padB",0 , 0		,1 ,   0.05);//Pad for text, xlow, ylow,xup,yup
+
+// ---- Pad for Legends
+	padT->SetMargin(0,0,0,0);//Setmargins for left,right,bottom,top
+
+	padT->Draw();
+	padT->cd();
+	leg->Draw();
+
+
+// ---- Pad for Histograms
+	c->cd();
+	padH->SetTopMargin(0.02);//leave some space for the yaxis label
+	padH->SetBottomMargin(0);
+//	padH->SetFillColor(kBlue-4); //this labels the area
+	padH->Draw();
+	padH->cd();
+	if(logY) padH->SetLogy();
+
+
+	//Adjust maximum based on two histograms
+	double max = std::max( hist->GetMaximum(), hist2->GetMaximum() );
+	hist->SetStats(false);
+	hist->Draw("hist E");//MC
+	hist2->Draw("hist E same");//MC
+
+	hist->SetMinimum(0.1);
+	hist->SetMaximum(max*1.2);
+	hist->GetYaxis()->SetTitle(Yaxis);
+	hist->GetYaxis()->SetLabelSize(0.04);//% of the TPad height
+	hist->GetYaxis()->SetTitleSize(0.06);//% of the TPad height
+	hist->GetYaxis()->SetTitleOffset(0.6);//Sets the bottom of the text distance to the axis, when the value is between 0-1
+
+// ---- Pad for ratios
+	c->cd();
+	padR->SetTopMargin(0);
+	padR->SetBottomMargin(0.25);//distance from the bottom of the plot to pad edges
+	padR->Draw();
+	padR->cd();
+	//Data has point, error bar
+	//MC has shaded errors
+	DrawRatioPlot( hist2,hist, Xaxis, "Ratio");
+
+
+//Draw the rest of the pads, on top of others;
+
+// ---- Pad for text
+	c->cd();
+//	padB->SetFillColor(kCyan-4); //this is useful
+	padB->Draw();
+	padB->cd();
+	TLatex* estimators = GetEstimators( hist, hist2);
+	estimators->Draw();
+
+	c->SaveAs("./output/"+name+".pdf");
+	c->SaveAs("./output/"+name+".png");
+	delete c;
+}
 
 
 
@@ -230,11 +305,11 @@ void ExportPNGwLegend(T hist, TString name, TLegend *leg, TString Xaxis, TString
 	delete c;
 }
 
-void SetHist(TH1D* hist, int line, int fill, int style){
-	hist->SetLineColor(kBlack);
-	if(fill>0) hist->SetFillColor(fill);
-	if(style>0) hist->SetFillStyle(style);
-}
+//void SetHist(TH1D* hist, int line, int fill, int style){
+//	hist->SetLineColor(kBlack);
+//	if(fill>0) hist->SetFillColor(fill);
+//	if(style>0) hist->SetFillStyle(style);
+//}
 
 	//Draw a TH1D
 TH1D* drawTH1D(Samples &sample, Vars &var)
