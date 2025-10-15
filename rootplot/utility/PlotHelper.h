@@ -96,7 +96,7 @@ void ExportPNG_StackDataTwoSignal_wLabel(
 	errorHist->Draw("same E2");//MCError
 
 	if(hist2->GetMaximum() > max) max = hist2->GetMaximum();
-	hist->SetMinimum(0.1);
+	hist->SetMinimum(0.9);
 	hist->SetMaximum(max*1.2);
 	hist->GetYaxis()->SetTitle(Yaxis);
 	hist->GetYaxis()->SetLabelSize(0.04);//% of the TPad height

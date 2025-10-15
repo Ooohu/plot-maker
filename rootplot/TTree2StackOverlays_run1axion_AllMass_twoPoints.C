@@ -2,7 +2,9 @@
 #include "TTree2StackOverlays_axion_common.C"
 //#include "LoadSamples_newCatRun1_TrainingSample.h"
 //#include "LoadSamples_newCatRun1.h"
+#include "LoadSamples_Signal.h"
 #include "LoadSamples_FHCRuns_Run1.h"
+#include "LoadSamples_JumboMC.h"
 #include "LoadStyles.h"
 
 #include "utility/CutScanner.h"
@@ -10,6 +12,11 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
+#include "global_tag.h"
+
+TString BDTTrainingTag = "NuMIFHCRuns_";// definition (and initialization if needed)
+TString BDTTrainingDir = "../../BDTTool/hellstroms_hive/hive/build_axion_general_v2/" + BDTTrainingTag ;
 
 void TTree2StackOverlays_run1axion_AllMass_twoPoints(){
 	//Configure class Samples: name, input file, tree name, cut
@@ -28,14 +35,16 @@ void TTree2StackOverlays_run1axion_AllMass_twoPoints(){
 	Samples axion0146		= LoadAxions0146	(axiontag);
 	Samples axion084		= LoadAxions084	(axiontag);
 
-	Samples axion003T		= LoadAxions003T(axiontag);
+//	Samples axion003T		= LoadAxions003T(axiontag);
 //	Samples BkgCHECK		= LoadRun2aAll (axiontag);//This would be a duplicated;
 
 //	Samples ALL = LoadRun1All(axiontag);//Pass
+
 	Samples Onepi0		= LoadRun1Onepi0 (axiontag);
 	Samples NueCC		= LoadRun1NueCC (axiontag);
 	Samples NumuCC		= LoadRun1NumuCC (axiontag);
 	Samples InCryoOther 	= LoadRun1InCryoOther (axiontag);
+
 	Samples dirt		= LoadRun1Dirt		(axiontag);
 	Samples data		= LoadRun1FHCData		(axiontag);
 	Samples ext			= LoadRun1EXT		(axiontag);
@@ -46,7 +55,7 @@ void TTree2StackOverlays_run1axion_AllMass_twoPoints(){
 	// PRECUT --------------------------------------------------------------------------------
 	TString Label = "AxionRun1FHC"+axiontag+"_2s0t_twoMassPoints";
 	TString Precut = "(reco_asso_tracks == 0 && reco_asso_showers == 2)";
-	Precut +="&&( NuMIFHCRuns_ma003PionClassifier_mva < 0.6)";
+//	Precut +="&&( NuMIFHCRuns_ma003PionClassifier_mva > 0.5)";
 //	Precut +="&&( reco_vertex_dist_to_SCB > 2)";
 //	Precut +="&&( reco_shower_energy_max[i_shr[0]]/1000.0 > 0.03)";//LeadingShrEnergy
 //	Precut +="&&((reco_shower_dirx[i_shr[0]]*0.462372)+(reco_shower_diry[i_shr[0]]*0.0488541)+(reco_shower_dirz[i_shr[0]]*0.885339)>0.8)"; //CosBeta LeadingShr
@@ -101,12 +110,12 @@ void TTree2StackOverlays_run1axion_AllMass_twoPoints(){
 		leg_title = axion003.GetSampleName() + Form(" %.1lf",haxion003->Integral());
 		leg->AddEntry( haxion003, leg_title, "fl");
 
-		axion003T.AddDefinition(Precut);
-		TH1D* haxion003T = drawTH1D(axion003T, temp_var);
-		haxion003T->SetFillColorAlpha( axion003T.GetCol(), 0.9); 
-		haxion003T->SetLineWidth(3);
-		haxion003T->SetLineColor(axion003T.GetCol());
-		leg_title = axion003T.GetSampleName() + Form(" %.1lf",haxion003->Integral());
+//		axion003T.AddDefinition(Precut);
+//		TH1D* haxion003T = drawTH1D(axion003T, temp_var);
+//		haxion003T->SetFillColorAlpha( axion003T.GetCol(), 0.9); 
+//		haxion003T->SetLineWidth(3);
+//		haxion003T->SetLineColor(axion003T.GetCol());
+//		leg_title = axion003T.GetSampleName() + Form(" %.1lf",haxion003->Integral());
 	
 
 		axion0146.AddDefinition(Precut);
@@ -179,7 +188,8 @@ void TTree2StackOverlays_run1axion_AllMass_twoPoints(){
 		text_buffer<<"\nSummary total MC:"<<"\n"<< PrintHist(errorHist);
 
 		if(show_training){
-			ExportPNG_StackDataTwoSignal_wLabel({haxion003, haxion003T, haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
+			ExportPNG_StackDataTwoSignal_wLabel({haxion003, haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
+//			ExportPNG_StackDataTwoSignal_wLabel({haxion003, haxion003T, haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
 		}else{
 			ExportPNG_StackDataTwoSignal_wLabel({haxion003, haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
 		}

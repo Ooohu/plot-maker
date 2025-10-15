@@ -48,25 +48,26 @@ TString MakeSafeName(TString input){
 
 std::string PrintHist(TH1D* tmp_hist){
 //		std::cout<<" sum: "<<tmp_hist->Integral()<<std::endl;
-	std::stringstream text_buffer;
-	text_buffer<<"Bin : ";
+	std::stringstream tmptext_buffer;
+
+	tmptext_buffer<<"\nBin: ";
 	for(int i=1; i<tmp_hist->GetNbinsX()+1; i++){
-		text_buffer << tmp_hist->GetBinContent(i) << ",";
+		tmptext_buffer << tmp_hist->GetBinContent(i) << ",";
 	}
 
-	text_buffer<<"\nSErr: ";
+	tmptext_buffer<<"\nSErr: ";
 	for(int i=1; i<tmp_hist->GetNbinsX()+1; i++){
-		text_buffer << tmp_hist->GetBinError(i) << ",";
+		tmptext_buffer << tmp_hist->GetBinError(i) << ",";
 	}
-	text_buffer<<std::endl;
+	tmptext_buffer<<std::endl;
 
-	return text_buffer.str();
+	return tmptext_buffer.str();
 }
 
 void SetRatioStyle( TH1D* ratio){
 
 	//Take care of the Yaxis first;
-	ratio->SetMaximum(1+2);
+	ratio->SetMaximum(1+1);
 	ratio->SetMinimum(1-1);
 	ratio->GetYaxis()->SetNdivisions(405);
 
@@ -120,6 +121,45 @@ void SetHashStyle(TH1D* hist){
 	hist->SetLineColor(kBlack);
 }
 
+double Chi2Poisson(const TH1D* hData, const TH1D* hMC) {
+	int nbins = hData->GetNbinsX();
+	double chi2 = 0.0;
+
+	for (int i = 1; i <= nbins; i++) {
+		double O = hData->GetBinContent(i);
+		double E = hMC->GetBinContent(i);
+
+		if (E <= 0) continue; // skip bins with no expectation
+
+		if (O > 0) {
+			chi2 += 2.0 * (E - O + O * std::log(O / E));
+		} else {
+			chi2 += 2.0 * E; // when O=0
+		}
+	}
+	return chi2;
+}
+
+double Chi2Gaussian(const TH1D* hData, const TH1D* hMC) {
+	int nbins = hData->GetNbinsX();
+	double chi2 = 0.0;
+
+	for (int i = 1; i <= nbins; i++) {
+		double O = hData->GetBinContent(i);
+		double E = hMC->GetBinContent(i);
+		double sigmaO = hData->GetBinError(i);  // observed error
+		double sigmaE = hMC->GetBinError(i);  // expected error (optional)
+
+		// Variance estimate: here I use observed counts O
+		double sigma2 = (O > 0) ? sigmaE*sigmaE : 1.0;  // avoid divide by zero
+
+		chi2 += (O - E) * (O - E) / sigma2;
+	}
+	return chi2;
+}
+
+
+
 TLatex *GetEstimators( TH1D* data, TH1D* MC){
 
 	TLatex *estimators;//Data/MC ratio, KS Test, Chi^2/(nDoF), Chi^2 p-value;
@@ -138,8 +178,12 @@ TLatex *GetEstimators( TH1D* data, TH1D* MC){
 																			data->Chi2Test(MC,"UW P"));
 
 	//soruce code at https://root.cern.ch/doc/master/TH1_8cxx_source.html#l01995
-	std::cout<<"Chi2Test Check "<< MC->Chi2Test(data,"WU CHI2")<<std::endl;
-	std::cout<<"Chi2Test Check2 "<< data->Chi2Test(MC,"WU CHI2")<<std::endl;
+	std::cout<<"Chi2Test MC->Chi2Test(Data) "<< MC->Chi2Test(data,"WU CHI2")<<std::endl;
+	std::cout<<"Chi2Test Data->Chi2Test(MC) "<< data->Chi2Test(MC,"WU CHI2")<<std::endl;
+
+	std::cout<<"Manual check (Poisson ): "<<Chi2Poisson (data, MC)<<std::endl;
+	std::cout<<"Manual check (Gaussian): "<<Chi2Gaussian(data, MC)<<std::endl;
+
 
 //	//chi2 will ignore 0 values, so replace it with something super small would be good.
 //	double small_value = 1e-10;
@@ -173,5 +217,6 @@ TLatex *GetEstimators( TH1D* data, TH1D* MC){
 
 	return estimators;
 }
+
 
 #endif

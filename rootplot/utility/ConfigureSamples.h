@@ -55,6 +55,11 @@ public:
 	//Update definitions
 	void AddDefinition(TString def)
 	{
+	    // check if 'def' already appears inside s_definition
+		if (this->s_definition.Contains(def)) {
+			// skip if it's already there
+			return;
+		}
 		this->s_definition += " && (" + def + ")";
 	}
 
