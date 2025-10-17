@@ -10,6 +10,20 @@ TLegend* LoadLegend(){
 	return leg;
 }
 
+
+TLegend* LoadSideLegend(){
+
+	TLegend *leg = new TLegend(0.05,0.01,0.95,0.95);
+	leg->SetTextAlign(12);
+	leg->SetFillStyle(0);
+	leg->SetLineWidth(0);
+	leg->SetNColumns(1);
+
+	return leg;
+}
+
+
+
 void SetErrorStyle( TH1D* errorHist){
 		errorHist->SetMarkerSize(0);
 		errorHist->SetFillStyle(3454);
