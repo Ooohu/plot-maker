@@ -66,12 +66,12 @@ TH1D* drawTH1D(Samples &sample, Vars &var)
 //Each block has nbins x nbins grids
 //Each grid is (cv_i-var_i)*(cv_j - var_j)
 
-TH2D* BuildCovarianceMatrix(TH1D* hCV, const std::vector<TH1D*>& variations, bool do_correlation = false) {
+TH2D* BuildCovarianceMatrix(const TH1D* hCV, const std::vector<TH1D*>& variations){
     int nvars = variations.size();
     int nbins = hCV->GetNbinsX();
 	int totalbins = nbins*nvars;
 
-    TH2D* hCov = new TH2D("hCov", "Covariance Matrix", totalbins, 0.5, totalbins+0.5, totalbins, 0.5, totalbins+0.5);
+    TH2D* hCov = new TH2D("hCov", "Matrix", totalbins, 0.5, totalbins+0.5, totalbins, 0.5, totalbins+0.5);
 	TH1D* h_concat = new TH1D("h_concat", "Concatenated Histogram", totalbins, 0.5, totalbins + 0.5);
 
 
@@ -86,11 +86,11 @@ TH2D* BuildCovarianceMatrix(TH1D* hCV, const std::vector<TH1D*>& variations, boo
     // Calculate covariance
 
 	for (int tndex= 1; tndex < totalbins + 1; ++tndex) {//Get the CV
-		double cv_i = hCV->GetBinContent(tndex%nbins); //want 1,2,3; 1,2,3; 
+		double cv_i = hCV->GetBinContent( (tndex-1)%nbins + 1); //want 1,2,3; 1,2,3; 
 		double var_i = h_concat->GetBinContent( tndex);
 
 		for (int undex= 1; undex < totalbins + 1; ++undex) {//Get the 2nd CV
-			double cv_j = hCV->GetBinContent(undex%nbins);
+			double cv_j = hCV->GetBinContent( (undex - 1)%nbins + 1);
 			double var_j = h_concat->GetBinContent( undex);
 
 			double diff_i = var_i - cv_i;
@@ -98,10 +98,9 @@ TH2D* BuildCovarianceMatrix(TH1D* hCV, const std::vector<TH1D*>& variations, boo
 
 			double cov = diff_i * diff_j;
 
-			if(do_correlation) cov = sqrt(diff_i)*sqrt(diff_j);
-			
 			hCov->SetBinContent(tndex, undex, cov);
-			std::cout<<" cv_i:"<< cv_i<<" cv_j:"<<cv_j<<" vari:"<<var_i<<" varj:"<<var_j<<std::endl;
+			std::cout<<"("<<tndex<<","<<undex<<")="<<cov<<std::endl;
+			std::cout<<"       "<<"cv_i:"<<cv_i<<" cv_j:"<<cv_j<<" var_i:"<<var_i<<" var_j:"<<var_j<<std::endl;
 		}
 	}
 
@@ -341,13 +340,13 @@ void draw_FractionalDifference(TH1D* CV, const std::vector<TH1D*>& variations,
     delete c;
 }
 
-void	draw_CovMatrix( TH1D* CV, const std::vector<TH1D*>& varhists,
+void	draw_CovMatrix(const TH1D* CV, 
+			const std::vector<TH1D*>& varhists,
 			TString SafeName,
 			std::vector<TString> axis_texts, 
-			TString title,
-			bool do_correlation = false){
+			TString title){
 
-		TH2D* hCov = BuildCovarianceMatrix( CV, varhists, do_correlation);
+		TH2D* hCov = BuildCovarianceMatrix( CV, varhists );
 
 		int Nbins = hCov->GetNbinsX();
 		int Nvars = varhists.size();
@@ -360,6 +359,7 @@ void	draw_CovMatrix( TH1D* CV, const std::vector<TH1D*>& varhists,
 		int file_index = 0;
 		hCov->GetXaxis()->SetBinLabel(1,"");
 		hCov->GetYaxis()->SetBinLabel(1,"");
+		hCov->SetTitle( title );
 		for (int index = 1; index < Nbins+1; ++index) {
 			//Print contents
 			double var = hCov->GetBinContent(index, index);
