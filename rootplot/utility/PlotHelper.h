@@ -359,6 +359,7 @@ void	draw_CovMatrix(const TH1D* CV,
 		int file_index = 0;
 		hCov->GetXaxis()->SetBinLabel(1,"");
 		hCov->GetYaxis()->SetBinLabel(1,"");
+		hCov->GetYaxis()->LabelsOption("v");
 		hCov->SetTitle( title );
 		for (int index = 1; index < Nbins+1; ++index) {
 			//Print contents
@@ -373,7 +374,7 @@ void	draw_CovMatrix(const TH1D* CV,
 //				hCov->GetXaxis()->SetBinLabel(index, axis_texts[file_index] );
 //				hCov->GetYaxis()->SetBinLabel(index, axis_texts[file_index++] );
 				hCov->GetXaxis()->ChangeLabel(index, 0, 0.05, -1, -1, -1, axis_texts[file_index] ); //Rotation of 0 degrees
-				hCov->GetYaxis()->ChangeLabel(index, 90, 0.05, -1, -1, -1, axis_texts[file_index++] ); //Rotation of 90 degrees NOT WORKING
+				hCov->GetYaxis()->ChangeLabel(index, 90, 0.05, -1, -1, -1, axis_texts[file_index++] ); //Rotation of 90 degrees NOT WORKING :(
 				//void 	ChangeLabel (Int_t labNum=0, Double_t labAngle=-1., Double_t labSize=-1., Int_t labAlign=-1, Int_t labColor=-1, Int_t labFont=-1, const TString &labText="")
 
 			}
@@ -384,10 +385,11 @@ void	draw_CovMatrix(const TH1D* CV,
 //		hCov->GetYaxis()->SetLabelSize(0.05);
 
 
-		TCanvas* c1 = new TCanvas("c1", title, 900, 700);
+		TCanvas* c1 = new TCanvas("c1", title, 1400, 900);
 		hCov->SetStats(0);
 //		hCov->Draw("COLZ TEXT");
-		hCov->Draw("COLZ");
+		gStyle->SetPaintTextFormat("1.2e");//scientific format 1.23e+03
+		hCov->Draw("COLZ TEXT");
 
 
 		//--- Save output
