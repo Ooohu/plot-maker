@@ -384,7 +384,7 @@ void	draw_CovMatrix(const TH1D* CV,
 //		hCov->GetYaxis()->SetLabelSize(0.05);
 
 
-		TCanvas* c1 = new TCanvas("c1", title, 900, 700);
+		TCanvas* c1 = new TCanvas("c1", title, 1200, 600);
 		hCov->SetStats(0);
 //		hCov->Draw("COLZ TEXT");
 		hCov->Draw("COLZ");
