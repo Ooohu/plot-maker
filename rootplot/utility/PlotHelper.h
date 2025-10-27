@@ -225,7 +225,7 @@ void draw_variations(TH1D* CV, const std::vector<TH1D*>& variations,
     CV->SetTitle("");
     CV->GetXaxis()->SetTitle(XaxisTitle);
     CV->GetYaxis()->SetTitle(YaxisTitle);
-    CV->Draw("HIST");
+    CV->Draw("HIST E");
 
 	double max = CV->GetMaximum();
 
@@ -236,7 +236,7 @@ void draw_variations(TH1D* CV, const std::vector<TH1D*>& variations,
         variations[i]->SetLineColor(colorIndex);
         variations[i]->SetLineWidth(2);
         variations[i]->SetLineStyle(1);
-        variations[i]->Draw("HISTSAME");
+        variations[i]->Draw("HISTSAME E");
 
 		colorIndex++;
         if (colorIndex == 5) colorIndex = 6; // skip yellow for clarity
@@ -344,9 +344,29 @@ void	draw_CovMatrix(const TH1D* CV,
 			const std::vector<TH1D*>& varhists,
 			TString SafeName,
 			std::vector<TString> axis_texts, 
-			TString title){
+			TString title,
+			bool do_correlation= false){
 
 		TH2D* hCov = BuildCovarianceMatrix( CV, varhists );
+
+		if(do_correlation){
+			TH2D *corr = (TH2D*) hCov->Clone("corr");
+			for (int i = 1; i <= hCov->GetNbinsX(); ++i) {
+				double sigma_i = std::sqrt(hCov->GetBinContent(i, i));
+				for (int j = 1; j <= hCov->GetNbinsY(); ++j) {
+					double sigma_j = std::sqrt(hCov->GetBinContent(j, j));
+					double cij = hCov->GetBinContent(i, j);
+
+					double rho = 0;
+					if (sigma_i > 0 && sigma_j > 0)
+						rho = cij / (sigma_i * sigma_j);
+
+					corr->SetBinContent(i, j, rho);
+				}
+			}
+			hCov = corr;
+
+		}
 
 		int Nbins = hCov->GetNbinsX();
 		int Nvars = varhists.size();
@@ -358,8 +378,8 @@ void	draw_CovMatrix(const TH1D* CV,
 
 		int file_index = 0;
 		hCov->GetXaxis()->SetBinLabel(1,"");
-		hCov->GetYaxis()->SetBinLabel(1,"");
-		hCov->GetYaxis()->LabelsOption("v");
+		hCov->GetYaxis()->SetTitle("Bin Number");
+//		hCov->GetYaxis()->LabelsOption("v");
 		hCov->SetTitle( title );
 		for (int index = 1; index < Nbins+1; ++index) {
 			//Print contents
@@ -374,7 +394,7 @@ void	draw_CovMatrix(const TH1D* CV,
 //				hCov->GetXaxis()->SetBinLabel(index, axis_texts[file_index] );
 //				hCov->GetYaxis()->SetBinLabel(index, axis_texts[file_index++] );
 				hCov->GetXaxis()->ChangeLabel(index, 0, 0.05, -1, -1, -1, axis_texts[file_index] ); //Rotation of 0 degrees
-				hCov->GetYaxis()->ChangeLabel(index, 90, 0.05, -1, -1, -1, axis_texts[file_index++] ); //Rotation of 90 degrees NOT WORKING :(
+//				hCov->GetYaxis()->ChangeLabel(index, 90, 0.05, -1, -1, -1, axis_texts[file_index++] ); //Rotation of 90 degrees NOT WORKING :(
 				//void 	ChangeLabel (Int_t labNum=0, Double_t labAngle=-1., Double_t labSize=-1., Int_t labAlign=-1, Int_t labColor=-1, Int_t labFont=-1, const TString &labText="")
 
 			}
