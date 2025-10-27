@@ -99,8 +99,8 @@ TH2D* BuildCovarianceMatrix(const TH1D* hCV, const std::vector<TH1D*>& variation
 			double cov = diff_i * diff_j;
 
 			hCov->SetBinContent(tndex, undex, cov);
-			std::cout<<"("<<tndex<<","<<undex<<")="<<cov<<std::endl;
-			std::cout<<"       "<<"cv_i:"<<cv_i<<" cv_j:"<<cv_j<<" var_i:"<<var_i<<" var_j:"<<var_j<<std::endl;
+//			std::cout<<"("<<tndex<<","<<undex<<")="<<cov<<std::endl;
+//			std::cout<<"       "<<"cv_i:"<<cv_i<<" cv_j:"<<cv_j<<" var_i:"<<var_i<<" var_j:"<<var_j<<std::endl;
 		}
 	}
 
@@ -385,15 +385,15 @@ void	draw_CovMatrix(const TH1D* CV,
 			//Print contents
 			double var = hCov->GetBinContent(index, index);
 			double frac_unc = sqrt(var) / hCov->GetBinContent(index);
-			std::cout << "Bin " << index << ": Variance = " << var
-				<< ", Fractional = " << frac_unc * 100 << " %" << std::endl;
+//			std::cout << "Bin " << index << ": Variance = " << var
+//				<< ", Fractional = " << frac_unc * 100 << " %" << std::endl;
 
 
 			//Update labels
 			if(( index -1) % CV->GetNbinsX() == 0){
 //				hCov->GetXaxis()->SetBinLabel(index, axis_texts[file_index] );
 //				hCov->GetYaxis()->SetBinLabel(index, axis_texts[file_index++] );
-				hCov->GetXaxis()->ChangeLabel(index, 0, 0.05, -1, -1, -1, axis_texts[file_index] ); //Rotation of 0 degrees
+				hCov->GetXaxis()->ChangeLabel(index, 0, 0.05, -1, -1, -1, axis_texts[file_index++] ); //Rotation of 0 degrees
 //				hCov->GetYaxis()->ChangeLabel(index, 90, 0.05, -1, -1, -1, axis_texts[file_index++] ); //Rotation of 90 degrees NOT WORKING :(
 				//void 	ChangeLabel (Int_t labNum=0, Double_t labAngle=-1., Double_t labSize=-1., Int_t labAlign=-1, Int_t labColor=-1, Int_t labFont=-1, const TString &labText="")
 
