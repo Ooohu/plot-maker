@@ -1,12 +1,13 @@
 #include "./utility/ConfigureSamples.h"
 #include "global_tag.h"
-//
+
 //Configure class Samples: name, input file, tree name, cut
 //DIR /pnfs/uboone/persistent/users/klin/MCC9/ntuples
 
 //Global AmassBDTTag for BDT variables
 //BDT Friend Tree Tag: 
-//File name = <BDTTrainingDir>/<BDTTrainingTag><axionmass_tag>/<BDTTrainingTag><axionmass_tag><ClassifierTag>_<BDTFileTag>_app.root
+//Inputs: <BDTTrainingTag> <axionmass_tag> <ClassifierTag>
+//File name = <BDTTrainingTag>/<BDTTrainingTag><axionmass_tag>/<BDTTrainingTag><axionmass_tag><ClassifierTag>_<BDTFileTag>_app.root
 //TTree name = <BDTFileTag>_<BDTTrainingTag><axionmass_tag><ClassifierTag>
 //Branch name = <BDTTrainingTag><axionmass_tag><ClassifierTag>_mva
 

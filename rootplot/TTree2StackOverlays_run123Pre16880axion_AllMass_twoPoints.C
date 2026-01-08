@@ -1,6 +1,7 @@
 #include "utility/PlotHelper.h"
 #include "TTree2StackOverlays_axion_common.C"
-#include "LoadSamples_newCatRun3Pre16880_v2.h"
+#include "LoadSamples_Signal.h"
+#include "LoadSamples_newCatRun3Pre16880.h"
 #include "LoadStyles.h"
 
 #include "utility/CutScanner.h"
@@ -16,7 +17,7 @@ void TTree2StackOverlays_run123Pre16880axion_AllMass_twoPoints(){
 	//scalings_run1 = { "nu":1./2.35e21, "dirt":1.0*0.75/1.55e21, "beamoff": 0.98*(6230439.0/9186361.390000)}
 	//scalings_run3 = { "nu":1./(1.993661e21), "dirt":1.0*0.35/1.020e21, "beamoff": 0.98*(10714868.0/34147459.925000)}
 
-	std::vector< TString > tag={"ma003"};
+	std::vector< TString > tag={"ma0146"};
 	//	std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
 	std::stringstream text_buffer;
 

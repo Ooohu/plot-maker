@@ -52,6 +52,35 @@ public:
 		}
 	}
 
+	//----------------
+	//Question of identify a set of training:
+	//Where are the files? DIR
+	//What training setup is that? ClassifierTag1, ClassifierTag2, ...
+	//Where to grab the app file? ClassifierTag# + SAMPLETAG
+	//What TTree are we using? UNIVERSAL
+	//What branch are we using? ClassifierTag# + SAMPLETAG
+	//>> SO WE NEED: DIR, ClassifierTag#, SAMPLETAG, plus a universal TTreeName
+	//>> DIR/ClassifierTag#_SAMPLETAG_app.root,
+	//>> TTree: something UNIVERSAL
+	//>> Branch name: ClassifierTag#_SAMPLETAG
+	//
+	//New simplified format
+	void AddFriendViaTag_v2(
+	TString fDir,
+	TString fClassifierTag,
+	TString fSampleTag){
+
+		TString frdTFile = fDir+"/"+fClassifierTag+"_"+fSampleTag+"_app.root";
+		TString frdTTree = "XGBoostBDT";
+
+
+		if(!gSystem->AccessPathName(fDir)){
+			this->AddFriend(fDir, frdTTree);
+		} else{
+			std::cout<<frdTFile<<" does not exist"<<std::endl;
+		}
+	
+
 	//Update definitions
 	void AddDefinition(TString def)
 	{
