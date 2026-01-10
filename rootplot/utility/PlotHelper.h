@@ -516,7 +516,7 @@ void	draw_CovMatrix(const TH1D* CV,
 		for (double val : VarOfBins) {
 			std::cout << std::sqrt(val) << ", ";
 		}
-		std::cout<<std::ednl;
+		std::cout<<std::endl;
 
 
 
