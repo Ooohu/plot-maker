@@ -1,34 +1,42 @@
 #include "utility/PlotHelper.h"
-#include "TTree2StackOverlays_axion_common.C"
-//#include "LoadSamples_newCatRun1_TrainingSample.h"
-//#include "LoadSamples_newCatRun1.h"
-#include "LoadSample_local.h"
+#include "LoadSamples_sysR1.h"
 #include "LoadStyles.h"
+#include "VarsList_BDT.C"
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
-void TTree2CovMatrix_test(){
+void TTree2CovMatrix_sysR1(){
 	//Configure class Samples: name, input file, tree name, cut
 	//DIR /pnfs/uboone/persistent/users/klin/MCC9/ntuples
 
-	std::vector< TString > tag={"ma003"};
+	std::vector< TString > tag={"ma084"};
 	//	std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
 	std::stringstream text_buffer;
 	
-	Samples sampleCV = LoadCV("");
-	Samples sampleVar1 = LoadVar1("");
-	Samples sampleVar2 = LoadVar2("");
+	Samples sampleCV						= LoadR1_DetVarCV						(tag[0]);
+	Samples sampleLYDown					= LoadR1_DetVarLYDown					(tag[0]);
+	Samples sampleAlternativeSCMap			= LoadR1_DetVarAlternativeSCMap			(tag[0]);
+	Samples sampleAlternativeRecombination	= LoadR1_DetVarAlternativeRecombination (tag[0]);
+	Samples sampleLYRayleigh				= LoadR1_DetVarLYRayleigh				(tag[0]);
+	Samples sampleWireModX					= LoadR1_DetVarWireModX					(tag[0]);
+	Samples sampleWireModThetaXZ			= LoadR1_DetVarWireModThetaXZ			(tag[0]);
+	Samples sampleWireModThetaYZ			= LoadR1_DetVarWireModThetaYZ			(tag[0]);
+	Samples sampleWireModYZ				    = LoadR1_DetVarWireModYZ				(tag[0]);
+
+
+
 
 	// PREPARE SAMPLES -----------------------------------------------------------------
-	double PlotPOT = 1E20;
+	double PlotPOT = 2E21;
 
 	// PRECUT --------------------------------------------------------------------------------
-	TString Label = "Testing";
+	TString Label = "R1sys_testing";
 	TString Precut = "(reco_asso_tracks == 0 && reco_asso_showers == 2)";
 //	Precut +="&&( NuMIFHCRuns_ma003PionClassifier_mva > 0.5)";
-//	Precut +="&&( reco_vertex_dist_to_SCB > 2)";
+	Precut +="&&( reco_vertex_dist_to_SCB > 2)";
+//	Precut +="&&( (reco_shower_energy_max[0]+reco_shower_energy_max[1])/(sqrt(2.0*reco_shower_energy_max[i_shr[0]]*reco_shower_energy_max[(i_shr[1])]*(1.0-(reco_shower_dirx[0]*reco_shower_dirx[1] + reco_shower_diry[0]*reco_shower_diry[1] + reco_shower_dirz[0]*reco_shower_dirz[1]))))<6.8)";
 
 	// Configure class Var: varaibles, axis name, binnings  ----------------------------------
 	std::vector< Vars> allVar = SetMultipleVars();
@@ -53,7 +61,7 @@ void TTree2CovMatrix_test(){
 //		hsampleCV->SetLineWidth(3);
 //		hsampleCV->SetLineColor(sampleCV.GetCol());
 		leg_title = sampleCV.GetSampleName();//+ Form(" %.1lf",hsampleCV->Integral());
-
+		
 		leg->AddEntry( hsampleCV, leg_title, "l");
 
 			std::cout<<"\nSummary: "<< leg_title<<std::endl;
@@ -61,8 +69,7 @@ void TTree2CovMatrix_test(){
 
 
 		//Now backgrounds are stacked
-		std::vector<Samples> vecSamples = { sampleVar1, sampleVar2};
-		//	std::vector<Samples> vecSamples = {axion};
+		std::vector<Samples> vecSamples = { sampleLYDown, sampleAlternativeSCMap, sampleAlternativeRecombination, sampleLYRayleigh, sampleWireModX, sampleWireModThetaXZ, sampleWireModThetaYZ, sampleWireModYZ };
 		std::vector< TH1D* > allhists={};
 		THStack *hs = new THStack(RandomName(), "");// Create Stack
 		for(auto &sample : vecSamples){
@@ -82,12 +89,13 @@ void TTree2CovMatrix_test(){
 			hs->Add(hist);
 
 
-
-
 		}
 
+		//Adjust legend text size
+		leg->SetTextSize(0.05);
+
 //			ExportPNG_StackDataTwoSignal_wLabel({hsampleCV}, hs, hsampleCV, hsampleCV, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
-		draw_variations( hsampleCV, allhists, leg, MakeSafeName(Label+ "_Variations_" +temp_var.GetAxisLabel() ), temp_var.GetAxisLabel(), "Event Rate At Arbitrary POT", temp_var.GetIsLog());
+		draw_variations( hsampleCV, allhists, leg, MakeSafeName(Label+ "_Variations_" +temp_var.GetAxisLabel() ), temp_var.GetAxisLabel(), "Event Rate at 2E21 POT", temp_var.GetIsLog());
 
 		draw_FractionalDifference( hsampleCV, allhists, leg, MakeSafeName(Label+ "_FracDiff_" +temp_var.GetAxisLabel() ), temp_var.GetAxisLabel(), "%Diff respected to CV");
 

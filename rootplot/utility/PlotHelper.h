@@ -107,6 +107,86 @@ TH2D* BuildCovarianceMatrix(const TH1D* hCV, const std::vector<TH1D*>& variation
     return hCov;
 }
 
+void ExportPNG_Overlays(
+		TH1D* hist, 
+		TH1D* hist2, 
+		TLegend *leg, 
+		TString name,  
+		TString Xaxis, 
+		TString Yaxis= "Events", 
+		bool logY = false){
+	//Add estimator
+	gStyle->SetPaintTextFormat("4.1f%%");//draw numbers with percentage
+
+
+	TCanvas* c = new TCanvas("c","c",800,600);
+	TPad *padT = new TPad("padT","padT",0 , 0.8		,1 ,   1); //Pad for legend, invaid margin 0.05 below
+	TPad *padH = new TPad("padH","padH",0 , 0.3		,1 ,   0.8);//Pad for Histograms, 
+	TPad *padR = new TPad("padR","padH",0 , 0.05	,1 ,   0.3);//Pad for Ratio, 
+	TPad *padB = new TPad("padB","padB",0 , 0		,1 ,   0.05);//Pad for text, xlow, ylow,xup,yup
+
+// ---- Pad for Legends
+	padT->SetMargin(0,0,0,0);//Setmargins for left,right,bottom,top
+
+	padT->Draw();
+	padT->cd();
+	leg->Draw();
+
+
+// ---- Pad for Histograms
+	c->cd();
+	padH->SetTopMargin(0.02);//leave some space for the yaxis label
+	padH->SetBottomMargin(0);
+//	padH->SetFillColor(kBlue-4); //this labels the area
+	padH->Draw();
+	padH->cd();
+	if(logY) padH->SetLogy();
+
+
+	//Adjust maximum based on two histograms
+	double max = std::max( hist->GetMaximum(), hist2->GetMaximum() );
+	hist->SetStats(false);
+	hist->Draw("hist E");//MC
+	hist2->Draw("hist E same");//MC
+
+	hist->SetMinimum(0.1);
+	hist->SetMaximum(max*1.2);
+	hist->GetYaxis()->SetTitle(Yaxis);
+	hist->GetYaxis()->SetLabelSize(0.04);//% of the TPad height
+	hist->GetYaxis()->SetTitleSize(0.06);//% of the TPad height
+	hist->GetYaxis()->SetTitleOffset(0.6);//Sets the bottom of the text distance to the axis, when the value is between 0-1
+
+// ---- Pad for ratios
+	c->cd();
+	padR->SetTopMargin(0);
+	padR->SetBottomMargin(0.25);//distance from the bottom of the plot to pad edges
+	padR->Draw();
+	padR->cd();
+	//Data has point, error bar
+	//MC has shaded errors
+	DrawRatioPlot( hist2,hist, Xaxis, "Ratio");
+
+
+//Draw the rest of the pads, on top of others;
+
+// ---- Pad for text
+	c->cd();
+//	padB->SetFillColor(kCyan-4); //this is useful
+	padB->Draw();
+	padB->cd();
+	TLatex* estimators = GetEstimators( hist, hist2);
+	estimators->Draw();
+
+	c->SaveAs("./output/"+name+".pdf");
+	c->SaveAs("./output/"+name+".png");
+	delete c;
+}
+
+
+
+
+
+
 void ExportPNG_StackDataTwoSignal_wLabel(
 		std::vector< TH1D*> sig_hists,
 		THStack* hist, 
@@ -191,6 +271,8 @@ void ExportPNG_StackDataTwoSignal_wLabel(
 
 
 
+
+
 void draw_variations(TH1D* CV, const std::vector<TH1D*>& variations,
 		TLegend *leg, 
 		TString SafeName,  
@@ -230,16 +312,14 @@ void draw_variations(TH1D* CV, const std::vector<TH1D*>& variations,
 	double max = CV->GetMaximum();
 
     //--- Draw variations with different colors
-    int colorIndex = 2; // start from red
+    int colorIndex = 0; // start from red
     for (size_t i = 0; i < variations.size(); ++i) {
         if (!variations[i]) continue;
-        variations[i]->SetLineColor(colorIndex);
+
+        variations[i]->SetLineColor(sampleColor(colorIndex++));
         variations[i]->SetLineWidth(2);
         variations[i]->SetLineStyle(1);
         variations[i]->Draw("HISTSAME E");
-
-		colorIndex++;
-        if (colorIndex == 5) colorIndex = 6; // skip yellow for clarity
 
 		if(variations[i]->GetMaximum() > max) max = variations[i]->GetMaximum();
     }
@@ -252,7 +332,7 @@ void draw_variations(TH1D* CV, const std::vector<TH1D*>& variations,
 
     //--- Save output
     c->cd();
-//    c->SaveAs("output/"+SafeName + ".pdf");
+    c->SaveAs("output/"+SafeName + ".pdf");
     c->SaveAs("output/"+SafeName + ".png");
 
     delete c;
@@ -287,7 +367,7 @@ void draw_FractionalDifference(TH1D* CV, const std::vector<TH1D*>& variations,
     gStyle->SetOptStat(0);
 
     //--- Draw variations with different colors
-    int colorIndex = 2; // start from red
+    int colorIndex = 0; // start from first one
 	int markerIndexOffset = 22;
 	TH1D* hfirst = nullptr;
 	double max = 0;
@@ -305,9 +385,10 @@ void draw_FractionalDifference(TH1D* CV, const std::vector<TH1D*>& variations,
 		if (hdiff->GetMaximum() > max) max = hdiff->GetMaximum();
 		if (hdiff->GetMinimum() < -max) max = -hdiff->GetMinimum();
 
-		hdiff->SetLineColorAlpha(colorIndex, 0.7);
+		Color_t  t_c = sampleColor(colorIndex++);//this_color
+		hdiff->SetLineColorAlpha(t_c, 0.7);
+		hdiff->SetMarkerColorAlpha( t_c, 0.7);
 		hdiff->SetMarkerStyle(colorIndex + markerIndexOffset);
-		hdiff->SetMarkerColorAlpha( colorIndex++, 0.7);
 		hdiff->Draw(i == 0 ? "P" : "P SAME");
 	}
 
@@ -334,7 +415,7 @@ void draw_FractionalDifference(TH1D* CV, const std::vector<TH1D*>& variations,
 
     //--- Save output
     c->cd();
-//    c->SaveAs("output/"+SafeName + ".pdf");
+    c->SaveAs("output/"+SafeName + ".pdf");
     c->SaveAs("output/"+SafeName + ".png");
 
     delete c;
@@ -369,6 +450,7 @@ void	draw_CovMatrix(const TH1D* CV,
 		}
 
 		int Nbins = hCov->GetNbinsX();
+		int NbinEachCat =  CV->GetNbinsX();
 		int Nvars = varhists.size();
 		
 		if(axis_texts.size() != varhists.size()){
@@ -390,10 +472,10 @@ void	draw_CovMatrix(const TH1D* CV,
 
 
 			//Update labels
-			if(( index -1) % CV->GetNbinsX() == 0){
+			if(( index -1) % NbinEachCat == 0){
 //				hCov->GetXaxis()->SetBinLabel(index, axis_texts[file_index] );
 //				hCov->GetYaxis()->SetBinLabel(index, axis_texts[file_index++] );
-				hCov->GetXaxis()->ChangeLabel(index, 0, 0.05, -1, -1, -1, axis_texts[file_index++] ); //Rotation of 0 degrees
+				hCov->GetXaxis()->ChangeLabel(index, 0, 0.02, -1, -1, -1, axis_texts[file_index++] ); //Rotation of 0 degrees
 //				hCov->GetYaxis()->ChangeLabel(index, 90, 0.05, -1, -1, -1, axis_texts[file_index++] ); //Rotation of 90 degrees NOT WORKING :(
 				//void 	ChangeLabel (Int_t labNum=0, Double_t labAngle=-1., Double_t labSize=-1., Int_t labAlign=-1, Int_t labColor=-1, Int_t labFont=-1, const TString &labText="")
 
@@ -408,13 +490,39 @@ void	draw_CovMatrix(const TH1D* CV,
 		TCanvas* c1 = new TCanvas("c1", title, 1400, 900);
 		hCov->SetStats(0);
 //		hCov->Draw("COLZ TEXT");
-		gStyle->SetPaintTextFormat("1.2e");//scientific format 1.23e+03
+		gStyle->SetPaintTextFormat("1.1e");//scientific format 1.23e+03
 		hCov->Draw("COLZ TEXT");
+
+		//High light the diagonal & Extract the values for calculating total uncertaities
+		std::vector< double > VarOfBins(NbinEachCat, 0);
+		for (int i = 1; i <= Nbins; ++i) {
+			//high light them with red boxes
+			double x1 = hCov->GetXaxis()->GetBinLowEdge(i);
+			double x2 = hCov->GetXaxis()->GetBinUpEdge(i);
+			double y1 = hCov->GetYaxis()->GetBinLowEdge(i);
+			double y2 = hCov->GetYaxis()->GetBinUpEdge(i);
+			TBox* b = new TBox(x1, y1, x2, y2);
+			b->SetLineColor(kRed);
+			b->SetFillStyle(0);  // transparent fill
+			b->SetLineWidth(2);
+			b->Draw("same");
+
+
+			//calculate uncertainties
+			VarOfBins[( i -1) % NbinEachCat] +=hCov->GetBinContent( i, i);
+//			std::cout<<"CHECK "<<hCov->GetBinContent( i, i)<<" goes to bin "<<( i -1) % NbinEachCat<<std::endl;
+		}
+		std::cout<<"Total uncertainties: ";
+		for (double val : VarOfBins) {
+			std::cout << std::sqrt(val) << ", ";
+		}
+		std::cout<<std::ednl;
+
 
 
 		//--- Save output
 		c1->cd();
-		//    c->SaveAs("output/"+SafeName + ".pdf");
+		c1->SaveAs("output/"+SafeName + ".pdf");
 		c1->SaveAs("output/"+SafeName + ".png");
 
 }

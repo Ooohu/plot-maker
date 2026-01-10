@@ -11,6 +11,26 @@ TString RandomName(){
 	return name;
 }
 
+// Define your color palette once
+Color_t sampleColors[] = {
+    static_cast<Color_t>(TColor::GetColor("#e41a1c")),
+    static_cast<Color_t>(TColor::GetColor("#377eb8")),
+    static_cast<Color_t>(TColor::GetColor("#4daf4a")),
+    static_cast<Color_t>(TColor::GetColor("#984ea3")),
+    static_cast<Color_t>(TColor::GetColor("#ff7f00")),
+    static_cast<Color_t>(TColor::GetColor("#ffff33")),
+    static_cast<Color_t>(TColor::GetColor("#a65628")),
+    static_cast<Color_t>(TColor::GetColor("#f781bf")),
+    static_cast<Color_t>(TColor::GetColor("#999999"))
+};
+
+// Helper function
+Color_t sampleColor(int index) {
+    int nColors = sizeof(sampleColors) / sizeof(sampleColors[0]);
+    return sampleColors[index % nColors];  // cycle automatically
+}
+
+
 
 TTree* GetTree(TString filename, TString treename)
 {

@@ -1,3 +1,6 @@
+#ifdef VARLIST_H
+#define VARLIST_H
+
 #include "utility/PlotHelper.h"
 
 std::vector< Vars> SetMultipleVars(){
@@ -121,6 +124,4 @@ std::vector< Vars> SetMultipleVars(){
 }
 
 
-void DUmmy(){
-//Do nothing here;
-}
+#endif

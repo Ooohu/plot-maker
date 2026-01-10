@@ -75,11 +75,11 @@ public:
 
 
 		if(!gSystem->AccessPathName(fDir)){
-			this->AddFriend(fDir, frdTTree);
+			this->AddFriend(frdTFile, frdTTree);
 		} else{
 			std::cout<<frdTFile<<" does not exist"<<std::endl;
 		}
-	
+	}	
 
 	//Update definitions
 	void AddDefinition(TString def)
