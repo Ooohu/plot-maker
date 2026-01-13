@@ -1,12 +1,26 @@
 #ifndef GADGETS_H
 #define GADGETS_H
 #include <sstream>
+#include <vector>
+#include <iostream>
+#include <cmath>
+#include "TRandom3.h"
 
-// generate random names for histograms
-TString RandomName(){
+//// generate random names for histograms
+//TString RandomName(){
+//	TString name = "hist";
+//	for(int i=0;i<10;i++){
+//		name += (char)(rand()%26+97);
+//	}
+//	return name;
+//}
+
+TString RandomName() {
+	static TRandom3 rng(0); // seed=0 -> random seed based on time
 	TString name = "hist";
-	for(int i=0;i<10;i++){
-		name += (char)(rand()%26+97);
+	for (int i = 0; i < 10; i++) {
+		char c = 'a' + rng.Integer(26);  // random letter a-z
+		name += c;
 	}
 	return name;
 }
@@ -37,6 +51,12 @@ TTree* GetTree(TString filename, TString treename)
   TFile* file = new TFile(filename);
   TTree* tree = (TTree*)file->Get(treename);
   return tree;
+}
+
+TString MakeSafeWgtName(const TString& weightBranch){
+    // Returns a TString that replaces any NaN/Inf or negative weight with 0
+	return Form("(TMath::Finite(%s) && %s > 0 ? %s : 0)", 
+			weightBranch.Data(), weightBranch.Data(), weightBranch.Data());
 }
 
 TString MakeSafeName(TString input){
@@ -238,5 +258,75 @@ TLatex *GetEstimators( TH1D* data, TH1D* MC){
 	return estimators;
 }
 
+
+void PrintMultiSimVariation(
+    const TH1D* hCV,
+    const std::vector<TH1D*>& variations,
+	TString label) {
+    if (!hCV || variations.empty()) {
+        std::cerr << "ERROR: Empty input histograms\n";
+        return;
+    }
+
+    const int Nbin = hCV->GetNbinsX();
+    const int Nuniv = variations.size();
+
+//    std::vector<double> mean(Nbin, 0.0);
+    std::vector<double> rms(Nbin, 0.0);
+    std::vector<double> rms_stat_removed(Nbin, 0.0);
+
+    // -----------------------------
+    // Mean across universes
+    // -----------------------------
+//    for (int b = 1; b <= Nbin; ++b) {
+//        double sum = 0.0;
+//        for (const auto& h : variations)
+//            sum += h->GetBinContent(b);
+//        mean[b-1] = sum / Nuniv;
+//    }
+
+    // -----------------------------
+    // RMS (multisim variance)
+    // -----------------------------
+    for (int b = 1; b <= Nbin; ++b) {
+        double var = 0.0;
+        for (const auto& h : variations) {
+            double diff = h->GetBinContent(b) - hCV->GetBinContent(b);
+            var += diff * diff;
+        }
+        rms[b-1] = std::sqrt(var / Nuniv);  // RMS
+    }
+
+    // -----------------------------
+    // Remove statistical error
+    // -----------------------------
+    for (int b = 1; b <= Nbin; ++b) {
+        double stat = hCV->GetBinError(b);
+        double sys2 = rms[b-1]*rms[b-1] - stat*stat;
+        rms_stat_removed[b-1] = (sys2 > 0) ? std::sqrt(sys2) : 0.0;
+    }
+
+    // -----------------------------
+    // Printing
+    // -----------------------------
+    auto print_row = [&](const std::string& label,
+                         const std::vector<double>& vals) {
+        std::cout << label;
+        for (double v : vals)
+            std::cout << ", " << v;
+        std::cout << "\n";
+    };
+
+    // CV row
+    std::vector<double> cv(Nbin);
+    for (int b = 1; b <= Nbin; ++b)
+        cv[b-1] = hCV->GetBinContent(b);
+
+	std::cout<<"Print variations for "<<label<<std::endl;
+    print_row("CV", cv);
+//    print_row("Mean", mean);
+    print_row("RMS (sys+stat)", rms);
+    print_row("RMS (stat removed)", rms_stat_removed);
+}
 
 #endif

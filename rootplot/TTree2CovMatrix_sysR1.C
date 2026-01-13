@@ -1,11 +1,13 @@
 #include "utility/PlotHelper.h"
-#include "LoadSamples_sysR1.h"
-#include "LoadStyles.h"
-#include "VarsList_BDT.C"
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
+#include "LoadSamples_sysR1.h"
+#include "LoadStyles.h"
+#include "VarsList_BDT.C"
+
 
 void TTree2CovMatrix_sysR1(){
 	//Configure class Samples: name, input file, tree name, cut
@@ -13,7 +15,7 @@ void TTree2CovMatrix_sysR1(){
 
 	std::vector< TString > tag={"ma084"};
 	//	std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
-	std::stringstream text_buffer;
+//	std::stringstream text_buffer;
 	
 	Samples sampleCV						= LoadR1_DetVarCV						(tag[0]);
 	Samples sampleLYDown					= LoadR1_DetVarLYDown					(tag[0]);
@@ -29,7 +31,8 @@ void TTree2CovMatrix_sysR1(){
 
 
 	// PREPARE SAMPLES -----------------------------------------------------------------
-	double PlotPOT = 2E21;
+	double PlotPOT = 2.37E20;//R1
+//	double PlotPOT = 2E21;
 
 	// PRECUT --------------------------------------------------------------------------------
 	TString Label = "R1sys_testing";
@@ -48,8 +51,8 @@ void TTree2CovMatrix_sysR1(){
 	// 3. 2D histogram: Covariance matrix and correlation matrix
 
 	//--> Draw Stacked Histograms
-	std::vector< TString > sample_labels = {};
 	for(Vars & temp_var : allVar){
+		std::vector< TString > sample_labels = {};
 		TLegend *leg = LoadSideLegend(); //Add legends
 		TString leg_title ;
 
@@ -105,9 +108,9 @@ void TTree2CovMatrix_sysR1(){
 
 	}//Next variable
 
-	std::ofstream outFile("output.txt");
-	std::string output_text = text_buffer.str();
-	outFile<<output_text;
-	outFile.close();
+//	std::ofstream outFile("output_sysR1.txt");
+//	std::string output_text = text_buffer.str();
+//	outFile<<output_text;
+//	outFile.close();
 
 }

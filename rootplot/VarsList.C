@@ -1,4 +1,4 @@
-#ifdef VARLIST_H
+#ifndef VARLIST_H
 #define VARLIST_H
 
 #include "utility/PlotHelper.h"
@@ -31,6 +31,7 @@ std::vector< Vars> SetMultipleVars(){
 	Vars varMassCl("Corrected Reco Invariant Mass (Large) [GeV]", "1.21*sqrt(2.0*reco_shower_energy_max[i_shr[0]]*reco_shower_energy_max[(i_shr[1])]*(1.0-(reco_shower_dirx[0]*reco_shower_dirx[1] + reco_shower_diry[0]*reco_shower_diry[1] + reco_shower_dirz[0]*reco_shower_dirz[1])))/1000", {50,0,1.5});
 	Vars varMassL("Reco Invariant Mass [GeV] LOGY", "sqrt(2.0*reco_shower_energy_max[i_shr[0]]*reco_shower_energy_max[(i_shr[1])]*(1.0-(reco_shower_dirx[0]*reco_shower_dirx[1] + reco_shower_diry[0]*reco_shower_diry[1] + reco_shower_dirz[0]*reco_shower_dirz[1])))/1000", {20,0,0.6},true);
 	
+	Vars varEmRatio("Reconstructed Energy over Reco. Inv. Mass", "(reco_shower_energy_max[i_shr[0]]/1000+reco_shower_energy_max[i_shr[1]]/1000)/(abs(reco_shower_energy_max[i_shr[0]]-reco_shower_energy_max[i_shr[1]])/(reco_shower_energy_max[i_shr[0]]+reco_shower_energy_max[i_shr[1]]))", {40,0,10} );
 
 	//Pion Special (two showers)
 	Vars varCosOpnAngONE("Cosine of Reco Diphoton Opening Angle", "reco_shower_dirx[0]*reco_shower_dirx[1]+reco_shower_diry[0]*reco_shower_diry[1]+reco_shower_dirz[0]*reco_shower_dirz[1]", {1,-1,1});
@@ -82,14 +83,6 @@ std::vector< Vars> SetMultipleVars(){
 	Vars var_clusterdist("Cluster Distance to reco. vertex [cm]","sss_candidate_min_dist",{15,0,250});
 	Vars var_clusterenergy("Proton Candidate CLuster Energy [MeV]","sss_candidate_energy",{20,0,20});
 	
-	//BDT variable
-	Vars var_R1bdtPion("Pion Focused BDT","NuMIFHCRuns_ma003PionClassifier_mva",		{20,0,1});
-	Vars var_R1bdtNueCC("NueCC Focused BDT","NuMIFHCRuns_ma003NueCCClassifier_mva",		{5,0,1});
-	Vars var_R1bdtCosmic("Cosmic Focused BDT","NuMIFHCRuns_ma003CosmicClassifier_mva",	{10,0,1});
-	Vars var_R1bdtPionL("Pion Focused BDT     LOGY","NuMIFHCRuns_ma003PionClassifier_mva",		{20,0,1}    , true);
-	Vars var_R1bdtNueCCL("NueCC Focused BDT   LOGY","NuMIFHCRuns_ma003NueCCClassifier_mva",		{5,0,1}, true);
-	Vars var_R1bdtCosmicL("Cosmic Focused BDT LOGY","NuMIFHCRuns_ma003CosmicClassifier_mva",	{10,0,1}, true);
-
 
 	//Vars var_bdtPion("Pion Focused BDT","NuMIFHCRunsAxionV3ma003PionClassifier_mva",		{10,0,1});
 	//Vars var_bdtNueCC("NueCC Focused BDT","NuMIFHCRunsAxionV3ma003NueCCClassifier_mva",		{10,0,1});
@@ -109,15 +102,28 @@ std::vector< Vars> SetMultipleVars(){
 	Vars var_runNum4("Run4 Run Number","run_number",{20,19660,23260});
 	Vars var_runNum5("Run5 Run Number","run_number",{20,24376,25760});
 
-//	std::vector< Vars> allVars = {varCosOpnAngONE};
-//	std::vector< Vars> allVars = {var_bdtPion};
-	std::vector< Vars> allVars = {varMassC, varMassCl};
+//	std::vector< Vars> allVars = {varEmRatio};
+//	std::vector< Vars> allVars = {varMassC, varMassCl};
 //	std::vector< Vars> allVars = {varShrKalmandEdx21, varShrKalmandEdx22, varAI, varNME, varNMP,  varNMBeta, varNMBetaL, varMass,  varMassC, varMassCl, varCosOpnAng, varShrCosBeta1,  varShrBeta1, varShrTheta1, varShrCosBeta2, varShrE1, varShrE1l,  varShrE2, var_photonl1, var_photonl1l, var_photonl2, var_photonl2l, var_yness1, var_yness2, varX,varY, varZ};
 //	std::vector< Vars> allVars = {var_bdtPion, var_bdtNueCC, var_bdtCosmic,var_bdtPionL, var_bdtNueCCL, var_bdtCosmicL};
 //	std::vector< Vars> allVars = {var_R1bdtPion, var_R1bdtNueCC, var_R1bdtCosmic, var_R1bdtPionL, var_R1bdtNueCCL, var_R1bdtCosmicL};
 //  std::vector< Vars> allVars = {var_R1bdtNueCC, var_R1bdtNueCCL};
 //	std::vector< Vars> allVars = {var_R1bdtCosmic, var_R1bdtCosmicL};
 //std::vector< Vars> allVars = {var_runNum1, var_runNum2,var_runNum3,var_runNum4,var_runNum5};
+
+
+
+//BDT Stuffs Below
+	double bins = 10;
+	Vars var_bdtPion("ma084 - Pion Classifier", "ma084PionClassifier",		{bins,0,1});
+	Vars var_bdtPionL("ma084 - Pion Classifier (Log y)","ma084PionClassifier",		{bins,0,1}, true);
+
+	Vars var_bdtPionA ("ma084 - Pion Accurate Classifier","ma084PionAccurateClassifier",		{bins,0,1});
+	Vars var_bdtPionAL("ma084 - Pion Accurate Classifier (Log y)","ma084PionAccurateClassifier",		{bins,0,1}, true);
+
+
+	std::vector< Vars> allVars = {var_bdtPionAL, var_bdtPionL};
+//	std::vector< Vars> allVars = {var_bdtPion, var_bdtPionL, var_bdtPionA, var_bdtPionAL};
 
 
 	return allVars;

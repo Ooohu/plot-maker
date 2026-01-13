@@ -1,9 +1,7 @@
 #include "./utility/ConfigureSamples.h"
 
-TString COMMONCUT="subrun_number%3==0";//Take 1/3 of files for plotting, 2/3 for training
-//TString FDir="/pnfs/uboone/persistent/users/klin/MCC9/ntuples/systemaics/";
 
-TString TrainDir="/exp/uboone/app/users/klin/2024Jun_ub_AxionAnalysis/BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRuns_cleanPi0Train/";
+static const TString TrainDir="/exp/uboone/app/users/klin/2024Jun_ub_AxionAnalysis/BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRuns_cleanPi0Train/";
 
 
 Samples LoadAxions084( TString mTag ){

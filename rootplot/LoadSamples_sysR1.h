@@ -1,10 +1,31 @@
 #include "./utility/ConfigureSamples.h"
 
+//static gives internal linkage
+static const TString COMMONCUT="subrun_number%3==0";//Take 1/3 of files for plotting, 2/3 for training
+static const TString FDir="/pnfs/uboone/persistent/users/klin/MCC9/ntuples/systemaics/";
+static const TString TrainDir="/exp/uboone/app/users/klin/2024Jun_ub_AxionAnalysis/BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIRuns_Sys/";
 
-TString COMMONCUT="subrun_number%3==0";//Take 1/3 of files for plotting, 2/3 for training
-TString FDir="/pnfs/uboone/persistent/users/klin/MCC9/ntuples/systemaics/";
 
-TString TrainDir="/exp/uboone/app/users/klin/2024Jun_ub_AxionAnalysis/BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIRuns_Sys/";
+Samples LoadR1CV( TString mTag ){
+	Samples tmpSample("R1CVFHC",FDir+"klin_NuMI_sys_R1_CVFHC.root","singlephotonana/vertex_tree",COMMONCUT);
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier", "R1CVFHC");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "R1CVFHC");
+	tmpSample.AddFriend(FDir+"klin_NuMI_sys_R1_CVFHC.root", "singlephotonana/eventweight_tree");//gonna need additional weights	
+
+	tmpSample.SetScale(3);
+	tmpSample.SetPOT(2.31865e+21);
+//	tmpSample.SetWeight("genie_CV_tune_weight*genie_spline_weight"); // vulnerable to inf weight of spline_tune_good
+	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); // vulnerable to inf/nan weight
+//	tmpSample.SetWeight("weightSplineTimesTune"); // vulnerable to inf weight of spline_tune_good
+
+	return tmpSample;
+};
+
+
+
 
 Samples LoadR1_DetVarCV( TString mTag ){
 	Samples tmpSample("R1_CV",FDir+"klin_NuMI_sys_R1_DetVarCV.root","singlephotonana/vertex_tree",COMMONCUT);
@@ -150,5 +171,4 @@ Samples LoadR1_DetVarWireModYZ( TString mTag ){
 	
 	return tmpSample;
 };
-
 

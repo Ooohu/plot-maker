@@ -46,21 +46,45 @@ TH1D* drawTH1D(Samples &sample, Vars &var)
 	TTree* ttree = sample.GetSampleTree();
 	TString cuts = "("+sample.GetDefinition()+")*("+sample.GetWeight()+")";
 
-	int linecolor = sample.GetCol();
-	int fillstyle = sample.GetFillStyle();
 	//default is (nbins, bmin, bmax);
 	TH1D* h = new TH1D(RandomName(), "", binnings[0], binnings[1], binnings[2]);
 	ttree->Draw(variable+">>"+h->GetName(), cuts);
-	//std::cout<<"Drawing :"<<variable<<" cuts:"<<cuts<<std::endl;
-	//std::cout<<"TH1 has events: "<<h->Integral()<<std::endl;
+//	std::cout<<"Drawing :"<<variable<<" cuts:"<<cuts<<std::endl;
+//	std::cout<<"TH1 has events: "<<h->Integral()<<std::endl;
 
 //	if(linecolor == 0 || fillstyle == 0) std::cout<<"Warning: "<<sample.GetSampleName()<<" histogram color/style is not set."<<std::endl;
 	h->SetLineColor(kBlack);
-	h->SetFillColor(linecolor);
-	h->SetFillStyle(fillstyle);
+	h->SetFillColor(sample.GetCol());
+	h->SetFillStyle(sample.GetFillStyle());
 	h->Scale(sample.GetScale());
 	return h;
 }
+
+//Draw a TH1D
+TH1D* drawTH1D_w_Weight(Samples &sample, Vars &var, TString &wgt, int col )
+{
+	//spell out contents that we need from two classes
+	TString variable = var.GetVarName();
+	std::vector<double> binnings = var.GetBinning();
+
+	TTree* ttree = sample.GetSampleTree();
+	TString cuts = "("+sample.GetDefinition()+")*("+wgt+")";//We assign the weight;
+
+	//default is (nbins, bmin, bmax);
+	TH1D* h = new TH1D(RandomName(), "", binnings[0], binnings[1], binnings[2]);
+	ttree->Draw(variable+">>"+h->GetName(), cuts);
+//	std::cout<<"Drawing :"<<variable<<" cuts:"<<cuts<<std::endl;
+//	std::cout<<"TH1 has events: "<<h->Integral()<<std::endl;
+
+//	if(linecolor == 0 || fillstyle == 0) std::cout<<"Warning: "<<sample.GetSampleName()<<" histogram color/style is not set."<<std::endl;
+	h->SetLineColor(col);
+//	h->SetFillColor(linecolor);
+	h->SetFillStyle(0);
+	h->Scale(sample.GetScale());
+	return h;
+}
+
+
 
 //Draw covariance matrix
 //Each block has nbins x nbins grids
@@ -316,14 +340,20 @@ void draw_variations(TH1D* CV, const std::vector<TH1D*>& variations,
     for (size_t i = 0; i < variations.size(); ++i) {
         if (!variations[i]) continue;
 
-        variations[i]->SetLineColor(sampleColor(colorIndex++));
+		
         variations[i]->SetLineWidth(2);
         variations[i]->SetLineStyle(1);
-        variations[i]->Draw("HISTSAME E");
+		if(variations.size()==  static_cast<size_t> (leg->GetNRows()) + 1){//Only change color when legend is for each variations.
+			variations[i]->SetLineColor(sampleColor(colorIndex++));
+			variations[i]->Draw("HISTSAME E");
+		}
+			variations[i]->Draw("HISTSAME");
+
 
 		if(variations[i]->GetMaximum() > max) max = variations[i]->GetMaximum();
     }
 
+    CV->Draw("HISTSAME");//Draw again and put it on top.
 	CV->SetMaximum(max*1.2);
 
     //--- Draw legend on right pad
@@ -489,11 +519,14 @@ void	draw_CovMatrix(const TH1D* CV,
 
 		TCanvas* c1 = new TCanvas("c1", title, 1400, 900);
 		hCov->SetStats(0);
-//		hCov->Draw("COLZ TEXT");
+
 		gStyle->SetPaintTextFormat("1.1e");//scientific format 1.23e+03
+		hCov->SetMarkerSize(0.6);  // fraction of pad height
+		hCov->GetXaxis()->SetTickLength(0);  // removes tick marks
+		hCov->GetYaxis()->SetTickLength(0);  // removes tick marks
 		hCov->Draw("COLZ TEXT");
 
-		//High light the diagonal & Extract the values for calculating total uncertaities
+		//Draw red box to highlight the diagonal & Extract the values for calculating total uncertaities
 		std::vector< double > VarOfBins(NbinEachCat, 0);
 		for (int i = 1; i <= Nbins; ++i) {
 			//high light them with red boxes
@@ -507,16 +540,36 @@ void	draw_CovMatrix(const TH1D* CV,
 			b->SetLineWidth(2);
 			b->Draw("same");
 
+			if(( i) % NbinEachCat == 0){
+				// vertical line
+				TLine* vline = new TLine(i+0.5, 0+0.5, i+0.5,Nbins+0.5);
+				vline->SetLineColor(kBlack);
+				vline->SetLineWidth(1);
+				vline->Draw("same");
+
+				// horizontal line
+				TLine* hline = new TLine(0+0.5, i+0.5, Nbins+0.5, i+0.5);
+				hline->SetLineColor(kBlack);
+				hline->SetLineWidth(1);
+				hline->Draw("same");
+
+
+			}
 
 			//calculate uncertainties
 			VarOfBins[( i -1) % NbinEachCat] +=hCov->GetBinContent( i, i);
 //			std::cout<<"CHECK "<<hCov->GetBinContent( i, i)<<" goes to bin "<<( i -1) % NbinEachCat<<std::endl;
 		}
-		std::cout<<"Total uncertainties: ";
+
+		std::cout<<"\nTotal uncertainties (not yet exclude stat. unc.): ";
 		for (double val : VarOfBins) {
 			std::cout << std::sqrt(val) << ", ";
 		}
-		std::cout<<std::endl;
+		std::cout<<"\nTotal uncertainties (exclude stat. unc.): ";
+		for (size_t i = 0; i < VarOfBins.size(); ++i) {
+			std::cout << std::sqrt(VarOfBins[i] - CV->GetBinContent(i+1)) << ", ";
+		}
+		std::cout<<"\n"<<std::endl;
 
 
 
