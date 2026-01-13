@@ -6,24 +6,13 @@
 #include <cmath>
 #include "TRandom3.h"
 
-//// generate random names for histograms
-//TString RandomName(){
-//	TString name = "hist";
-//	for(int i=0;i<10;i++){
-//		name += (char)(rand()%26+97);
-//	}
-//	return name;
-//}
+#include <map>
+#include <vector>
+#include <string>
 
-TString RandomName() {
-	static TRandom3 rng(0); // seed=0 -> random seed based on time
-	TString name = "hist";
-	for (int i = 0; i < 10; i++) {
-		char c = 'a' + rng.Integer(26);  // random letter a-z
-		name += c;
-	}
-	return name;
-}
+#include <fstream>
+#include <string>
+
 
 // Define your color palette once
 Color_t sampleColors[] = {
@@ -52,6 +41,20 @@ TTree* GetTree(TString filename, TString treename)
   TTree* tree = (TTree*)file->Get(treename);
   return tree;
 }
+
+
+// Text Modifier
+TString RandomName() {
+	static TRandom3 rng(0); // seed=0 -> random seed based on time
+	TString name = "hist";
+	for (int i = 0; i < 10; i++) {
+		char c = 'a' + rng.Integer(26);  // random letter a-z
+		name += c;
+	}
+	return name;
+}
+
+
 
 TString MakeSafeWgtName(const TString& weightBranch){
     // Returns a TString that replaces any NaN/Inf or negative weight with 0
@@ -84,7 +87,146 @@ TString MakeSafeName(TString input){
 	return safe_name.c_str();
 };
 
+//JSON producer, produced via WriteJSON( "JSON_output/test.json", store); 
+struct CVErr {
+    std::vector<double> cv;
+    std::vector<double> err;
+};
+
+using JSONStore =
+    std::map<std::string,                  // tag
+      std::map<std::string,                // variable
+        std::map<std::string, CVErr>>>;    // event
+
+void WriteJSON(const std::string& filename, const JSONStore& store) {
+    std::ofstream out(filename);
+    out << "{\n";
+
+    for (auto t = store.begin(); t != store.end(); ++t) {
+        out << "  \"" << t->first << "\": {\n";
+
+        for (auto v = t->second.begin(); v != t->second.end(); ++v) {
+            out << "    \"" << v->first << "\": {\n";
+
+            for (auto e = v->second.begin(); e != v->second.end(); ++e) {
+                out << "      \"" << e->first << "\": {\n";
+
+                out << "        \"cv\": [";
+                for (size_t i = 0; i < e->second.cv.size(); ++i) {
+                    out << e->second.cv[i];
+                    if (i + 1 < e->second.cv.size()) out << ", ";
+                }
+                out << "],\n";
+
+                out << "        \"err\": [";
+                for (size_t i = 0; i < e->second.err.size(); ++i) {
+                    out << e->second.err[i];
+                    if (i + 1 < e->second.err.size()) out << ", ";
+                }
+                out << "]\n";
+
+                out << "      }";
+                if (std::next(e) != v->second.end()) out << ",";
+                out << "\n";
+            }
+
+            out << "    }";
+            if (std::next(v) != t->second.end()) out << ",";
+            out << "\n";
+        }
+
+        out << "  }";
+        if (std::next(t) != store.end()) out << ",";
+        out << "\n";
+    }
+
+    out << "}\n";
+}
+
+//void write_array(std::ostream& out, const std::vector<double>& v) {
+//    out << "[";
+//    for (size_t i = 0; i < v.size(); ++i) {
+//        out << v[i];
+//        if (i + 1 < v.size()) out << ", ";
+//    }
+//    out << "]";
+//}
+//
+//void AppendCVErrToJSON(const TString& filename,
+//                       const TString& tag,
+//                       const TString& variable,
+//                       const TString& event,
+//                       const std::vector<double>& cv,
+//                       const std::vector<double>& err)
+//{
+//    if (cv.size() != err.size()) {
+//        std::cerr << "ERROR: CV and err size mismatch\n";
+//        return;
+//    }
+//
+//    // Read existing file if it exists
+//    std::ifstream in(filename);
+//    std::stringstream buffer;
+//    bool file_exists = in.good();
+//
+//    if (file_exists) {
+//        buffer << in.rdbuf();
+//    }
+//    in.close();
+//
+//    std::ofstream out(filename);
+//
+//    // Case 1: new file
+//    if (!file_exists || buffer.str().empty()) {
+//        out << "{\n";
+//        out << "  \"" << tag << "\": {\n";
+//    } else {
+//        // Remove final "\n}\n"
+//        std::string content = buffer.str();
+//        content.erase(content.find_last_of('}'));
+//        content.erase(content.find_last_of('}'));
+//        out << content << ",\n";
+//        out << "  \"" << tag << "\": {\n";
+//    }
+//
+//    // Variable block
+//    out << "    \"" << variable << "\": {\n";
+//    out << "      \"" << event << "\": {\n";
+//
+//    out << "        \"cv\": ";
+//    write_array(out, cv);
+//    out << ",\n";
+//
+//    out << "        \"err\": ";
+//    write_array(out, err);
+//    out << "\n";
+//
+//    out << "      }\n";
+//    out << "    }\n";
+//    out << "  }\n";
+//    out << "}\n";
+//
+//    out.close();
+//}
+
+
+
 //Histogram Helper
+//Print histogram contents as a vector of doble
+std::vector<double> HistToCV(const TH1D* h) {
+    std::vector<double> v;
+    for (int i = 1; i <= h->GetNbinsX(); ++i)
+        v.push_back(h->GetBinContent(i));
+    return v;
+}
+
+std::vector<double> HistToErr(const TH1D* h) {
+    std::vector<double> v;
+    for (int i = 1; i <= h->GetNbinsX(); ++i)
+        v.push_back(h->GetBinError(i));
+    return v;
+}
+
 
 std::string PrintHist(TH1D* tmp_hist){
 //		std::cout<<" sum: "<<tmp_hist->Integral()<<std::endl;

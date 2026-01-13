@@ -288,8 +288,12 @@ void ExportPNG_StackDataTwoSignal_wLabel(
 	TLatex* estimators = GetEstimators( hist2, errorHist);
 	estimators->Draw();
 
-	c->SaveAs("./output/"+name+".pdf");
-	c->SaveAs("./output/"+name+".png");
+	if(errorHist->Integral() >0){
+		c->SaveAs("./output/"+name+".pdf");
+		c->SaveAs("./output/"+name+".png");
+	} else{
+		std::cout<<" No valid events, skip drawing"<<std::endl;
+	}
 	delete c;
 }
 

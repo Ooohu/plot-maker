@@ -17,12 +17,13 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 
 	std::vector< TString > tag={"ma084"};
 	//	std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
-	std::stringstream text_buffer;
 
 	bool show_training = false;
 
 	// PREPARE SAMPLES -----------------------------------------------------------------
 	TString axiontag = tag[0];//"ma003";
+	TString JSONfileName="JSON_output/"+axiontag+".json";
+	TString Label = "AxionRun1Only"+axiontag+"_2s0t_twoMassPoints";
 
 //	Samples axion003		= LoadAxions003	(axiontag);
 	Samples axion0146		= LoadAxions0146	(axiontag);
@@ -50,12 +51,8 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 	double PlotPOT = data.GetPOT();
 
 	// PRECUT --------------------------------------------------------------------------------
-//	TString Label = "AxionRun1AllMCFHC"+axiontag+"_2s0t_twoMassPoints";
-	TString Label = "AxionRun1Only"+axiontag+"_2s0t_twoMassPoints";
 	TString Precut = "(reco_asso_tracks == 0 && reco_asso_showers == 2)";
 	Precut +="&&( reco_vertex_dist_to_SCB > 2)";
-//	Precut +="&&ma084PionClassifier > 0.6";
-//	Precut +="&&ma084PionAccurateClassifier > 0.6";
 
 	bool ScanCut = false;
 
@@ -63,15 +60,15 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 	std::vector< Vars> allVar = SetMultipleVars();
 
 	if(ScanCut){//Scan variables for optimized cuts
-//					BDTCutScan( axion003, {Onepi0, NueCC, NumuCC, InCryoOther, dirt, ext}, allVar);
-//					BDTCutScanTwoDirections( Onepi0, {NueCC, NumuCC, InCryoOther, dirt, ext}, allVar);
-					BDTCutScanTwoDirections( NueCC, {Onepi0, NumuCC, InCryoOther, dirt, ext}, allVar);
+		BDTCutScanTwoDirections( NueCC, {Onepi0, NumuCC, InCryoOther, dirt, ext}, allVar);
 		return;
 	}
 
 
 	// Start making histograms --------------------------------------------------------------------
 	//--> Draw Stacked Histograms
+	JSONStore store;
+
 	for(Vars & temp_var : allVar){
 		TLegend *leg = LoadLegend(); //Add legends
 		TString leg_title ;
@@ -100,9 +97,9 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 		haxion0146->SetLineColor(axion0146.GetCol());
 		leg_title = axion0146.GetSampleName() + Form(" %.1lf",haxion0146->Integral());
 		leg->AddEntry( haxion0146, leg_title, "fl");
-		text_buffer<<"\nSummary: "<< leg_title<<"\n"<<PrintHist(haxion0146);
-	
 
+		store[Label.Data()][temp_var.GetAxisLabel().Data()][axion0146.GetSampleName().Data()] = 
+		{HistToCV(  haxion0146), HistToErr( haxion0146)};
 
 		axion084.AddDefinition(Precut);
 		TH1D* haxion084 = drawTH1D(axion084, temp_var);
@@ -111,17 +108,21 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 		haxion084->SetLineColor(axion084.GetCol());
 		leg_title = axion084.GetSampleName() + Form(" %.1lf",haxion084->Integral());
 		leg->AddEntry( haxion084, leg_title, "fl");
-		text_buffer<<"\nSummary: "<< leg_title<<"\n"<<PrintHist(haxion084);
 
 
+		store[Label.Data()][temp_var.GetAxisLabel().Data()][axion084.GetSampleName().Data()] = 
+		{HistToCV(  haxion084), HistToErr( haxion084)};
 
 		//Now backgrounds are stacked
 		THStack *hs = new THStack(RandomName(), "");// Create Stack
-		TH1D* errorHist = 0;// Create a empty hist for storing all bkgs
+		TH1D* errorHist = nullptr;// Create a empty hist for storing all bkgs
+		TH1D* MCOnly = nullptr;
 //		std::vector<Samples> vecSamples = {  ext, Onepi0, NueCC, NumuCC, InCryoOther, dirt};
 		std::vector<Samples> vecSamples = { Onepi0, NueCC, NumuCC, InCryoOther, dirt, ext};
-		//	std::vector<Samples> vecSamples = {axion};
-		for(auto &sample : vecSamples){
+
+		for (size_t i = 0; i < vecSamples.size(); ++i) {
+
+			auto& sample = vecSamples[i];
 			sample.AddDefinition(Precut);
 
 			TH1D* hist = drawTH1D(sample, temp_var);
@@ -130,15 +131,25 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 
 			leg_title = sample.GetSampleName() + Form(" %.1lf",hist->Integral());
 			leg->AddEntry(hist, leg_title ,"fl");
+
 			std::cout<<"\nSummary: "<< leg_title<<std::endl;
 			std::cout<<PrintHist(hist);
 
 			hs->Add(hist);
 
-			if(errorHist){
+			// BEFORE last sample: snapshot MC-only
+			if (i + 1 == vecSamples.size() && !MCOnly) {
+				MCOnly = (TH1D*)errorHist->Clone("MCOnly");
+				MCOnly->SetDirectory(nullptr);
+				std::cout << "MCOnly snapshot created\n";
+				PrintHist(MCOnly);
+			}
+			// Build summed histogram
+			if (errorHist) {
 				errorHist->Add(hist);
-			} else{
-				errorHist = (TH1D*) hist->Clone();
+			} else {
+				errorHist = (TH1D*)hist->Clone("errorHist");
+				errorHist->SetDirectory(nullptr);
 			}
 		}
 
@@ -152,7 +163,10 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 		leg_title = data.GetSampleName() + Form(" %.0lf",hdata->Integral());
 		leg->AddEntry( hdata, leg_title, "fl");
 
-		text_buffer<<"\nSummary: "<< leg_title<<"\n"<< PrintHist(hdata);
+		// Data sample
+		store[Label.Data()][temp_var.GetAxisLabel().Data()][data.GetSampleName().Data()] =
+		{ HistToCV(hdata), HistToErr(hdata) };
+
 
 		std::cout<< leg_title<< "\n"<<PrintHist(hdata)<<std::endl;
 
@@ -160,10 +174,21 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 		//errorHist style
 		SetErrorStyle(errorHist);
 
-//		TString mc_leg_title = Form("Stat. Error | Total Pred.: %.1lf",errorHist->Integral());
 		TString mc_leg_title = Form("Stat. Error | Bkg Sum: %.1lf",errorHist->Integral());
 		leg->AddEntry(errorHist, mc_leg_title, "fl");
-		text_buffer<<"\nSummary total MC:"<<"\n"<< PrintHist(errorHist);
+
+		//Print MCOnly & MC+ext as background 
+
+		// MC only
+		store[Label.Data()][temp_var.GetAxisLabel().Data()]["MCOnly"] =
+		{ HistToCV(MCOnly), HistToErr(MCOnly) };
+
+		// Total backgrounds
+		store[Label.Data()][temp_var.GetAxisLabel().Data()]["Total Backgrounds"] =
+		{ HistToCV(errorHist), HistToErr(errorHist) };
+
+
+		WriteJSON( JSONfileName.Data(), store);
 
 		if(show_training){
 			ExportPNG_StackDataTwoSignal_wLabel({haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
@@ -173,9 +198,9 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 
 	}//Next variable
 
-	std::ofstream outFile("output.txt");
-	std::string output_text = text_buffer.str();
-	outFile<<output_text;
-	outFile.close();
+//	std::ofstream outFile("output.txt");
+//	std::string output_text = text_buffer.str();
+//	outFile<<output_text;
+//	outFile.close();
 
 }

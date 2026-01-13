@@ -3,7 +3,8 @@
 //static gives internal linkage
 static const TString COMMONCUT="subrun_number%3==0";//Take 1/3 of files for plotting, 2/3 for training
 static const TString FDir="/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/";
-static const TString TrainDir="/exp/uboone/app/users/klin/2024Jun_ub_AxionAnalysis/BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIRuns_Sys/";
+static const TString TrainDir="/exp/uboone/app/users/klin/2024Jun_ub_AxionAnalysis/BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRuns_2s0t_Jan2026/";
+//static const TString TrainDir="/exp/uboone/app/users/klin/2024Jun_ub_AxionAnalysis/BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIRuns_Sys/";
 
 Samples LoadRun1All( TString mTag ){
 	Samples tmpSample("AllMC", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree",COMMONCUT);
@@ -15,7 +16,7 @@ Samples LoadRun1All( TString mTag ){
 	tmpSample.SetScale(2.9431896);
 
 	//Add Friends
-	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"NuFHCR1");
+//	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"NuFHCR1");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuFHCR1");
 
 	return tmpSample;
@@ -35,7 +36,7 @@ Samples LoadRun1Onepi0( TString mTag ){
 	tmpSample.SetScale(2.9431896);
 
 	//Add Friends
-	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"NuFHCR1");
+//	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"NuFHCR1");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuFHCR1");
 
 
@@ -54,7 +55,7 @@ Samples LoadRun1NueCC( TString mTag ){
 
 	
 	//Add Friends
-	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"NuFHCR1");
+//	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"NuFHCR1");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuFHCR1");
 
 
@@ -71,7 +72,7 @@ Samples LoadRun1NumuCC( TString mTag ){
 	tmpSample.SetScale(2.9431896);
 	
 	//Add Friends
-	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"NuFHCR1");
+//	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"NuFHCR1");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuFHCR1");
 
 
@@ -91,7 +92,7 @@ Samples LoadRun1OtherCC( TString mTag ){//empty
 	tmpSample.SetScale(2.9431896);
 	
 	//Add Friends
-	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"NuFHCR1");
+//	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"NuFHCR1");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuFHCR1");
 
 
@@ -108,7 +109,7 @@ Samples LoadRun1InCryoOther( TString mTag ){
 	tmpSample.SetScale(2.9431896);
 
 	//Add Friends
-	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"NuFHCR1");
+//	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"NuFHCR1");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuFHCR1");
 
 
@@ -126,7 +127,7 @@ Samples LoadRun1Dirt( TString mTag ){
 	tmpSample.SetScale(0.72);
 	
 	//Add Friends
-	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"DirtFHCR1");
+//	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"DirtFHCR1");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"DirtFHCR1");
 
 
@@ -142,7 +143,7 @@ Samples LoadRun1FHCData( TString mTag ){
 	data.SetPOT(2.37e20);
 
 	//Add Friends
-	data.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"NuMIDataR1");
+//	data.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"NuMIDataR1");
 	data.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuMIDataR1");
 
 	return data;
@@ -157,7 +158,7 @@ Samples LoadRun1EXT( TString mTag ){
 	ext.SetScale(0.98*2.8049536);
 
 	//Add Friends
-	ext.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"NuMIExtR1");
+//	ext.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"NuMIExtR1");
 	ext.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuMIExtR1");
 
 
