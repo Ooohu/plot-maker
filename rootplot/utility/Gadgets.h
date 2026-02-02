@@ -471,4 +471,37 @@ void PrintMultiSimVariation(
     print_row("RMS (stat removed)", rms_stat_removed);
 }
 
+//Modify histogram and add systematic errors as uncorrelated errors
+void AddFractionalSystematics(TH1D* errorHist,
+                              const std::vector<double>& frac_err)
+{
+    if (!errorHist) return;
+
+    int nBins = errorHist->GetNbinsX();
+
+    if ((int)frac_err.size() != nBins) {
+        std::cerr << "Size mismatch: frac_err has "
+                  << frac_err.size()
+                  << " elements, histogram has "
+                  << nBins << " bins\n";
+        return;
+    }
+
+    for (int i = 1; i <= nBins; ++i) {
+        double content = errorHist->GetBinContent(i);
+        double statErr = errorHist->GetBinError(i);
+
+        double systErr = frac_err[i-1] * content;
+
+        double totalErr = std::sqrt(statErr*statErr +
+                                    systErr*systErr);
+
+        errorHist->SetBinError(i, totalErr);
+    }
+}
+
+
+
+
+
 #endif

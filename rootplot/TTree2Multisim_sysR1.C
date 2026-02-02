@@ -4,7 +4,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "LoadSamples_sysR1.h"
+#include "LoadSamples_sys.h"
 #include "LoadStyles.h"
 #include "VarsList_BDT.C"
 
@@ -13,24 +13,22 @@ void TTree2Multisim_sysR1(){
     //Configure class Samples: name, input file, tree name, cut
     //DIR /pnfs/uboone/persistent/users/klin/MCC9/ntuples
 
-    std::vector< TString > tag={"ma084"};
+    std::vector< TString > tag={"ma0146"};
     //    std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
 //    std::stringstream text_buffer;
 
-    Samples sampleCV    = LoadR1CV    (tag[0]);
+    Samples sampleCV    = LoadR1_DetVarCV    (tag[0]);
 
 
 
     // PREPARE SAMPLES -----------------------------------------------------------------
-    double PlotPOT = 2.37E20;//R1
-//    double PlotPOT = 2E21;
+//    double PlotPOT = 2.37E20;//R1
+    double PlotPOT = 2E21;
 
     // PRECUT --------------------------------------------------------------------------------
     TString Label = "R1sys_Mult_testing";
     TString Precut = "(reco_asso_tracks == 0 && reco_asso_showers == 2)";
-//    Precut +="&&( NuMIFHCRuns_ma003PionClassifier_mva > 0.5)";
     Precut +="&&( reco_vertex_dist_to_SCB > 2)";
-//    Precut +="&&( (reco_shower_energy_max[0]+reco_shower_energy_max[1])/(sqrt(2.0*reco_shower_energy_max[i_shr[0]]*reco_shower_energy_max[(i_shr[1])]*(1.0-(reco_shower_dirx[0]*reco_shower_dirx[1] + reco_shower_diry[0]*reco_shower_diry[1] + reco_shower_dirz[0]*reco_shower_dirz[1]))))<6.8)";
 
     // Configure class Var: varaibles, axis name, binnings  ----------------------------------
     std::vector< Vars> allVar = SetMultipleVars();

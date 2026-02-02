@@ -28,8 +28,6 @@ void TTree2StackOverlays_run1FHC_axion3massPoints_loop(){
 
 	std::vector<Samples> axions = { axion011, axion0146r, axion03, axion04, axion052, axion068, axion084r };
 
-	bool show_training = false;
-
 	// PREPARE SAMPLES -----------------------------------------------------------------
 	for( size_t index  = 0; index < tag.size(); ++index){
 		TString axiontag = tag[index];//"ma003";
@@ -216,11 +214,7 @@ void TTree2StackOverlays_run1FHC_axion3massPoints_loop(){
 
 			WriteJSON( JSONfileName.Data(), store);
 
-			if(show_training){
-				ExportPNG_StackDataTwoSignal_wLabel({haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
-			}else{
-				ExportPNG_StackDataTwoSignal_wLabel({haxion0146, haxionSignal, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
-			}
+			ExportPNG_StackDataTwoSignal_wLabel({haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) + "_CutTag"+ Precut.CountChar('&') , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
 
 		}//Next variable
 	}

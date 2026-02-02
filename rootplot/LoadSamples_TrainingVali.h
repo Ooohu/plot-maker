@@ -1,7 +1,81 @@
 #include "./utility/ConfigureSamples.h"
 
+//static const TString TrainDir="/exp/uboone/app/users/klin/2024Jun_ub_AxionAnalysis/BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRuns_cleanPi0Train/";
+static const TString TrainDir="/exp/uboone/app/users/klin/2024Jun_ub_AxionAnalysis/BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRuns_MultiBDTs/";
 
-static const TString TrainDir="/exp/uboone/app/users/klin/2024Jun_ub_AxionAnalysis/BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRuns_cleanPi0Train/";
+
+Samples LoadAxions0146( TString mTag ){
+	Samples axion("0.146 GeV Axion (RND)","/pnfs/uboone/persistent/users/klin/MCC9/axions_localgpvm_storage/singlemasspoint/axions_numiRun1_mesonmixing_ma0146_v1_zlt40m.root","singlephotonana/vertex_tree","subrun_number%3==0");
+
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	axion.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier", "Axionma0146");
+	axion.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "Axionma0146");
+	axion.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "Axionma0146");
+
+	axion.SetScale(3/6.0);
+	axion.SetPlotStyle(kMagenta, 0);
+	axion.SetPOT(2e21);
+	
+	return axion;
+};
+
+
+Samples LoadAxions0146T( TString mTag ){
+	Samples axion("0.146 GeV Axion (Train)","/pnfs/uboone/persistent/users/klin/MCC9/axions_localgpvm_storage/singlemasspoint/axions_numiRun1_mesonmixing_ma0146_v1_zlt40m.root","singlephotonana/vertex_tree","subrun_number%3>0");
+
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	axion.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier", "Axionma0146");
+	axion.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "Axionma0146");
+	axion.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "Axionma0146");
+
+	axion.SetScale(3.0/2.0/6.0);
+	axion.SetPlotStyle(kOrange+10, 0);
+	axion.SetPOT(2e21);
+	
+	return axion;
+};
+
+
+Samples LoadAxions0146s( TString mTag ){
+	Samples axion("0.146 GeV Axion (RND) Selected","/pnfs/uboone/persistent/users/klin/MCC9/axions_localgpvm_storage/singlemasspoint/addedAxionVars/axions_numiRun1_mesonmixing_ma0146_v1_zlt40m_AddVars.root","vertex_tree","subrun_number%3==0&&sqrt(pow((reco_shower_dirz[i_shr[0]]-axion_true_leadingShr_dirz),2)+pow((reco_shower_energy_max[i_shr[0]]-axion_true_leadingShr_E)/(axion_true_leadingShr_E),2)+pow((reco_shower_dirz[i_shr[1]]-axion_true_subleadingShr_dirz),2)+pow((reco_shower_energy_max[i_shr[1]]-axion_true_subleadingShr_E)/(axion_true_subleadingShr_E),2)) < 0.8&&sim_shower_overlay_fraction[i_shr[0]] < 0.3&&sim_shower_overlay_fraction[i_shr[1]] < 0.3&&sim_shower_pdg[i_shr[0]] == 22&&sim_shower_pdg[i_shr[1]] == 22");
+
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	axion.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier", "Axionma0146");
+	axion.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "Axionma0146");
+	axion.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "Axionma0146");
+
+	axion.SetScale(3/6.0);
+	axion.SetPlotStyle(kMagenta, 0);
+	axion.SetPOT(2e21);
+	
+	return axion;
+};
+
+
+Samples LoadAxions0146sT( TString mTag ){
+	Samples axion("0.146 GeV Axion (Train) Selected","/pnfs/uboone/persistent/users/klin/MCC9/axions_localgpvm_storage/singlemasspoint/addedAxionVars/axions_numiRun1_mesonmixing_ma0146_v1_zlt40m_AddVars.root","vertex_tree","subrun_number%3>0&&sqrt(pow((reco_shower_dirz[i_shr[0]]-axion_true_leadingShr_dirz),2)+pow((reco_shower_energy_max[i_shr[0]]-axion_true_leadingShr_E)/(axion_true_leadingShr_E),2)+pow((reco_shower_dirz[i_shr[1]]-axion_true_subleadingShr_dirz),2)+pow((reco_shower_energy_max[i_shr[1]]-axion_true_subleadingShr_E)/(axion_true_subleadingShr_E),2)) < 0.8&&sim_shower_overlay_fraction[i_shr[0]] < 0.3&&sim_shower_overlay_fraction[i_shr[1]] < 0.3&&sim_shower_pdg[i_shr[0]] == 22&&sim_shower_pdg[i_shr[1]] == 22 ");
+
+
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	axion.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier", "Axionma0146");
+	axion.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "Axionma0146");
+	axion.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "Axionma0146");
+
+	axion.SetScale(3.0/2.0/6.0);
+	axion.SetPlotStyle(kOrange+10, 0);
+	axion.SetPOT(2e21);
+	
+	return axion;
+};
+
 
 
 Samples LoadAxions084( TString mTag ){
@@ -12,6 +86,7 @@ Samples LoadAxions084( TString mTag ){
 	//<directory>/<classifier>_<sample>_app.root
 	axion.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier", "AxionTestma084");
 	axion.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "AxionTestma084");
+	axion.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "Axionma0146");
 
 	axion.SetScale(3/6.0);
 	axion.SetPlotStyle(kMagenta, 0);
@@ -29,6 +104,7 @@ Samples LoadAxions084T( TString mTag ){
 	//<directory>/<classifier>_<sample>_app.root
 	axion.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier", "Axionma084");
 	axion.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "Axionma084");
+	axion.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "Axionma0146");
 
 	axion.SetScale(3.0/2.0/6.0);
 	axion.SetPlotStyle(kOrange+10, 0);
@@ -46,6 +122,7 @@ Samples LoadAxions084s( TString mTag ){
 	//<directory>/<classifier>_<sample>_app.root
 	axion.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier", "AxionTestma084");
 	axion.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "AxionTestma084");
+	axion.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "Axionma0146");
 
 	axion.SetScale(3/6.0);
 	axion.SetPlotStyle(kMagenta, 0);
@@ -63,6 +140,7 @@ Samples LoadAxions084sT( TString mTag ){
 	//<directory>/<classifier>_<sample>_app.root
 	axion.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier", "Axionma084");
 	axion.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "Axionma084");
+	axion.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "Axionma0146");
 
 	axion.SetScale(3.0/2.0/6.0);
 	axion.SetPlotStyle(kOrange+10, 0);
@@ -86,6 +164,8 @@ Samples LoadAllFHCOnepi0( TString mTag ){
 	//Friends
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier", "NuAllFHCBkg");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "NuAllFHCBkg");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "NuAllFHCBkg");
+
 	return tmpSample;
 };
 
@@ -103,7 +183,43 @@ Samples LoadAllFHCOnepi0T( TString mTag ){
 	//Friends
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier", "NuAllFHCBkg");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "NuAllFHCBkg");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "NuAllFHCBkg");
 	return tmpSample;
 };
+
+
+
+
+Samples LoadJumboEXT( TString mTag ){
+
+	Samples ext("All EXT","/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/JumboEXT_2s0t.root","vertex_tree","subrun_number%3==0");
+	ext.SetPlotStyle(kGreen-6, 3333);
+//	ext.SetPOT(2.76e20*9.25e6/6.62e6);
+	ext.SetPOT(6.8e21);
+	ext.SetScale(0.98*2.9657086);
+
+	//Add Friends ~ Start
+	ext.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"AllExt");
+	ext.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "AllExt");
+
+
+	return ext;
+}
+Samples LoadJumboEXTT( TString mTag ){
+
+	Samples ext("All EXT","/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/JumboEXT_2s0t.root","vertex_tree","subrun_number%3>0");
+	ext.SetPlotStyle(kGreen+4, 3333);
+	ext.SetPOT(6.8e21);
+	ext.SetScale(0.98*2.9657086/2.0);
+
+	//Add Friends ~ Start
+	ext.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"AllExt");
+	ext.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "AllExt");
+
+
+	return ext;
+}
+
+
 
 

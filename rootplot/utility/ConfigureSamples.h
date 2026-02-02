@@ -29,10 +29,36 @@ public:
 	//Add Friends
 	void AddFriend(TString friend_path, TString friend_name)
 	{
-		this->s_ttree->AddFriend(friend_name, friend_path);
-		double nEntries = this->s_ttree->GetEntries();
-		double nEntriesFriend = this->s_ttree->GetFriend(friend_name)->GetEntries();
-		if(nEntries != nEntriesFriend) std::cout<<"WARNING: Entries of the friend tree " <<nEntriesFriend<<" is not the same as the main tree "<<nEntries<<"! Check file: "<<friend_path<<std::endl;
+//		this->s_ttree->AddFriend(friend_name, friend_path);
+//		double nEntries = this->s_ttree->GetEntries();
+//		double nEntriesFriend = this->s_ttree->GetFriend(friend_name)->GetEntries();
+//		if(nEntries != nEntriesFriend) std::cout<<"WARNING: Entries of the friend tree " <<nEntriesFriend<<" is not the same as the main tree "<<nEntries<<"! Check file: "<<friend_path<<std::endl;
+		Long64_t nEntries = 0;
+		Long64_t nEntriesFriend = 0;
+
+		// Check main tree
+		if (this->s_ttree) {
+			nEntries = this->s_ttree->GetEntries();
+
+			// Try adding friend
+			this->s_ttree->AddFriend(friend_name, friend_path);
+
+			// Check friend tree
+			if (auto* friendTree = this->s_ttree->GetFriend(friend_name)) {
+				nEntriesFriend = friendTree->GetEntries();
+			}
+		}
+
+		// Only warn if both trees exist but entries mismatch
+		if (nEntries > 0 && nEntriesFriend > 0 && nEntries != nEntriesFriend) {
+			std::cout
+				<< "WARNING: Entries of the friend tree "
+				<< nEntriesFriend
+				<< " is not the same as the main tree "
+				<< nEntries
+				<< "! Check file: " << friend_path
+				<< std::endl;
+		}
 
 	}
 

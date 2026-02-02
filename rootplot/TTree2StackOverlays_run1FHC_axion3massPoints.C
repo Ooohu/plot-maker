@@ -11,11 +11,13 @@
 #include "LoadSamples_Signals.h"
 #include "LoadSamples_FHCRuns_Run1.h"
 
+#include "CommonCut.C"
+
 void TTree2StackOverlays_run1FHC_axion3massPoints(){
 	//Configure class Samples: name, input file, tree name, cut
 	//DIR /pnfs/uboone/persistent/users/klin/MCC9/ntuples
 
-	std::vector< TString > tag={"ma084"};
+	std::vector< TString > tag={"ma0146"};
 	//	std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
 
 	bool show_training = false;
@@ -23,7 +25,8 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 	// PREPARE SAMPLES -----------------------------------------------------------------
 	TString axiontag = tag[0];//"ma003";
 	TString JSONfileName="JSON_output/"+axiontag+".json";
-	TString Label = "AxionRun1Only"+axiontag+"_2s0t_twoMassPoints";
+	TString Label = "NuMIaxionsRun1FHC"+axiontag+"_2s0t_twoMassPoints";
+//	TString Label = "AxionRun1Only"+axiontag+"_2s0t_twoMassPoints";
 
 //	Samples axion003		= LoadAxions003	(axiontag);
 	Samples axion0146		= LoadAxions0146	(axiontag);
@@ -33,26 +36,33 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 //	Samples BkgCHECK		= LoadRun2aAll (axiontag);//This would be a duplicated;
 
 //	Samples ALL = LoadRun1All(axiontag);//Pass
-	//Samples Onepi0		= LoadAllFHCOnepi0 (axiontag);
-	//Samples NueCC		= LoadAllFHCNueCC (axiontag);
-	//Samples NumuCC		= LoadAllFHCNumuCC (axiontag);
-	//Samples InCryoOther = LoadAllFHCInCryoOther (axiontag);
+//	Samples Onepi0		= LoadAllFHCOnepi0 (axiontag);
+//	Samples NueCC		= LoadAllFHCNueCC (axiontag);
+//	Samples NumuCC		= LoadAllFHCNumuCC (axiontag);
+//	Samples InCryoOther = LoadAllFHCInCryoOther (axiontag);
+	Samples ext			= LoadJumboEXT		(axiontag);
 
 	Samples Onepi0		= LoadRun1Onepi0 (axiontag);
 	Samples NueCC		= LoadRun1NueCC (axiontag);
 	Samples NumuCC		= LoadRun1NumuCC (axiontag);
-	Samples InCryoOther 	= LoadRun1InCryoOther (axiontag);
+	Samples InCryoOther = LoadRun1InCryoOther (axiontag);
+//	Samples ext			= LoadRun1EXT		(axiontag);
 
 	Samples dirt		= LoadRun1Dirt		(axiontag);
+
+//	Samples data		= LoadJumboDataR1toR3		(axiontag);
 	Samples data		= LoadRun1FHCData		(axiontag);
-	Samples ext			= LoadRun1EXT		(axiontag);
 
 
-	double PlotPOT = data.GetPOT();
+	double PlotPOT = ILikeThisPOT( data );
 
 	// PRECUT --------------------------------------------------------------------------------
-	TString Precut = "(reco_asso_tracks == 0 && reco_asso_showers == 2)";
-	Precut +="&&( reco_vertex_dist_to_SCB > 2)";
+//	TString Precut = "(reco_asso_tracks == 0 && reco_asso_showers == 2)";
+//	Precut +="&&( reco_vertex_dist_to_SCB > 2)";
+//	Precut +="&&( Pi0CosmicClassifier > 0.6 )";
+//	Precut +="&&( ma084PionClassifier > 0.5)";
+//	Precut +="&&( ma084PionAccurateClassifier > 0.5)";
+	TString Precut = GetCut();
 
 	bool ScanCut = false;
 
@@ -175,6 +185,14 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 		SetErrorStyle(errorHist);
 
 		TString mc_leg_title = Form("Stat. Error | Bkg Sum: %.1lf",errorHist->Integral());
+		if( temp_var.GetUseSys() ){//loads with systematic uncertainties
+			std::cout<<"Draw systematic errors "<<std::endl;
+			//Gonnd hard code the uncertainties here..
+			std::vector<double> fr = {0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1};
+			AddFractionalSystematics( errorHist, fr);
+			mc_leg_title = Form("Stat. & Sys. Error | Bkg Sum: %.1lf",errorHist->Integral());
+
+		}
 		leg->AddEntry(errorHist, mc_leg_title, "fl");
 
 		//Print MCOnly & MC+ext as background 
@@ -193,7 +211,7 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 		if(show_training){
 			ExportPNG_StackDataTwoSignal_wLabel({haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
 		}else{
-			ExportPNG_StackDataTwoSignal_wLabel({haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
+			ExportPNG_StackDataTwoSignal_wLabel({haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) + "_CutTag"+ Precut.CountChar('&') , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
 		}
 
 	}//Next variable

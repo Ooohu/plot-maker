@@ -48,6 +48,10 @@ TH1D* drawTH1D(Samples &sample, Vars &var)
 
 	//default is (nbins, bmin, bmax);
 	TH1D* h = new TH1D(RandomName(), "", binnings[0], binnings[1], binnings[2]);
+	if(!ttree){
+		std::cout<<"Did not find TTree "<< sample.GetBranchName()<<" from "<<sample.GetFilePath()<<std::endl;
+		return h;
+	}
 	ttree->Draw(variable+">>"+h->GetName(), cuts);
 //	std::cout<<"Drawing :"<<variable<<" cuts:"<<cuts<<std::endl;
 //	std::cout<<"TH1 has events: "<<h->Integral()<<std::endl;

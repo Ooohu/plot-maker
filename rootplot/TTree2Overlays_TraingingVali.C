@@ -15,7 +15,7 @@ void TTree2Overlays_TraingingVali(){
 	//Configure class Samples: name, input file, tree name, cut
 	//DIR /pnfs/uboone/persistent/users/klin/MCC9/ntuples
 
-	std::vector< TString > tag={"ma084"};
+	std::vector< TString > tag={"ma0146"};
 	//	std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
 	std::stringstream text_buffer;
 
@@ -24,22 +24,25 @@ void TTree2Overlays_TraingingVali(){
 	// PREPARE SAMPLES -----------------------------------------------------------------
 	TString axiontag = tag[0];//"ma003";
 
-	Samples axion084		= LoadAxions084	(axiontag);
-	Samples axion084T		= LoadAxions084T(axiontag);
+	Samples axion0146		= LoadAxions0146	(axiontag);
+	Samples axion0146T		= LoadAxions0146T(axiontag);
 
-	Samples axion084s		= LoadAxions084s	(axiontag);
-	Samples axion084sT		= LoadAxions084sT(axiontag);
+	Samples axion0146s		= LoadAxions0146s	(axiontag);
+	Samples axion0146sT		= LoadAxions0146sT(axiontag);
 
+	
 	Samples OneAllpi0		= LoadAllFHCOnepi0 (axiontag);
 	Samples OneAllpi0T		= LoadAllFHCOnepi0T (axiontag);
-//	Samples OneAllpi0t			= LoadAllFHCOnepi0t (axiontag);//true training events
+//	Samples OneAllpi0t		= LoadAllFHCOnepi0t (axiontag);//true training events
 //	Samples OneAllpi0tT		= LoadAllFHCOnepi0tT (axiontag);
 
+	Samples extAll			= LoadJumboEXT (axiontag);
+	Samples extAllT			= LoadJumboEXTT (axiontag);
 
 	double PlotPOT = 2E21;// data.GetPOT();
 
 	// PRECUT --------------------------------------------------------------------------------
-	TString Label = "NuMIFHCRuns_cleanPi0Train"+axiontag+"_2s0t_twoMassPoints";
+	TString Label = "NuMIFHCRuns_MultiBDTs"+axiontag+"_2s0t_twoMassPoints";
 	TString Precut = "(reco_asso_tracks == 0 && reco_asso_showers == 2)";
 //	Precut +="&& reco_vertex_dist_to_SCB > 2";
 //
@@ -54,15 +57,15 @@ void TTree2Overlays_TraingingVali(){
 	// Start making histograms --------------------------------------------------------------------
 	//-->  Setup Pair comparison
 	std::vector< std::pair <Samples, Samples > > pairs = {
-		{axion084, axion084T},
-		{axion084s, axion084sT},
+		{axion0146, axion0146T},
+		{axion0146s, axion0146sT},
 		{OneAllpi0, OneAllpi0T},
 //		{OneAllpi0t, OneAllpi0tT}
 //		{Onepi0, Onepi0T},
 //		{NueCC, NueCCT},
 //		{ext, extT},
 //		{ext2a, ext2aT},
-//		{extAll, extAllT}
+		{extAll, extAllT}
 	};
 
 	for( size_t index = 0; index < pairs.size(); ++index){
