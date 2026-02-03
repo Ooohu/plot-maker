@@ -6,7 +6,8 @@
 
 #include "LoadSamples_sys.h"
 #include "LoadStyles.h"
-#include "VarsList_BDT.C"
+//#include "VarsList_BDT.C"
+#include "VarsList_R1.C"
 
 
 void TTree2CovMatrix_sysR1(){
@@ -65,24 +66,31 @@ void TTree2CovMatrix_sysR1(){
 		
 		leg->AddEntry( hsampleCV, leg_title, "l");
 
-			std::cout<<"\nSummary: "<< leg_title<<std::endl;
-			std::cout<<PrintHist(hsampleCV);
+		std::cout<<"\nSummary: "<< leg_title<<std::endl;
+		std::cout<<PrintHist(hsampleCV);
 
 
 		//Now backgrounds are stacked
 		std::vector<Samples> vecSamples = { sampleLYDown, sampleAlternativeSCMap, sampleAlternativeRecombination, sampleLYRayleigh, sampleWireModX, sampleWireModThetaXZ, sampleWireModThetaYZ, sampleWireModYZ };
 		std::vector< TH1D* > allhists={};
 		THStack *hs = new THStack(RandomName(), "");// Create Stack
+
+		int colorIndex = 0; // We need color in the legend
+		int markerIndexOffset = 22;
 		for(auto &sample : vecSamples){
 			sample.AddDefinition(Precut);
 
 			TH1D* hist = drawTH1D(sample, temp_var);
+			Color_t  t_c = sampleColor(colorIndex++);//this_color
+			hist->SetLineColorAlpha(t_c, 0.7);
+			hist->SetMarkerColorAlpha( t_c, 0.7);
+			hist->SetMarkerStyle(colorIndex + markerIndexOffset);
 			//		std::cout<<"Total evts: "<<hist->Integral()<<std::endl;
 			hist->Scale(PlotPOT/sample.GetPOT());
 
 			leg_title = sample.GetSampleName();// + Form(" %.1lf",hist->Integral());
 			sample_labels.push_back(leg_title);
-			leg->AddEntry(hist, leg_title ,"fl");
+			leg->AddEntry(hist, leg_title ,"flp");
 			std::cout<<"\nSummary: "<< leg_title<<std::endl;
 			std::cout<<PrintHist(hist);
 

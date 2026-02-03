@@ -484,7 +484,6 @@ void	draw_CovMatrix(const TH1D* CV,
 				}
 			}
 			hCov = corr;
-
 		}
 
 		int Nbins = hCov->GetNbinsX();
@@ -569,15 +568,23 @@ void	draw_CovMatrix(const TH1D* CV,
 //			std::cout<<"CHECK "<<hCov->GetBinContent( i, i)<<" goes to bin "<<( i -1) % NbinEachCat<<std::endl;
 		}
 
-		std::cout<<"\nTotal uncertainties (not yet exclude stat. unc.): ";
-		for (double val : VarOfBins) {
-			std::cout << std::sqrt(val) << ", ";
+		if(!do_correlation){
+			std::cout<<"\nTotal uncertainties (not yet exclude stat. unc.): ";
+			for (double val : VarOfBins) {
+				std::cout << std::sqrt(val) << ", ";
+			}
+
+			std::cout<<"\nTotal sys. fractional uncertainties: ";
+			for (size_t i = 0; i < VarOfBins.size(); ++i) {
+				std::cout << std::sqrt(VarOfBins[i]) /CV->GetBinContent(i+1) << ", ";
+			}
+
+			std::cout<<"\nTotal fractional uncertainties (exclude stat. unc.): ";
+			for (size_t i = 0; i < VarOfBins.size(); ++i) {
+				std::cout << std::sqrt(VarOfBins[i] - CV->GetBinContent(i+1))/CV->GetBinContent(i+1) << ", ";
+			}
+			std::cout<<"\n"<<std::endl;
 		}
-		std::cout<<"\nTotal uncertainties (exclude stat. unc.): ";
-		for (size_t i = 0; i < VarOfBins.size(); ++i) {
-			std::cout << std::sqrt(VarOfBins[i] - CV->GetBinContent(i+1)) << ", ";
-		}
-		std::cout<<"\n"<<std::endl;
 
 
 
