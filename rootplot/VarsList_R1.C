@@ -119,7 +119,9 @@ std::vector< Vars> SetMultipleVars(){
     Vars var_bdtCosmicPion("Pion - Cosmic Classifier (Log y)","Pi0CosmicClassifier",        {bins,0,1});
     Vars var_bdtCosmicPionL("Pion - Cosmic Classifier (Log y)","Pi0CosmicClassifier",        {bins,0,1}, true);
     Vars var_bdtPionAma011L("ma011 - Pion Accurate Classifier (Log y)","ma011PionAccurateClassifier",        {bins,0,1}, true);
-    Vars var_bdtPionAma0146L("ma0146 - Pion Accurate Classifier (Log y)","ma0146PionAccurateClassifier",        {bins,0,1}, true, {0.0892624, 0.864922, 0.550454, 0.60766, 2.10327, 0.41591, 0.616056, 0.884531, 0.719103, 0.692357});
+//    Vars var_bdtPionAma0146L("ma0146 - Pion Accurate Classifier (Log y)","ma0146PionAccurateClassifier",        {bins,0,1}, true, {0.0892624, 0.864922, 0.550454, 0.60766, 2.10327, 0.41591, 0.616056, 0.884531, 0.719103, 0.692357});//DetVar
+//    Vars var_bdtPionAma0146L("ma0146 - Pion Accurate Classifier (Log y)","ma0146PionAccurateClassifier",        {bins,0,1}, true, {0.164917, 0.0231476, 0.329276, 0, 0, 1.98675, 0, 0, 0, 0});//GENIE
+    Vars var_bdtPionAma0146L("ma0146 - Pion Accurate Classifier (Log y)","ma0146PionAccurateClassifier",        {bins,0,1}, true, {0.1875, 0.8652, 0.6414, 0.6077, 2.1033,2.0300, 0.6161, 0.8845, 0.7191, 0.6924});//DetVar+GENIE
     Vars var_bdtPionAma03L("ma03 - Pion Accurate Classifier (Log y)","ma03PionAccurateClassifier",        {bins,0,1}, true);
     Vars var_bdtPionAma04L("ma04 - Pion Accurate Classifier (Log y)","ma04PionAccurateClassifier",        {bins,0,1}, true);
     Vars var_bdtPionAma052L("ma052 - Pion Accurate Classifier (Log y)","ma052PionAccurateClassifier",        {bins,0,1}, true);
@@ -127,7 +129,7 @@ std::vector< Vars> SetMultipleVars(){
     Vars var_bdtPionAma084L("ma084 - Pion Accurate Classifier (Log y)","ma084PionAccurateClassifier",        {bins,0,1}, true);
 
 
-	std::vector< Vars> allVars = {var_yness1};
+	std::vector< Vars> allVars = {var_bdtPionAma0146L};
 //	std::vector< Vars> allVars = {var_yness1, var_bdtPionAma0146L, varMassC};
 //    std::vector< Vars> allVars = {varShrKalmandEdx21, varShrKalmandEdx22, varAI, varNME, varNMP,  varNMBeta, varNMBetaL, varMass,  varMassC, varMassCl, varCosOpnAng, varShrCosBeta1,  varShrBeta1, varShrTheta1, varShrCosBeta2, varShrE1, varShrE1l,  varShrE2, var_photonl1, var_photonl1l, var_photonl2, var_photonl2l, var_yness1, var_yness2, varX,varY, varZ, varRecoFlash, varBeamGPE, var_bdtCosmicPionL, var_bdtPionAma0146L};
 

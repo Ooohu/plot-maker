@@ -9,16 +9,20 @@
 //#include "VarsList_BDT.C"
 #include "VarsList_R1.C"
 
+#include "CommonCut.C"
+
 
 void TTree2CovMatrix_sysR1(){
 	//Configure class Samples: name, input file, tree name, cut
 	//DIR /pnfs/uboone/persistent/users/klin/MCC9/ntuples
 
+	TString Label = "R1sys";
+
 	std::vector< TString > tag={"ma0146"};
 	//	std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
 //	std::stringstream text_buffer;
 	
-	Samples sampleCV						= LoadR1_DetVarCV						(tag[0]);
+	Samples sampleCV						= LoadR1_CVRHC						(tag[0]);
 	Samples sampleLYDown					= LoadR1_DetVarLYDown					(tag[0]);
 	Samples sampleAlternativeSCMap			= LoadR1_DetVarAlternativeSCMap			(tag[0]);
 	Samples sampleAlternativeRecombination	= LoadR1_DetVarAlternativeRecombination (tag[0]);
@@ -27,6 +31,7 @@ void TTree2CovMatrix_sysR1(){
 	Samples sampleWireModThetaXZ			= LoadR1_DetVarWireModThetaXZ			(tag[0]);
 	Samples sampleWireModThetaYZ			= LoadR1_DetVarWireModThetaYZ			(tag[0]);
 	Samples sampleWireModYZ				    = LoadR1_DetVarWireModYZ				(tag[0]);
+	std::vector<Samples> vecSamples = { sampleLYDown, sampleAlternativeSCMap, sampleAlternativeRecombination, sampleLYRayleigh, sampleWireModX, sampleWireModThetaXZ, sampleWireModThetaYZ, sampleWireModYZ };
 
 
 
@@ -36,9 +41,9 @@ void TTree2CovMatrix_sysR1(){
 	double PlotPOT = 2E21;
 
 	// PRECUT --------------------------------------------------------------------------------
-	TString Label = "R1FHCsys";
-	TString Precut = "(reco_asso_tracks == 0 && reco_asso_showers == 2)";
-	Precut +="&&( reco_vertex_dist_to_SCB > 2)";
+//	TString Precut = "(reco_asso_tracks == 0 && reco_asso_showers == 2)";
+//	Precut +="&&( reco_vertex_dist_to_SCB > 2)";
+	TString Precut = GetCut();
 
 	// Configure class Var: varaibles, axis name, binnings  ----------------------------------
 	std::vector< Vars> allVar = SetMultipleVars();
@@ -71,7 +76,6 @@ void TTree2CovMatrix_sysR1(){
 
 
 		//Now backgrounds are stacked
-		std::vector<Samples> vecSamples = { sampleLYDown, sampleAlternativeSCMap, sampleAlternativeRecombination, sampleLYRayleigh, sampleWireModX, sampleWireModThetaXZ, sampleWireModThetaYZ, sampleWireModYZ };
 		std::vector< TH1D* > allhists={};
 		THStack *hs = new THStack(RandomName(), "");// Create Stack
 

@@ -246,6 +246,44 @@ std::string PrintHist(TH1D* tmp_hist){
 	return tmptext_buffer.str();
 }
 
+void PrintRow( const std::vector<double>& vals)
+{
+    for (double v : vals) {
+        std::cout << ", " << v;
+    }
+    std::cout << std::endl;
+}
+
+void PrintSysErrFromCov( TH1D* cv, TH2D* hCov)
+{
+			int XBins = cv->GetNbinsX();
+
+			std::cout<<"\nTotal uncertainties (not yet exclude stat. unc.): ";
+			for (size_t index = 1; index < XBins+1; ++index) {
+				std::cout << std::sqrt(hCov->GetBinContent(index, index)) << ", ";
+			}
+			std::cout<<"\n"<<std::endl;
+
+//			std::cout<<"\nTotal sys. uncertainties (exclude stat. unc.): ";
+//			for (size_t index = 1; index < XBins+1; ++index) {
+//				std::cout << std::sqrt(hCov->GetBinContent(index, index)- std::pow(cv->GetBinError(index),2)) << ", ";
+//			}
+
+			std::cout<<"\nTotal fractional uncertainties (not yet exclude stat. unc.): ";
+			for (size_t index = 1; index < XBins+1; ++index) {
+				std::cout << std::sqrt(hCov->GetBinContent(index, index))/ cv->GetBinContent(index) << ", ";
+			}
+			std::cout<<"\n"<<std::endl;
+
+
+ }
+
+
+
+
+
+
+
 void SetRatioStyle( TH1D* ratio){
 
 	//Take care of the Yaxis first;
@@ -416,6 +454,7 @@ void PrintMultiSimVariation(
 //    std::vector<double> mean(Nbin, 0.0);
     std::vector<double> rms(Nbin, 0.0);
     std::vector<double> rms_stat_removed(Nbin, 0.0);
+    std::vector<double> frac_uncertainty(Nbin, 0.0);
 
     // -----------------------------
     // Mean across universes
@@ -446,6 +485,7 @@ void PrintMultiSimVariation(
         double stat = hCV->GetBinError(b);
         double sys2 = rms[b-1]*rms[b-1] - stat*stat;
         rms_stat_removed[b-1] = (sys2 > 0) ? std::sqrt(sys2) : 0.0;
+		frac_uncertainty[b-1] = rms_stat_removed[b-1]/hCV->GetBinContent(b);
     }
 
     // -----------------------------
@@ -469,6 +509,7 @@ void PrintMultiSimVariation(
 //    print_row("Mean", mean);
     print_row("RMS (sys+stat)", rms);
     print_row("RMS (stat removed)", rms_stat_removed);
+    print_row("Fractional Unvertainties", frac_uncertainty);
 }
 
 //Modify histogram and add systematic errors as uncorrelated errors

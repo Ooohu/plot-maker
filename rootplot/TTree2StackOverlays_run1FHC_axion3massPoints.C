@@ -1,5 +1,4 @@
 #include "utility/PlotHelper.h"
-#include "LoadStyles.h"
 
 #include "utility/CutScanner.h"
 
@@ -53,6 +52,7 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 
 //	Samples data		= LoadJumboDataR1toR3		(axiontag);
 	Samples data		= LoadRun1FHCData		(axiontag);
+	std::vector<Samples> vecSamples = { Onepi0, NueCC, NumuCC, InCryoOther, dirt, ext};
 
 
 	double PlotPOT = ILikeThisPOT( data );
@@ -103,6 +103,7 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 
 		axion0146.AddDefinition(Precut);
 		TH1D* haxion0146 = drawTH1D(axion0146, temp_var);
+		haxion0146->Scale(axion0146.GetScale()*PlotPOT/data.GetPOT());
 		haxion0146->SetFillColorAlpha( axion0146.GetCol(), 0.9); 
 		haxion0146->SetLineWidth(3);
 		haxion0146->SetLineColor(axion0146.GetCol());
@@ -114,6 +115,7 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 
 		axion084.AddDefinition(Precut);
 		TH1D* haxion084 = drawTH1D(axion084, temp_var);
+		haxion084->Scale(axion084.GetScale()*PlotPOT/data.GetPOT());
 		haxion084->SetFillColorAlpha( axion084.GetCol(), 0.9); 
 		haxion084->SetLineWidth(3);
 		haxion084->SetLineColor(axion084.GetCol());
@@ -128,8 +130,6 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 		THStack *hs = new THStack(RandomName(), "");// Create Stack
 		TH1D* errorHist = nullptr;// Create a empty hist for storing all bkgs
 		TH1D* MCOnly = nullptr;
-//		std::vector<Samples> vecSamples = {  ext, Onepi0, NueCC, NumuCC, InCryoOther, dirt};
-		std::vector<Samples> vecSamples = { Onepi0, NueCC, NumuCC, InCryoOther, dirt, ext};
 
 		for (size_t i = 0; i < vecSamples.size(); ++i) {
 
@@ -138,7 +138,7 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 
 			TH1D* hist = drawTH1D(sample, temp_var);
 			//		std::cout<<"Total evts: "<<hist->Integral()<<std::endl;
-			hist->Scale(PlotPOT/sample.GetPOT());
+			hist->Scale(sample.GetScale()*PlotPOT/sample.GetPOT());
 
 			leg_title = sample.GetSampleName() + Form(" %.1lf",hist->Integral());
 			leg->AddEntry(hist, leg_title ,"fl");
@@ -167,7 +167,7 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 		//--> Draw histogram: data overlay
 		data.AddDefinition(Precut);
 		TH1D* hdata = drawTH1D(data, temp_var);
-		hdata->Scale(PlotPOT/data.GetPOT());
+		hdata->Scale(data.GetScale()*PlotPOT/data.GetPOT());
 		hdata->SetMarkerSize(1);//data
 		hdata->SetMarkerStyle(20);//data
 
@@ -194,7 +194,7 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 //			AddFractionalSystematics( errorHist, fr);
 			AddFractionalSystematics( errorHist, temp_var.GetFracSys());
 //			mc_leg_title = Form("Stat. & Sys. Error | Bkg Sum: %.1lf",errorHist->Integral());
-			mc_leg_title = Form("Stat. & DetVar. Uncertainties | Bkg Sum: %.1lf",errorHist->Integral());
+			mc_leg_title = Form("Stat. & Sys. Uncertainties | Bkg Sum: %.1lf",errorHist->Integral());
 
 		}
 		leg->AddEntry(errorHist, mc_leg_title, "fl");

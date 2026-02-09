@@ -5,6 +5,62 @@
 #include "ConfigureVars.h"
 #include "Gadgets.h"
 
+#include <ROOT/RDataFrame.hxx>
+
+//hist stylist
+void SetErrorStyle( TH1D* errorHist){
+		errorHist->SetMarkerSize(0);
+		errorHist->SetFillStyle(3454);
+		errorHist->SetLineWidth(2);
+//		errorHist->SetLineColor(kBlack);
+		errorHist->SetFillColor(kBlack);
+}
+
+void MakeBeautiHistFilled(Samples& sample, TH1D* hist){
+	hist->SetLineColor(kBlack);
+	hist->SetFillColor(sample.GetCol());
+	hist->SetFillStyle(sample.GetFillStyle());
+
+}
+
+void MakeBeautiHistCV( TH1D* hist ){
+	hist->SetLineColor(kBlack);
+	hist->SetLineWidth(2);
+}
+
+void MakeBeautiHistVariations(TH1D* hist, int col){
+	hist->SetLineColor(col);
+//	hist->SetLineColorAlpha(col, 0.3);
+	hist->SetLineStyle(1);
+	hist->SetLineWidth(1);
+}
+
+
+//legend Stylist
+TLegend* LoadLegend(){
+
+	TLegend *leg = new TLegend(0.05,0.01,0.95,0.95);
+	leg->SetFillStyle(0);
+	leg->SetLineWidth(0);
+	leg->SetNColumns(3);
+
+	return leg;
+}
+
+
+TLegend* LoadSideLegend(){
+
+	TLegend *leg = new TLegend(0.05,0.01,0.95,0.95);
+	leg->SetTextAlign(12);
+	leg->SetFillStyle(0);
+	leg->SetLineWidth(0);
+	leg->SetNColumns(1);
+
+	return leg;
+}
+
+
+
 //Template for drawing different hists
 //template <typename T>
 void DrawRatioPlot( TH1D* data, TH1D* MC, TString Xaxis, TString Yaxis="Data/Prediction"){
@@ -57,10 +113,8 @@ TH1D* drawTH1D(Samples &sample, Vars &var)
 //	std::cout<<"TH1 has events: "<<h->Integral()<<std::endl;
 
 //	if(linecolor == 0 || fillstyle == 0) std::cout<<"Warning: "<<sample.GetSampleName()<<" histogram color/style is not set."<<std::endl;
-	h->SetLineColor(kBlack);
-	h->SetFillColor(sample.GetCol());
-	h->SetFillStyle(sample.GetFillStyle());
-	h->Scale(sample.GetScale());
+	MakeBeautiHistFilled( sample, h);
+
 	return h;
 }
 
@@ -81,10 +135,11 @@ TH1D* drawTH1D_w_Weight(Samples &sample, Vars &var, TString &wgt, int col )
 //	std::cout<<"TH1 has events: "<<h->Integral()<<std::endl;
 
 //	if(linecolor == 0 || fillstyle == 0) std::cout<<"Warning: "<<sample.GetSampleName()<<" histogram color/style is not set."<<std::endl;
-	h->SetLineColor(col);
-//	h->SetFillColor(linecolor);
-	h->SetFillStyle(0);
-	h->Scale(sample.GetScale());
+	MakeBeautiHistFilled( sample, h);
+//	h->SetLineColor(col);
+////	h->SetFillColor(linecolor);
+//	h->SetFillStyle(0);
+//	h->Scale(sample.GetScale());
 	return h;
 }
 
@@ -100,7 +155,9 @@ TH2D* BuildCovarianceMatrix(const TH1D* hCV, const std::vector<TH1D*>& variation
 	int totalbins = nbins*nvars;
 
     TH2D* hCov = new TH2D("hCov", "Matrix", totalbins, 0.5, totalbins+0.5, totalbins, 0.5, totalbins+0.5);
+	hCov->SetDirectory(nullptr);
 	TH1D* h_concat = new TH1D("h_concat", "Concatenated Histogram", totalbins, 0.5, totalbins + 0.5);
+	h_concat->SetDirectory(nullptr);
 
 
 	for (int index = 0; index < nvars; ++ index){
@@ -225,10 +282,8 @@ void ExportPNG_StackDataTwoSignal_wLabel(
 		TString Xaxis, 
 		TString Yaxis= "Events", 
 		bool logY = false){
-	//Add estimator
-	gStyle->SetPaintTextFormat("4.1f%%");//draw numbers with percentage
 
-
+//Draw Canvas for plots
 	TCanvas* c = new TCanvas("c","c",800,600);
 	TPad *padT = new TPad("padT","padT",0 , 0.8		,1 ,   1); //Pad for legend, invaid margin 0.05 below
 	TPad *padH = new TPad("padH","padH",0 , 0.3		,1 ,   0.8);//Pad for Histograms, 
@@ -284,7 +339,9 @@ void ExportPNG_StackDataTwoSignal_wLabel(
 
 //Draw the rest of the pads, on top of others;
 
-// ---- Pad for text
+// ---- Pad for text at the bottom
+	//Add estimator
+//	gStyle->SetPaintTextFormat("4.1f%%");//draw numbers with percentage
 	c->cd();
 //	padB->SetFillColor(kCyan-4); //this is useful
 	padB->Draw();
@@ -300,6 +357,7 @@ void ExportPNG_StackDataTwoSignal_wLabel(
 	}
 	delete c;
 }
+
 
 
 
@@ -594,6 +652,123 @@ void	draw_CovMatrix(const TH1D* CV,
 		c1->SaveAs("output/"+SafeName + ".png");
 
 }
+
+
+//Super fast RDataFrame for multisim drawing
+//Get the data in place; Use the data (scaling); Config. styles; Draw in a Canvas
+struct HistPack {
+    ROOT::RDF::RResultPtr<TH1D> cv;
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> univ;
+};
+
+
+HistPack makeHists_RDF(
+     Samples& sample,
+     Vars& var,
+     const TString& cvWeight,
+     const TString& univWeightExpr, // e.g. "sysWeight"
+    int Nuniv
+)
+{
+    std::vector<double> bins = var.GetBinning();
+
+    ROOT::RDataFrame df(*sample.GetSampleTree());
+
+    auto df_base = df.Filter(sample.GetDefinition().Data());
+
+    ROOT::RDF::TH1DModel model(
+        Form("h_%s_%s_CV",
+             sample.GetSampleName().Data(),
+             var.GetVarName().Data()), //name
+        "",//title
+        (int)bins[0], bins[1], bins[2] //nbins, xlow, xup
+    );
+
+    HistPack out;
+
+    // ---- CV histogram
+    out.cv = df_base
+        .Define("w", MakeSafeWgtName(cvWeight).Data())
+        .Histo1D(model, var.GetVarName().Data(), "w");
+
+    // ---- Systematic universes
+    for (int k = 0; k < Nuniv; ++k) {
+		TString currentW =  MakeSafeWgtName(Form("%s[%d]/1000", univWeightExpr.Data(), k));
+        out.univ.push_back(
+                df_base
+                .Define("w", currentW.Data())
+                .Histo1D(
+                    ROOT::RDF::TH1DModel(
+                        Form("h_%s_%s_u%d",
+                            sample.GetSampleName().Data(),
+                            var.GetVarName().Data(), k),
+                        "",
+                        (int)bins[0], bins[1], bins[2]
+                        ),
+                    var.GetVarName().Data(),
+                    "w"
+                    )
+                );
+//		if(k<2)std::cout <<__LINE__<< "univ integral: " << out.univ.back()->Integral() << std::endl;
+    }
+
+    return out;
+}
+
+void draw_variations_v2( 
+		TH1D* hist_cv,
+		std::vector<TH1D*> hist_univ,
+		TLegend *leg, 
+		TString SafeName,  
+		TString XaxisTitle, 
+		TString YaxisTitle= "Events", 
+		bool logY = false){
+
+	TCanvas* c = new TCanvas("c","c",800,600);
+	TPad *padT = new TPad("padT","padT",0.1 , 0.8		,0.9 ,   1); //Pad for legend, invaid margin 0.05 below; xlow, ylow,xup,yup 
+	TPad *padH = new TPad("padH","padH",0 , 0.05		,1 ,   0.8);//Pad for Histograms, 
+// ---- Pad for Legends
+	padT->SetMargin(0,0,0,0);//Set margins for left,right,bottom,top
+//	padT->SetFillColor(kAzure);
+
+	padT->Draw();
+	padT->cd();
+	leg->Draw();
+
+// ---- Pad for Histograms
+	c->cd();
+	padH->SetTopMargin(0.02);//leave some space for the yaxis label
+	padH->SetBottomMargin(0.1);
+//	padH->SetFillColor(kOrange);
+	padH->Draw();
+	padH->cd();
+    gStyle->SetOptStat(0);
+	if(logY) padH->SetLogy();
+	
+	//Set Maximum of the y-axis
+	double max = hist_cv->GetMaximum(); 
+	hist_cv->SetMaximum(3*max);
+	hist_cv->SetTitle("");
+    hist_cv->GetXaxis()->SetTitle(XaxisTitle);
+    hist_cv->GetYaxis()->SetTitle(YaxisTitle);
+	
+	hist_cv->Draw("hist");
+
+    for (auto& u : hist_univ) {
+        u->Draw("hist same");
+    }
+	hist_cv->Draw("hist same");
+
+    //--- Save output
+    c->cd();
+    c->SaveAs("output/"+SafeName + ".pdf");
+    c->SaveAs("output/"+SafeName + ".png");
+
+    delete c;
+}
+
+
+
 
 //void draw_2DHist(Samples &CV, std::vector<Samples> &SysChanges,  Vars &var, TString tag){
 //

@@ -127,17 +127,16 @@ std::vector< Vars> SetMultipleVars(){
     Vars var_bdtPionAma084L("ma084 - Pion Accurate Classifier (Log y)","ma084PionAccurateClassifier",        {bins,0,1}, true);
 
     //    std::vector< Vars> allVars = {varEmRatio};
-     //std::vector< Vars> allVars = {varMassC};
-//     std::vector< Vars> allVars = {var_runNum1};
-//     std::vector< Vars> allVars = {var_runNum2aFHC};
-	std::vector< Vars> allVars = {var_bdtPionAma0146L};
-//    std::vector< Vars> allVars = {varShrKalmandEdx21, varShrKalmandEdx22, varAI, varNME, varNMP,  varNMBeta, varNMBetaL, varMass,  varMassC, varMassCl, varCosOpnAng, varShrCosBeta1,  varShrBeta1, varShrTheta1, varShrCosBeta2, varShrE1, varShrE1l,  varShrE2, var_photonl1, var_photonl1l, var_photonl2, var_photonl2l, var_yness1, var_yness2, varX,varY, varZ, varRecoFlash, varBeamGPE, var_bdtCosmicPionL, var_bdtPionAma0146L};
+    //std::vector< Vars> allVars = {varMassC};
+    //     std::vector< Vars> allVars = {var_runNum1};
+    //     std::vector< Vars> allVars = {var_runNum2aFHC};
+    std::vector< Vars> allVars = {var_bdtPionAma0146L};
+    //    std::vector< Vars> allVars = {varShrKalmandEdx21, varShrKalmandEdx22, varAI, varNME, varNMP,  varNMBeta, varNMBetaL, varMass,  varMassC, varMassCl, varCosOpnAng, varShrCosBeta1,  varShrBeta1, varShrTheta1, varShrCosBeta2, varShrE1, varShrE1l,  varShrE2, var_photonl1, var_photonl1l, var_photonl2, var_photonl2l, var_yness1, var_yness2, varX,varY, varZ, varRecoFlash, varBeamGPE, var_bdtCosmicPionL, var_bdtPionAma0146L};
 
 
     //    std::vector< Vars> allVars = {var_runNum1, var_runNum2, var_runNum3, var_runNum4, var_runNum5};
-    //    std::vector< Vars> allVars = {varMassC};//, varMassCl, var_bdtPionAL};
 
-return allVars;
+    return allVars;
 }
 
 
