@@ -7,15 +7,15 @@
 #include <sstream>
 
 //#include "VarsList.C"
-#include "VarsList_Run1FHC.C"
+#include "VarsList_TEMPLATE.C"
 #include "LoadSamples_Signals.h"
-#include "LoadSamples_FHCRuns_Run1.h"
+#include "LoadSamples_Full.h"
 
 #include "CommonCut.C"
 
-void TTree2StackOverlays_run1FHC_axion3massPoints(){
+void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 	//Configure class Samples: name, input file, tree name, cut
-	//DIR /pnfs/uboone/persistent/users/klin/MCC9/ntuples
+	//Samples directory /pnfs/uboone/persistent/users/klin/MCC9/ntuples
 
 	std::vector< TString > tag={"ma0146"};
 	//	std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
@@ -24,56 +24,34 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 
 	// PREPARE SAMPLES -----------------------------------------------------------------
 	TString axiontag = tag[0];//"ma003";
-	TString JSONfileName="JSON_output/"+axiontag+".json";
-	TString Label = "NuMIaxionsRun1FHC"+axiontag+"_2s0t_twoMassPoints";
-//	TString Label = "AxionRun1Only"+axiontag+"_2s0t_twoMassPoints";
+	TString JSONfileName="JSON_output/"+axiontag+"_TEMPLATE.json";
+	TString Label = "NuMIaxions_TEMPLATE"+axiontag+"_2s0t_threeMassPoints";
 
-//	Samples axion003		= LoadAxions003	(axiontag);
+	Samples axion0093		= LoadAxions0093	(axiontag);
 	Samples axion0146		= LoadAxions0146	(axiontag);
 	Samples axion084		= LoadAxions084	(axiontag);
 
-//	Samples axion003T		= LoadAxions003T(axiontag);
-//	Samples BkgCHECK		= LoadRun2aAll (axiontag);//This would be a duplicated;
+	Samples Onepi0		= LoadTEMPLATEOnepi0 (axiontag);
+	Samples NueCC		= LoadTEMPLATENueCC (axiontag);
+	Samples NumuCC		= LoadTEMPLATENumuCC (axiontag);
+	Samples InCryoOther = LoadTEMPLATEInCryoOther (axiontag);
 
-//	Samples ALL = LoadRun1All(axiontag);//Pass
-//	Samples Onepi0		= LoadAllFHCOnepi0 (axiontag);
-//	Samples NueCC		= LoadAllFHCNueCC (axiontag);
-//	Samples NumuCC		= LoadAllFHCNumuCC (axiontag);
-//	Samples InCryoOther = LoadAllFHCInCryoOther (axiontag);
+	Samples dirt		= LoadTEMPLATEDirt		(axiontag);
+
 	Samples ext			= LoadJumboEXT		(axiontag);
 
-	Samples Onepi0		= LoadRun1FHCOnepi0 (axiontag);
-	Samples NueCC		= LoadRun1FHCNueCC (axiontag);
-	Samples NumuCC		= LoadRun1FHCNumuCC (axiontag);
-	Samples InCryoOther = LoadRun1FHCInCryoOther (axiontag);
-//	Samples ext			= LoadRun1EXT		(axiontag);
-
-	Samples dirt		= LoadRun1FHCDirt		(axiontag);
-
-//	Samples data		= LoadJumboDataR1toR3		(axiontag);
-	Samples data		= LoadRun1FHCData		(axiontag);
+	Samples data		= LoaddTAGData		(axiontag);
 	std::vector<Samples> vecSamples = { Onepi0, NueCC, NumuCC, InCryoOther, dirt, ext};
 
 
+	// POT of Chice-----
 	double PlotPOT = ILikeThisPOT( data );
 
 	// PRECUT --------------------------------------------------------------------------------
-//	TString Precut = "(reco_asso_tracks == 0 && reco_asso_showers == 2)";
-//	Precut +="&&( reco_vertex_dist_to_SCB > 2)";
-//	Precut +="&&( Pi0CosmicClassifier > 0.6 )";
-//	Precut +="&&( ma084PionClassifier > 0.5)";
-//	Precut +="&&( ma084PionAccurateClassifier > 0.5)";
 	TString Precut = GetCut();
-
-	bool ScanCut = false;
 
 	// Configure class Var: varaibles, axis name, binnings  ----------------------------------
 	std::vector< Vars> allVar = SetMultipleVars();
-
-	if(ScanCut){//Scan variables for optimized cuts
-		BDTCutScanTwoDirections( NueCC, {Onepi0, NumuCC, InCryoOther, dirt, ext}, allVar);
-		return;
-	}
 
 
 	// Start making histograms --------------------------------------------------------------------
@@ -85,20 +63,14 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 		TString leg_title ;
 
 		//Prepare signals, overlay them;
-//		axion003.AddDefinition(Precut);
-//		TH1D* haxion003 = drawTH1D(axion003, temp_var);
-//		haxion003->SetFillColorAlpha( axion003.GetCol(), 0.9); 
-//		haxion003->SetLineWidth(3);
-//		haxion003->SetLineColor(axion003.GetCol());
-//		leg_title = axion003.GetSampleName() + Form(" %.1lf",haxion003->Integral());
-//		leg->AddEntry( haxion003, leg_title, "fl");
-
-//		axion003T.AddDefinition(Precut);
-//		TH1D* haxion003T = drawTH1D(axion003T, temp_var);
-//		haxion003T->SetFillColorAlpha( axion003T.GetCol(), 0.9); 
-//		haxion003T->SetLineWidth(3);
-//		haxion003T->SetLineColor(axion003T.GetCol());
-//		leg_title = axion003T.GetSampleName() + Form(" %.1lf",haxion003->Integral());
+		axion0093.AddDefinition(Precut);
+		TH1D* haxion0093 = drawTH1D(axion0093, temp_var);
+		haxion0093->Scale(axion0093.GetScale()*PlotPOT/data.GetPOT());
+		haxion0093->SetFillColorAlpha( axion0093.GetCol(), 0.9); 
+		haxion0093->SetLineWidth(3);
+		haxion0093->SetLineColor(axion0093.GetCol());
+		leg_title = axion0093.GetSampleName() + Form(" %.1lf",haxion0093->Integral());
+		leg->AddEntry( haxion0093, leg_title, "fl");
 	
 
 		axion0146.AddDefinition(Precut);
@@ -130,6 +102,7 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 		THStack *hs = new THStack(RandomName(), "");// Create Stack
 		TH1D* errorHist = nullptr;// Create a empty hist for storing all bkgs
 		TH1D* MCOnly = nullptr;
+		TH1D* FVMCOnly = nullptr;
 
 		for (size_t i = 0; i < vecSamples.size(); ++i) {
 
@@ -147,6 +120,14 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 			std::cout<<PrintHist(hist);
 
 			hs->Add(hist);
+
+			// BEFORE last two samples: snapshot FVMC-only
+			if (i + 2 == vecSamples.size() && !MCOnly) {
+				FVMCOnly = (TH1D*)errorHist->Clone("FVMCOnly");
+				FVMCOnly->SetDirectory(nullptr);
+				std::cout << "FVMCOnly snapshot created\n";
+				PrintHist(FVMCOnly);
+			}
 
 			// BEFORE last sample: snapshot MC-only
 			if (i + 1 == vecSamples.size() && !MCOnly) {
@@ -190,10 +171,10 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 			std::cout<<"Draw systematic errors "<<std::endl;
 			//Gonnd hard code the uncertainties here..
 //			std::vector<double> fr = {0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1};
-//			std::vector<double> fr = {0.0892624, 0.864922, 0.550454, 0.60766, 2.10327, 0.41591, 0.616056, 0.884531, 0.719103, 0.692357};
-//			AddFractionalSystematics( errorHist, fr);
-			AddFractionalSystematics( errorHist, temp_var.GetFracSys(), errorHist);//Wrong Sys*
-//			mc_leg_title = Form("Stat. & Sys. Error | Bkg Sum: %.1lf",errorHist->Integral());
+			std::vector<double> fr = temp_var.GetFracSys();
+
+			AddFractionalSystematics( errorHist, fr, FVMCOnly);
+
 			mc_leg_title = Form("Stat. & Sys. Uncertainties | Bkg Sum: %.1lf",errorHist->Integral());
 
 		}
@@ -212,17 +193,8 @@ void TTree2StackOverlays_run1FHC_axion3massPoints(){
 
 		WriteJSON( JSONfileName.Data(), store);
 
-		if(show_training){
-			ExportPNG_StackDataTwoSignal_wLabel({haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
-		}else{
-			ExportPNG_StackDataTwoSignal_wLabel({haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) + "_CutTag"+ Precut.CountChar('&') , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
-		}
+		ExportPNG_StackDataTwoSignal_wLabel({haxion0093, haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) + "_CutTag"+ Precut.CountChar('&') , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
 
 	}//Next variable
-
-//	std::ofstream outFile("output.txt");
-//	std::string output_text = text_buffer.str();
-//	outFile<<output_text;
-//	outFile.close();
 
 }

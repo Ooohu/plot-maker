@@ -514,9 +514,10 @@ void PrintMultiSimVariation(
 
 //Modify histogram and add systematic errors as uncorrelated errors
 void AddFractionalSystematics(TH1D* errorHist,
-                              const std::vector<double>& frac_err)
+                              const std::vector<double>& frac_err,
+							  const TH1D* justMC )
 {
-    if (!errorHist) return;
+    if (!errorHist || !justMC) return;
 
     int nBins = errorHist->GetNbinsX();
 
@@ -529,12 +530,12 @@ void AddFractionalSystematics(TH1D* errorHist,
     }
 
     for (int i = 1; i <= nBins; ++i) {
-        double content = errorHist->GetBinContent(i);
-        double statErr = errorHist->GetBinError(i);
+        double ErrFromContent = justMC->GetBinContent(i);
+        double statErrOrig = errorHist->GetBinError(i);
 
-        double systErr = frac_err[i-1] * content;
+        double systErr = frac_err[i-1] * ErrFromContent;
 
-        double totalErr = std::sqrt(statErr*statErr +
+        double totalErr = std::sqrt(statErrOrig*statErrOrig +
                                     systErr*systErr);
 
         errorHist->SetBinError(i, totalErr);

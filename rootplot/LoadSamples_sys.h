@@ -212,12 +212,12 @@ Samples LoadR2a_CVFHC( TString mTag ){
 	//<directory>/<classifier>_<sample>_app.root
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "R2a_CVFHC");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "R2a_CVFHC");
-//	tmpSample.AddFriend(FDir+"klin_NuMI_sys_R2a_CVFHC.root", "singlephotonana/eventweight_tree");//gonna need additional weights if not for DetVar
+	tmpSample.AddFriend(FDir+"klin_NuMI_sys_R2a_CVFHC.root", "singlephotonana/eventweight_tree");//gonna need additional weights if not for DetVar
 
 
 //	tmpSample.SetScale(3);
 	tmpSample.SetPOT(2.46568e+21);
-//	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); //DetVar samples don't need this
+	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); //DetVar samples don't need this
 
 	return tmpSample;
 };

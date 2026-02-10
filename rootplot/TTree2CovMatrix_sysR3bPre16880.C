@@ -5,32 +5,34 @@
 #include <sstream>
 
 #include "LoadSamples_sys.h"
-#include "VarsList_Run1FHC.C"
+#include "LoadStyles.h"
+//#include "VarsList_BDT.C"
+#include "VarsList_R3.C"
 
 #include "CommonCut.C"
 
 
-void TTree2CovMatrix_sysR1(){
+void TTree2CovMatrix_sysR3bPre16880(){
 	//Configure class Samples: name, input file, tree name, cut
 	//DIR /pnfs/uboone/persistent/users/klin/MCC9/ntuples
 
-	TString Label = "R1sys";
+	TString Label = "R3sys";
 
 	std::vector< TString > tag={"ma0146"};
 	//	std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
 //	std::stringstream text_buffer;
 	
-//	Samples sampleCV						= LoadR1_CVRHC						(tag[0]);
-	Samples sampleCV						= LoadR1_CVFHC						(tag[0]);
-	Samples sampleLYDown					= LoadR1_DetVarLYDown					(tag[0]);
-	Samples sampleAlternativeSCMap			= LoadR1_DetVarAlternativeSCMap			(tag[0]);
-	Samples sampleAlternativeRecombination	= LoadR1_DetVarAlternativeRecombination (tag[0]);
-	Samples sampleLYRayleigh				= LoadR1_DetVarLYRayleigh				(tag[0]);
-	Samples sampleWireModX					= LoadR1_DetVarWireModX					(tag[0]);
-	Samples sampleWireModThetaXZ			= LoadR1_DetVarWireModThetaXZ			(tag[0]);
-	Samples sampleWireModThetaYZ			= LoadR1_DetVarWireModThetaYZ			(tag[0]);
-	Samples sampleWireModYZ				    = LoadR1_DetVarWireModYZ				(tag[0]);
-	std::vector<Samples> vecSamples = { sampleLYDown, sampleAlternativeSCMap, sampleAlternativeRecombination, sampleLYRayleigh, sampleWireModX, sampleWireModThetaXZ, sampleWireModThetaYZ, sampleWireModYZ };
+	Samples sampleCV						= LoadR3b_CVRHC						(tag[0]);
+	Samples sampleLYDown					= LoadR3b_DetVarLYDown					(tag[0]);
+	Samples sampleAlternativeSCMap			= LoadR3b_DetVarAlternativeSCMap			(tag[0]);
+	Samples sampleAlternativeRecombination	= LoadR3b_DetVarAlternativeRecombination (tag[0]);
+	Samples sampleLYRayleigh				= LoadR3b_DetVarLYRayleigh				(tag[0]);
+	Samples sampleWireModX					= LoadR3b_DetVarWireModX					(tag[0]);
+//	Samples sampleWireModThetaXZ			= LoadR3b_DetVarWireModThetaXZ			(tag[0]);
+	Samples sampleWireModThetaYZ			= LoadR3b_DetVarWireModThetaYZ			(tag[0]);
+	Samples sampleWireModYZ				    = LoadR3b_DetVarWireModYZ				(tag[0]);
+	std::vector<Samples> vecSamples = { sampleLYDown, sampleAlternativeSCMap, sampleAlternativeRecombination, sampleLYRayleigh, sampleWireModX, sampleWireModThetaYZ, sampleWireModYZ };
+//	std::vector<Samples> vecSamples = { sampleLYDown, sampleAlternativeSCMap, sampleAlternativeRecombination, sampleLYRayleigh, sampleWireModX, sampleWireModThetaXZ, sampleWireModThetaYZ, sampleWireModYZ };
 
 
 
@@ -107,12 +109,19 @@ void TTree2CovMatrix_sysR1(){
 		leg->SetTextSize(0.05);
 
 //			ExportPNG_StackDataTwoSignal_wLabel({hsampleCV}, hs, hsampleCV, hsampleCV, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
-		draw_variations( hsampleCV, allhists, leg, MakeSafeName(Label+ "_Variations_" +temp_var.GetAxisLabel() ), + "_CutTag"+ Precut.CountChar('&'), "Event Rate at 2E21 POT", temp_var.GetIsLog());
+		draw_variations( hsampleCV, allhists, leg, MakeSafeName(Label+ "_Variations_" +temp_var.GetAxisLabel() ), temp_var.GetAxisLabel(), "Event Rate at 2E21 POT", temp_var.GetIsLog());
 
-//		draw_FractionalDifference( hsampleCV, allhists, leg, MakeSafeName(Label+ "_FracDiff_" +temp_var.GetAxisLabel() ), temp_var.GetAxisLabel(), "%Diff respected to CV");
+		draw_FractionalDifference( hsampleCV, allhists, leg, MakeSafeName(Label+ "_FracDiff_" +temp_var.GetAxisLabel() ), temp_var.GetAxisLabel(), "%Diff respected to CV");
 
-		draw_CovMatrix( hsampleCV, allhists,  MakeSafeName(Label+"_CovMatrix_"+temp_var.GetAxisLabel()) + "_CutTag"+ Precut.CountChar('&') , sample_labels, "Covariance Matrix");
+		draw_CovMatrix( hsampleCV, allhists,  MakeSafeName(Label+"_CovMatrix_"+temp_var.GetAxisLabel()), sample_labels, "Covariance Matrix");
+
+//		draw_2DHist(sampleCV, vecSamples, temp_var, Label );
 
 	}//Next variable
+
+//	std::ofstream outFile("output_sysR1.txt");
+//	std::string output_text = text_buffer.str();
+//	outFile<<output_text;
+//	outFile.close();
 
 }

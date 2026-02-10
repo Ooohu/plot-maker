@@ -27,6 +27,26 @@ Samples LoadAxions011(TString mTag){
     return axion;
 };
 
+
+Samples LoadAxions0093(TString mTag){
+    Samples axion("0.093 GeV Axion (RND)",
+                  "/pnfs/uboone/persistent/users/klin/MCC9/axions_localgpvm_storage/singlemasspoint/axions_numiRun1_mesonmixing_ma0093_v1_zlt40m.root",
+                  "singlephotonana/vertex_tree", COMMONCUT_s);
+
+    axion.SetScale(1000/46500.0);
+    axion.SetPlotStyle(kOrange, 0);
+    axion.SetPOT(2e21);
+
+//    axion.AddFriendViaTag_v2(TrainDir_s, mTag+"PionClassifier", "Axionma0146");
+    axion.AddFriendViaTag_v2(TrainDir_s, mTag+"PionAccurateClassifier", "Axionma0093");
+	axion.AddFriendViaTag_v2(TrainDir_s, "Pi0CosmicClassifier",			"Axionma0093");
+
+    return axion;
+};
+
+
+
+
 Samples LoadAxions0146(TString mTag){
     Samples axion("0.146 GeV Axion (RND)",
                   "/pnfs/uboone/persistent/users/klin/MCC9/axions_localgpvm_storage/singlemasspoint/axions_numiRun1_mesonmixing_ma0146_v1_zlt40m.root",

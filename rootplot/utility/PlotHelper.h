@@ -637,19 +637,21 @@ void	draw_CovMatrix(const TH1D* CV,
 				std::cout << std::sqrt(VarOfBins[i]) /CV->GetBinContent(i+1) << ", ";
 			}
 
-			std::cout<<"\nTotal fractional uncertainties (exclude stat. unc.): ";
-			for (size_t i = 0; i < VarOfBins.size(); ++i) {
-				std::cout << std::sqrt(VarOfBins[i] - CV->GetBinContent(i+1))/CV->GetBinContent(i+1) << ", ";
-			}
+//			std::cout<<"\nTotal fractional uncertainties (exclude stat. unc.): ";
+//			for (size_t i = 0; i < VarOfBins.size(); ++i) {
+//				std::cout << std::sqrt(VarOfBins[i] - CV->GetBinContent(i+1))/CV->GetBinContent(i+1) << ", ";
+//			}
 			std::cout<<"\n"<<std::endl;
 		}
 
 
 
-		//--- Save output
-		c1->cd();
-		c1->SaveAs("output/"+SafeName + ".pdf");
-		c1->SaveAs("output/"+SafeName + ".png");
+		//--- Save output for small bins
+		if(CV->GetNbinsX() < 5){
+			c1->cd();
+			c1->SaveAs("output/"+SafeName + ".pdf");
+			c1->SaveAs("output/"+SafeName + ".png");
+		}
 
 }
 

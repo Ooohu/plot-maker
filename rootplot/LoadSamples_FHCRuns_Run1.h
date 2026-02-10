@@ -6,7 +6,7 @@ static const TString FDir="/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteT
 //static const TString TrainDir="/exp/uboone/app/users/klin/2024Jun_ub_AxionAnalysis/BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIFHCRuns_2s0t_Jan2026/";
 static const TString TrainDir="/exp/uboone/app/users/klin/2024Jun_ub_AxionAnalysis/BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIAllMC_2s0t_Jan2026/";
 
-Samples LoadRun1All( TString mTag ){
+Samples LoadRun1FHCAll( TString mTag ){
 	Samples tmpSample("AllMC", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree",COMMONCUT);
 
 
@@ -27,7 +27,7 @@ Samples LoadRun1All( TString mTag ){
 
 
 //New Categories!
-Samples LoadRun1Onepi0( TString mTag ){
+Samples LoadRun1FHCOnepi0( TString mTag ){
 	Samples tmpSample("1#pi^{0}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","mctruth_num_exiting_pi0==1 &&"+COMMONCUT);
 
 
@@ -45,7 +45,7 @@ Samples LoadRun1Onepi0( TString mTag ){
 };
 
 
-Samples LoadRun1NueCC( TString mTag ){
+Samples LoadRun1FHCNueCC( TString mTag ){
 
 	Samples tmpSample("CC#nu_{e}/#bar{#nu_{e}}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==12 && "+COMMONCUT);
 
@@ -63,7 +63,7 @@ Samples LoadRun1NueCC( TString mTag ){
 	return tmpSample;
 };
 
-Samples LoadRun1NumuCC( TString mTag ){
+Samples LoadRun1FHCNumuCC( TString mTag ){
 
 	Samples tmpSample("CC#nu_{#mu}/#bar{#nu_{#mu}}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==14 && "+COMMONCUT);
 
@@ -83,7 +83,7 @@ Samples LoadRun1NumuCC( TString mTag ){
 
 
 
-Samples LoadRun1OtherCC( TString mTag ){//empty
+Samples LoadRun1FHCOtherCC( TString mTag ){//empty
 
 	Samples tmpSample("Other CC", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1 ) && mctruth_cc_or_nc==0&&!(fabs(mctruth_nu_pdg)==12) &&!(fabs(mctruth_nu_pdg)==14)&& "+COMMONCUT);
 
@@ -101,7 +101,7 @@ Samples LoadRun1OtherCC( TString mTag ){//empty
 };
 
 
-Samples LoadRun1InCryoOther( TString mTag ){
+Samples LoadRun1FHCInCryoOther( TString mTag ){
 	Samples tmpSample("InCryoOther", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1 ) && mctruth_cc_or_nc==1 && "+COMMONCUT);
 
 	tmpSample.SetPlotStyle(kMagenta+3,1001);
@@ -118,7 +118,7 @@ Samples LoadRun1InCryoOther( TString mTag ){
 };
 
 
-Samples LoadRun1Dirt( TString mTag ){
+Samples LoadRun1FHCDirt( TString mTag ){
 
 	Samples tmpSample("Dirt (OutsideCryo)  x.72","/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run1dirt_luis_goodweight_2s0t.root","vertex_tree","1");
 

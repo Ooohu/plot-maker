@@ -10,26 +10,25 @@
 #include "CommonCut.C"
 
 
-void TTree2CovMatrix_sysR1(){
+void TTree2CovMatrix_TEMPLATE(){
 	//Configure class Samples: name, input file, tree name, cut
 	//DIR /pnfs/uboone/persistent/users/klin/MCC9/ntuples
 
-	TString Label = "R1sys";
+	TString Label = "TEMPLATEsys_Unisim";
 
 	std::vector< TString > tag={"ma0146"};
 	//	std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
 //	std::stringstream text_buffer;
 	
-//	Samples sampleCV						= LoadR1_CVRHC						(tag[0]);
-	Samples sampleCV						= LoadR1_CVFHC						(tag[0]);
-	Samples sampleLYDown					= LoadR1_DetVarLYDown					(tag[0]);
-	Samples sampleAlternativeSCMap			= LoadR1_DetVarAlternativeSCMap			(tag[0]);
-	Samples sampleAlternativeRecombination	= LoadR1_DetVarAlternativeRecombination (tag[0]);
-	Samples sampleLYRayleigh				= LoadR1_DetVarLYRayleigh				(tag[0]);
-	Samples sampleWireModX					= LoadR1_DetVarWireModX					(tag[0]);
-	Samples sampleWireModThetaXZ			= LoadR1_DetVarWireModThetaXZ			(tag[0]);
-	Samples sampleWireModThetaYZ			= LoadR1_DetVarWireModThetaYZ			(tag[0]);
-	Samples sampleWireModYZ				    = LoadR1_DetVarWireModYZ				(tag[0]);
+	Samples sampleCV						= LoadTEMPLATE	(tag[0]);
+	Samples sampleLYDown					= LoadFLYD		(tag[0]);
+	Samples sampleAlternativeSCMap			= LoadFASC		(tag[0]);
+	Samples sampleAlternativeRecombination	= LoadFARECO	(tag[0]);
+	Samples sampleLYRayleigh				= LoadFLYR		(tag[0]);
+	Samples sampleWireModX					= LoadFWMX		(tag[0]);
+	Samples sampleWireModThetaXZ			= LoadFWMTXZ	(tag[0]);
+	Samples sampleWireModThetaYZ			= LoadFWMTYZ	(tag[0]);
+	Samples sampleWireModYZ				    = LoadFWMYZ		(tag[0]);
 	std::vector<Samples> vecSamples = { sampleLYDown, sampleAlternativeSCMap, sampleAlternativeRecombination, sampleLYRayleigh, sampleWireModX, sampleWireModThetaXZ, sampleWireModThetaYZ, sampleWireModYZ };
 
 
