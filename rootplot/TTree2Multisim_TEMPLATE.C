@@ -5,7 +5,7 @@
 #include <sstream>
 
 #include "LoadSamples_sys.h"
-#include "VarsList_Run1FHC.C"
+#include "VarsList.C"
 
 #include "CommonCut.C"
 
@@ -13,40 +13,42 @@
 
 
 void TTree2Multisim_TEMPLATE(){
-    //Configure class Samples: name, input file, tree name, cut
-    //DIR /pnfs/uboone/persistent/users/klin/MCC9/ntuples
+	//Configure class Samples: name, input file, tree name, cut
+	//DIR /pnfs/uboone/persistent/users/klin/MCC9/ntuples
 
-    TString Label = "TEMPLATEsys_Multisim";
-    std::vector< TString > tag={"ma0146"};
-    //    std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
-//    std::stringstream text_buffer;
+	TString Label = "Sys_Multisim_TEMPLATE";
+	std::vector< TString > tag={"ma0146"};
+	//    std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
+	//    std::stringstream text_buffer;
 
-    Samples sampleCV    = LoadTEMPLATE (tag[0]);
+	Samples sampleCV    = LoadTEMPLATE (tag[0]);
 
-    int NumUNIGenie = NGENIE;//600
-    int NumUNIReInt = NREINT;//1000
-    int NumUNIFlux = NFLUX;//600
-
-
+	int NumUNIGenie = NGENIE;//600
+	int NumUNIReInt = NREINT;//1000
+	int NumUNIFlux = NFLUX;//600
 
 
-    // PREPARE SAMPLES -----------------------------------------------------------------
-//    double PlotPOT = 2.37E20;//R1
-    double PlotPOT = 2E21;
 
-    // PRECUT --------------------------------------------------------------------------------
-    TString Precut = GetCut();
 
-    // Configure class Var: varaibles, axis name, binnings  ----------------------------------
-    std::vector< Vars> allVar = SetMultipleVars();
+	// PREPARE SAMPLES -----------------------------------------------------------------
+	//    double PlotPOT = 2.37E20;//R1
+	double PlotPOT = 2E21;
 
-//SO THIS IS GONNA BE DIFFERNT, only one file is needed, 
-// CV holds weight_cv*weight_spline*ppfx_cv_UBPPFXCV OR weightSplineTimesTune
-// Varaitions holds weight_cv*weight_spline*ppfx_ms_UBPPFX[i]
+	// PRECUT --------------------------------------------------------------------------------
+	TString Precut = GetCut();
+	sampleCV.AddDefinition( Precut);
 
-    //--> Draw Stacked Histograms
+	// Configure class Var: varaibles, axis name, binnings  ----------------------------------
+	std::vector< Vars> allVar = SetMultipleVars();
+
+	//SO THIS IS GONNA BE DIFFERNT, only one file is needed, 
+	// CV holds weight_cv*weight_spline*ppfx_cv_UBPPFXCV OR weightSplineTimesTune
+	// Varaitions holds weight_cv*weight_spline*ppfx_ms_UBPPFX[i]
+
+	//--> Draw Stacked Histograms
 	ROOT::EnableImplicitMT();  // multithreading
-    for(Vars & temp_var : allVar){
+	int Counter = 0;
+	for(Vars & temp_var : allVar){
 
 		if(NumUNIGenie>0){//GenieVariatinos
 			auto hists = makeHists_RDF(
@@ -60,6 +62,7 @@ void TTree2Multisim_TEMPLATE(){
 
 			// --- Style and scale CV ---
 			TH1D* cv = hists.cv.GetPtr();
+			cv->SetDirectory(0);//Not solving the problem, so may not work;
 			MakeBeautiHistCV(cv);
 			cv->Scale(scale);
 			std::cout << sampleCV.GetSampleName() << "\n Genie CV integral: " << cv->Integral() << std::endl;
@@ -69,16 +72,18 @@ void TTree2Multisim_TEMPLATE(){
 			std::vector<TH1D*> universes;
 			for (auto& u : hists.univ) {
 				TH1D* hu = u.GetPtr();
+				hu->SetDirectory(0);
 				MakeBeautiHistVariations(hu, lightColor);
 				hu->Scale(scale);
 				universes.push_back(hu);//Fill vector<TH1D*>
 			}
+			std::cout<<std::endl;
 
 			// --- Legend ---
 			TLegend* leg = LoadLegend();
 			leg->SetTextSize(0.15);
 			leg->AddEntry(cv, sampleCV.GetSampleName(), "fl");
-			leg->AddEntry(hists.univ[0].GetPtr(), "#splitline{Variations:}{Genie XSec.}", "fl");
+			leg->AddEntry(hists.univ[0].GetPtr(), Form("#splitline{%dVariations:}{Genie XSec.}", NumUNIGenie), "fl");
 
 			// --- Draw everything ---
 			draw_variations_v2(
@@ -89,14 +94,13 @@ void TTree2Multisim_TEMPLATE(){
 					temp_var.GetIsLog()
 					);
 
-			TH2D* hCov = BuildCovarianceMatrix( cv, universes);
-
-			PrintHist(cv);
-			PrintSysErrFromCov( cv, hCov);
+			std::cout<<"Summary of Genie universes"<<std::endl;
+			std::cout<<PrintSysError(cv, universes);
 
 		}
 
 
+		Counter = 0;//Reset
 		if(NumUNIReInt>0){//ReIntVariatinos
 			auto hists = makeHists_RDF(
 					sampleCV, temp_var, 
@@ -109,6 +113,7 @@ void TTree2Multisim_TEMPLATE(){
 
 			// --- Style and scale CV ---
 			TH1D* cv = hists.cv.GetPtr();
+			cv->SetDirectory(0);
 			MakeBeautiHistCV(cv);
 			cv->Scale(scale);
 			std::cout << sampleCV.GetSampleName() << " ReInt CV integral: " << cv->Integral() << std::endl;
@@ -118,10 +123,12 @@ void TTree2Multisim_TEMPLATE(){
 			std::vector<TH1D*> universes;
 			for (auto& u : hists.univ) {
 				TH1D* hu = u.GetPtr();
+				hu->SetDirectory(0);
 				MakeBeautiHistVariations(hu, lightColor);
 				hu->Scale(scale);
 				universes.push_back(hu);//Fill vector<TH1D*>
 			}
+			std::cout<<std::endl;
 
 
 			// --- Legend ---
@@ -139,12 +146,12 @@ void TTree2Multisim_TEMPLATE(){
 					temp_var.GetIsLog()
 					);
 
-			TH2D* hCov = BuildCovarianceMatrix( cv, universes);
-
-			PrintHist(cv);
-			PrintSysErrFromCov( cv, hCov);
+			std::cout<<"Summary of Reint universes"<<std::endl;
+			std::cout<<PrintSysError(cv, universes);
 		}
 
+
+		Counter = 0;//Reset
 		if(NumUNIFlux>0){//FluxVariatinos
 			auto hists = makeHists_RDF(
 					sampleCV, temp_var, 
@@ -157,6 +164,7 @@ void TTree2Multisim_TEMPLATE(){
 
 			// --- Style and scale CV ---
 			TH1D* cv = hists.cv.GetPtr();
+			cv->SetDirectory(0);
 			MakeBeautiHistCV(cv);
 			cv->Scale(scale);
 			std::cout << sampleCV.GetSampleName() << " Flux CV integral: " << cv->Integral() << std::endl;
@@ -166,10 +174,12 @@ void TTree2Multisim_TEMPLATE(){
 			std::vector<TH1D*> universes;
 			for (auto& u : hists.univ) {
 				TH1D* hu = u.GetPtr();
+				hu->SetDirectory(0);
 				MakeBeautiHistVariations(hu, lightColor);
 				hu->Scale(scale);
 				universes.push_back(hu);//Fill vector<TH1D*>
 			}
+			std::cout<<std::endl;
 
 			// --- Legend ---
 			TLegend* leg = LoadLegend();
@@ -186,12 +196,10 @@ void TTree2Multisim_TEMPLATE(){
 					temp_var.GetIsLog()
 					);
 
-			TH2D* hCov = BuildCovarianceMatrix( cv, universes);
-
-			PrintHist(cv);
-			PrintSysErrFromCov( cv, hCov);
+			std::cout<<"Summary of Flux universes"<<std::endl;
+			std::cout<<PrintSysError(cv, universes);
 
 		}
 
-    }//Next variable
+	}//Next variable
 }

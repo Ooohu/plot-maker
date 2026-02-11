@@ -230,12 +230,12 @@ Samples LoadR2a_DetVarAlternativeRecombination( TString mTag ){
 	//<directory>/<classifier>_<sample>_app.root
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "R2a_AlternativeRecombination");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "R2a_AlternativeRecombination");
-//	tmpSample.AddFriend(FDir+"klin_NuMI_sys_R2a_DetVarAlternativeRecombination.root", "singlephotonana/eventweight_tree");//gonna need additional weights if not for DetVar
+	tmpSample.AddFriend(FDir+"klin_NuMI_sys_R2a_DetVarAlternativeRecombination.root", "singlephotonana/eventweight_tree");//gonna need additional weights if not for DetVar
 
 
 //	tmpSample.SetScale(3);
 	tmpSample.SetPOT(1.07925e+21);
-//	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); //DetVar samples don't need this
+	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); //DetVar samples don't need this
 
 	return tmpSample;
 };
@@ -410,12 +410,12 @@ Samples LoadR2b_CVRHC( TString mTag ){
 	//<directory>/<classifier>_<sample>_app.root
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "R2b_CVRHC");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "R2b_CVRHC");
-//	tmpSample.AddFriend(FDir+"klin_NuMI_sys_R2b_CVRHC.root", "singlephotonana/eventweight_tree");//gonna need additional weights if not for DetVar
+	tmpSample.AddFriend(FDir+"klin_NuMI_sys_R2b_CVRHC.root", "singlephotonana/eventweight_tree");//gonna need additional weights if not for DetVar
 
 
 //	tmpSample.SetScale(3);
 	tmpSample.SetPOT(5.55244e+21);
-//	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); //DetVar samples don't need this
+	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); //DetVar samples don't need this
 
 	return tmpSample;
 };
@@ -969,12 +969,12 @@ Samples LoadR4c_CVFHC( TString mTag ){
 	//<directory>/<classifier>_<sample>_app.root
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "R4c_CVFHC");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "R4c_CVFHC");
-//	tmpSample.AddFriend(FDir+"klin_NuMI_sys_R4c_CVFHC.root", "singlephotonana/eventweight_tree");//gonna need additional weights if not for DetVar
+	tmpSample.AddFriend(FDir+"klin_NuMI_sys_R4c_CVFHC.root", "singlephotonana/eventweight_tree");//gonna need additional weights if not for DetVar
 
 
 //	tmpSample.SetScale(3);
 	tmpSample.SetPOT(8.07896e+20);
-//	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); //DetVar samples don't need this
+	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); //DetVar samples don't need this
 
 	return tmpSample;
 };

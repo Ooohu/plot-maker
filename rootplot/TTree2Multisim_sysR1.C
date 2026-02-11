@@ -5,9 +5,8 @@
 #include <sstream>
 
 #include "LoadSamples_sys.h"
-#include "LoadStyles.h"
 //#include "VarsList_BDT.C"
-#include "VarsList_R1.C"
+#include "VarsList.C"
 
 #include "CommonCut.C"
 

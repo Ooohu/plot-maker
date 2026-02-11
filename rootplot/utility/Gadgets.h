@@ -228,6 +228,63 @@ std::vector<double> HistToErr(const TH1D* h) {
 }
 
 
+std::string PrintSysError(const TH1D* hCV,
+                          const std::vector<TH1D*>& variations)
+{
+    if (!hCV || variations.empty())
+        return "Error: Invalid input";
+
+    const int nBins = hCV->GetNbinsX();
+    const int nVars = variations.size();
+
+    std::ostringstream cvStream;
+    std::ostringstream uncStream;
+    std::ostringstream fracStream;
+
+    cvStream  << "\nSummary CV: ";
+    uncStream << "\nSummary Uncertainty: ";
+    fracStream<< "\nSummary Fractional uncertainties: ";
+
+    for (int i = 1; i <= nBins; ++i) {
+
+        double cv = hCV->GetBinContent(i);
+        double sqSum = 0.0;
+
+        for (const auto& var : variations) {
+            if (!var) continue;
+            double diff = var->GetBinContent(i) - cv;
+            sqSum += diff * diff;
+        }
+
+        // RMS systematic (multisim style)
+        double sys = std::sqrt(sqSum / nVars);
+
+        double frac = (cv != 0.0) ? sys / cv : 0.0;
+
+        // Append values
+        cvStream   << cv;
+        uncStream  << sys;
+        fracStream << frac;
+
+        if (i != nBins) {
+            cvStream   << ",";
+            uncStream  << ",";
+            fracStream << ",";
+        }
+    }
+
+    std::string result =
+        cvStream.str() + "\n" +
+        uncStream.str() + "\n" +
+        fracStream.str() + "\n";
+
+    std::cout << result << std::endl;
+
+    return result;
+}
+
+
+
 std::string PrintHist(TH1D* tmp_hist){
 //		std::cout<<" sum: "<<tmp_hist->Integral()<<std::endl;
 	std::stringstream tmptext_buffer;

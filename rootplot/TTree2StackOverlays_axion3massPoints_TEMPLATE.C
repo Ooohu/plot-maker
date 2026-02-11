@@ -25,7 +25,7 @@ void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 	// PREPARE SAMPLES -----------------------------------------------------------------
 	TString axiontag = tag[0];//"ma003";
 	TString JSONfileName="JSON_output/"+axiontag+"_TEMPLATE.json";
-	TString Label = "NuMIaxions_TEMPLATE"+axiontag+"_2s0t_threeMassPoints";
+	TString Label = "NuMIaxions_3mp2s0t_TEMPLATE"+axiontag+"_";
 
 	Samples axion0093		= LoadAxions0093	(axiontag);
 	Samples axion0146		= LoadAxions0146	(axiontag);

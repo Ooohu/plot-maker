@@ -5,7 +5,7 @@
 #include <sstream>
 
 #include "LoadSamples_sys.h"
-#include "VarsList_Run1FHC.C"
+#include "VarsList.C"
 
 #include "CommonCut.C"
 
@@ -35,8 +35,8 @@ void TTree2Multisim_sysR1_v2(){
     // Configure class Var: varaibles, axis name, binnings  ----------------------------------
     std::vector< Vars> allVar = SetMultipleVars();
 
-    int NumUNIGenie = 600;//600
-    int NumUNIReInt = 1000;//1000
+    int NumUNIGenie = 6;//600
+    int NumUNIReInt = 2;//1000
     int NumUNIFlux = 0;//600 -- missing flux variations;
 
 //SO THIS IS GONNA BE DIFFERNT, only one file is needed, 

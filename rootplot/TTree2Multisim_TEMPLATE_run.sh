@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
-#tags=(Run1FHC)
 
-#tags=(R1_CVFHC)
-#NGe=(2)
-#NRe=(2)
-#NFl=(0)
+tags=(R1_CVFHC R2a_CVFHC)
+NGe=(600 600)
+NRe=(1000 1000)
+NFl=(0 600)
 
-tags=(R2a_CVFHC)
-NGe=(10)
-NRe=(10)
-NFl=(10)
+#tags=(R2a_CVFHC)
+#NGe=(10)
+#NRe=(10)
+#NFl=(10)
+
+#tags=(R2b_CVRHC)
+#NGe=(10)
+#NRe=(10)
+#NFl=(10)
+
 
 
 template=TTree2Multisim_TEMPLATE.C
@@ -28,8 +33,9 @@ for i in "${!tags[@]}"; do
       -e "s/NFLUX/${nfl}/g" \
       "$template" \
     > "TTree2Multisim_${tag}.C"
-
-  root -l -b -q TTree2Multisim_${tag}.C
-  echo "Save scripts!"
-  mv TTree2Multisim_${tag}.C ./Saved_scripts
+  
+  out=TTree2Multisim_${tag}.C
+  root -l -b -q ${out}
+  echo "Save scripts! ${out}" 
+  mv ${out} ./Saved_scripts
 done

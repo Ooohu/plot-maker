@@ -1,14 +1,25 @@
 #!/usr/bin/env bash
+tags=(R1_CVFHC R2a_CVFHC)
 
-tags=(R1_CVFHC)
-File1=(R1_DetVarLYDown)
-File2=(R1_DetVarAlternativeSCMap)
-File3=(R1_DetVarAlternativeRecombination)
-File4=(R1_DetVarLYRayleigh)
-File5=(R1_DetVarWireModX)
-File6=(R1_DetVarWireModThetaXZ)
-File7=(R1_DetVarWireModThetaYZ)
-File8=(R1_DetVarWireModYZ)
+File1=(R1_DetVarLYDown              R2a_DetVarLYDown)
+File2=(R1_DetVarAlternativeSCMap    R2a_DetVarAlternativeSCMap)
+File3=(R1_DetVarAlternativeRecombination R2a_DetVarAlternativeRecombination)
+File4=(R1_DetVarLYRayleigh          R2a_DetVarLYRayleigh)
+File5=(R1_DetVarWireModX            R2a_DetVarWireModX)
+File6=(R1_DetVarWireModThetaXZ      R2a_DetVarWireModThetaXZ)
+File7=(R1_DetVarWireModThetaYZ      R2a_DetVarWireModThetaYZ)
+File8=(R1_DetVarWireModYZ           R2a_DetVarWireModYZ)
+
+
+#tags=(R2a_CVFHC)
+#File1=(R2a_DetVarLYDown)
+#File2=(R2a_DetVarAlternativeSCMap)
+#File3=(R2a_DetVarAlternativeRecombination)
+#File4=(R2a_DetVarLYRayleigh)
+#File5=(R2a_DetVarWireModX)
+#File6=(R2a_DetVarWireModThetaXZ)
+#File7=(R2a_DetVarWireModThetaYZ)
+#File8=(R2a_DetVarWireModYZ)
 
 template=TTree2CovMatrix_TEMPLATE.C
 

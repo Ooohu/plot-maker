@@ -5,7 +5,7 @@
 #include <sstream>
 
 #include "LoadSamples_sys.h"
-#include "VarsList_Run1FHC.C"
+#include "VarsList.C"
 
 #include "CommonCut.C"
 
@@ -14,7 +14,7 @@ void TTree2CovMatrix_TEMPLATE(){
 	//Configure class Samples: name, input file, tree name, cut
 	//DIR /pnfs/uboone/persistent/users/klin/MCC9/ntuples
 
-	TString Label = "TEMPLATEsys_Unisim";
+	TString Label = "Sys_Unisim_TEMPLATE";
 
 	std::vector< TString > tag={"ma0146"};
 	//	std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
@@ -54,6 +54,8 @@ void TTree2CovMatrix_TEMPLATE(){
 
 	//--> Draw Stacked Histograms
 	for(Vars & temp_var : allVar){
+		std::cout<<"Look at variable:\n"<<temp_var.GetAxisLabel()<<std::endl;
+
 		std::vector< TString > sample_labels = {};
 		TLegend *leg = LoadSideLegend(); //Add legends
 		TString leg_title ;
@@ -106,7 +108,7 @@ void TTree2CovMatrix_TEMPLATE(){
 		leg->SetTextSize(0.05);
 
 //			ExportPNG_StackDataTwoSignal_wLabel({hsampleCV}, hs, hsampleCV, hsampleCV, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
-		draw_variations( hsampleCV, allhists, leg, MakeSafeName(Label+ "_Variations_" +temp_var.GetAxisLabel() ), + "_CutTag"+ Precut.CountChar('&'), "Event Rate at 2E21 POT", temp_var.GetIsLog());
+		draw_variations( hsampleCV, allhists, leg, MakeSafeName(Label+ "_DetVariations_" +temp_var.GetAxisLabel() ) + "_CutTag"+ Precut.CountChar('&'), temp_var.GetAxisLabel(), "Event Rate at 2E21 POT", temp_var.GetIsLog());
 
 //		draw_FractionalDifference( hsampleCV, allhists, leg, MakeSafeName(Label+ "_FracDiff_" +temp_var.GetAxisLabel() ), temp_var.GetAxisLabel(), "%Diff respected to CV");
 
