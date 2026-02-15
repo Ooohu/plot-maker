@@ -92,7 +92,7 @@ void DrawRatioPlot( TH1D* data, TH1D* MC, TString Xaxis, TString Yaxis="Data/Pre
 
 }
 
-//Draw a TH1D
+//Draw a TH1D with weight
 TH1D* drawTH1D(Samples &sample, Vars &var)
 {
     //spell out contents that we need from two classes
@@ -119,29 +119,29 @@ TH1D* drawTH1D(Samples &sample, Vars &var)
 }
 
 //Draw a TH1D
-TH1D* drawTH1D_w_Weight(Samples &sample, Vars &var, TString &wgt, int col )
-{
-    //spell out contents that we need from two classes
-    TString variable = var.GetVarName();
-    std::vector<double> binnings = var.GetBinning();
-
-    TTree* ttree = sample.GetSampleTree();
-    TString cuts = "("+sample.GetDefinition()+")*("+wgt+")";//We assign the weight;
-
-    //default is (nbins, bmin, bmax);
-    TH1D* h = new TH1D(RandomName(), "", binnings[0], binnings[1], binnings[2]);
-    ttree->Draw(variable+">>"+h->GetName(), cuts);
-    //    std::cout<<"Drawing :"<<variable<<" cuts:"<<cuts<<std::endl;
-    //    std::cout<<"TH1 has events: "<<h->Integral()<<std::endl;
-
-    //    if(linecolor == 0 || fillstyle == 0) std::cout<<"Warning: "<<sample.GetSampleName()<<" histogram color/style is not set."<<std::endl;
-    MakeBeautiHistFilled( sample, h);
-    //    h->SetLineColor(col);
-    ////    h->SetFillColor(linecolor);
-    //    h->SetFillStyle(0);
-    //    h->Scale(sample.GetScale());
-    return h;
-}
+//TH1D* drawTH1D_w_Weight(Samples &sample, Vars &var, TString &wgt, int col )
+//{
+//    //spell out contents that we need from two classes
+//    TString variable = var.GetVarName();
+//    std::vector<double> binnings = var.GetBinning();
+//
+//    TTree* ttree = sample.GetSampleTree();
+//    TString cuts = "("+sample.GetDefinition()+")*("+wgt+")";//We assign the weight;
+//
+//    //default is (nbins, bmin, bmax);
+//    TH1D* h = new TH1D(RandomName(), "", binnings[0], binnings[1], binnings[2]);
+//    ttree->Draw(variable+">>"+h->GetName(), cuts);
+//    //    std::cout<<"Drawing :"<<variable<<" cuts:"<<cuts<<std::endl;
+//    //    std::cout<<"TH1 has events: "<<h->Integral()<<std::endl;
+//
+//    //    if(linecolor == 0 || fillstyle == 0) std::cout<<"Warning: "<<sample.GetSampleName()<<" histogram color/style is not set."<<std::endl;
+//    MakeBeautiHistFilled( sample, h);
+//    //    h->SetLineColor(col);
+//    ////    h->SetFillColor(linecolor);
+//    //    h->SetFillStyle(0);
+//    //    h->Scale(sample.GetScale());
+//    return h;
+//}
 
 
 
@@ -436,6 +436,153 @@ void draw_variations(TH1D* CV, const std::vector<TH1D*>& variations,
 
     delete c;
 }
+
+
+void draw_variations_wRatio(TH1D* CV,
+                     const std::vector<TH1D*>& variations,
+                     TLegend* leg,
+                     TString SafeName,
+                     TString XaxisTitle,
+                     TString YaxisTitle = "Events",
+                     bool logY = false)
+{
+    if (!CV) {
+        std::cerr << "Error: CV histogram is null.\n";
+        return;
+    }
+
+    gStyle->SetOptStat(0);
+
+    // =========================
+    // Canvas
+    // =========================
+    TCanvas* c = new TCanvas("c", "Variations", 1000, 800);
+
+    // ---- Pad geometry (55:45)
+    const double split = 0.45;  // bottom height fraction
+
+    TPad* padTop = new TPad("padTop","",0.0,split,0.75,1.0);
+    TPad* padBot = new TPad("padBot","",0.0,0.0,0.75,split);
+
+    padTop->SetBottomMargin(0.02);
+    padTop->SetLeftMargin(0.12);
+    padTop->SetRightMargin(0.02);
+    padTop->SetTopMargin(0.08);
+    if (logY) padTop->SetLogy();
+
+    padBot->SetTopMargin(0.02);
+    padBot->SetBottomMargin(0.30);
+    padBot->SetLeftMargin(0.12);
+    padBot->SetRightMargin(0.02);
+
+    padTop->Draw();
+    padBot->Draw();
+
+    // ---- Legend pad
+    TPad* padLeg = new TPad("padLeg","",0.75,0.0,1.0,1.0);
+    padLeg->SetMargin(0.05,0.05,0.1,0.1);
+    padLeg->Draw();
+
+    // =====================================================
+    // TOP PAD : CV + Variations
+    // =====================================================
+    padTop->cd();
+
+    CV->SetLineColor(kBlack);
+    CV->SetLineWidth(2);
+    CV->SetTitle("");
+
+    CV->GetXaxis()->SetLabelSize(0);
+    CV->GetXaxis()->SetTitle("");
+
+    CV->GetYaxis()->SetTitle(YaxisTitle);
+    CV->GetYaxis()->SetTitleSize(0.05);
+    CV->GetYaxis()->SetLabelSize(0.045);
+
+    CV->Draw("HIST E");
+
+    double max = CV->GetMaximum();
+    int colorIndex = 0;
+
+    for (size_t i = 0; i < variations.size(); ++i) {
+        if (!variations[i]) continue;
+
+        variations[i]->SetLineWidth(2);
+
+        if (variations.size() == static_cast<size_t>(leg->GetNRows()) + 1)
+            variations[i]->SetLineColor(sampleColor(colorIndex++));
+
+        variations[i]->Draw("HISTSAME");
+
+        if (variations[i]->GetMaximum() > max)
+            max = variations[i]->GetMaximum();
+    }
+
+    CV->SetMaximum(max * 1.2);
+    CV->Draw("HISTSAME");
+
+    // =====================================================
+    // BOTTOM PAD : Percent Difference (Var - CV)/CV
+    // =====================================================
+    padBot->cd();
+
+    TH1D* hFrame = (TH1D*)CV->Clone("hFrame");
+    hFrame->Reset();
+    hFrame->SetTitle("");
+
+    hFrame->GetYaxis()->SetTitle("Fractional Unvertainties");
+    hFrame->GetYaxis()->SetNdivisions(505);
+    hFrame->GetYaxis()->SetTitleSize(0.09);
+    hFrame->GetYaxis()->SetLabelSize(0.075);
+    hFrame->GetYaxis()->SetTitleOffset(0.55);
+
+    hFrame->GetXaxis()->SetTitle(XaxisTitle);
+    hFrame->GetXaxis()->SetTitleSize(0.10);
+    hFrame->GetXaxis()->SetLabelSize(0.085);
+
+    hFrame->SetMinimum(-0.3);
+    hFrame->SetMaximum(0.3);
+
+    hFrame->Draw();
+
+    colorIndex = 0;
+
+    for (size_t i = 0; i < variations.size(); ++i) {
+        if (!variations[i]) continue;
+
+        TH1D* diff = (TH1D*)variations[i]->Clone(Form("diff_%zu", i));
+        diff->Add(CV, -1.0);    // variation - CV
+        diff->Divide(CV);       // (variation - CV) / CV
+        diff->SetLineWidth(2);
+
+        if (variations.size() == static_cast<size_t>(leg->GetNRows()) + 1)
+            diff->SetLineColor(sampleColor(colorIndex++));
+
+        diff->Draw("HISTSAME");
+    }
+
+    // zero reference line
+    TLine* line = new TLine(CV->GetXaxis()->GetXmin(),0.0,
+                            CV->GetXaxis()->GetXmax(),0.0);
+    line->SetLineStyle(3);
+    line->Draw();
+
+    // =====================================================
+    // LEGEND PAD
+    // =====================================================
+    padLeg->cd();
+    leg->Draw();
+
+    // =====================================================
+    // SAVE
+    // =====================================================
+    c->SaveAs("output/" + SafeName + ".pdf");
+    c->SaveAs("output/" + SafeName + ".png");
+
+    delete c;
+}
+
+
 
 
 void draw_FractionalDifference(TH1D* CV, const std::vector<TH1D*>& variations,

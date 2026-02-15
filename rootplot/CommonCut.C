@@ -19,7 +19,8 @@ TString GetCut(){
 
 double ILikeThisPOT( Samples& mc){
 
-	double pot = mc.GetPOT();
+//	double pot = mc.GetPOT();
+	double pot = 1e21;
 	return pot;
 }
 

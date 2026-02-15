@@ -32,7 +32,7 @@ Samples LoadJumboEXT( TString mTag ){
 //---------------------------
 //-------- Run 1 FHC  ------
 //---------------------------
-
+//{
 Samples LoadRun1FHCAll( TString mTag ){
 	Samples tmpSample("AllMC", FDir+"gleeNtuples_numi_run1MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree",COMMONCUT);
 
@@ -43,7 +43,7 @@ Samples LoadRun1FHCAll( TString mTag ){
 	tmpSample.SetScale(2.9431896);
 
 	//Add Friends
-//	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"run1MCFHC");
+	//	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionClassifier",			"run1MCFHC");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"run1MCFHC");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run1MCFHC");
 
@@ -78,7 +78,7 @@ Samples LoadRun1FHCNueCC( TString mTag ){
 	tmpSample.SetPOT(2.35e21);
 	tmpSample.SetScale(2.9431896);
 
-	
+
 	//Add Friends
 	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run1MCFHC");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"run1MCFHC");
@@ -95,7 +95,7 @@ Samples LoadRun1FHCNumuCC( TString mTag ){
 	tmpSample.SetWeight(MakeSafeWgtName("ppfx_cv_good*spline_tune_good")); // vulnerable to inf weight of spline_tune_good
 	tmpSample.SetPOT(2.35e21);
 	tmpSample.SetScale(2.9431896);
-	
+
 	//Add Friends
 	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run1MCFHC");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"run1MCFHC");
@@ -104,25 +104,6 @@ Samples LoadRun1FHCNumuCC( TString mTag ){
 	return tmpSample;
 };
 
-
-
-
-Samples LoadRun1FHCOtherCC( TString mTag ){//empty
-
-	Samples tmpSample("Other CC", FDir+"gleeNtuples_numi_run1MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1 ) && mctruth_cc_or_nc==0&&!(fabs(mctruth_nu_pdg)==12) &&!(fabs(mctruth_nu_pdg)==14)&& "+COMMONCUT);
-
-	tmpSample.SetPlotStyle(kGreen-2,1001);
-	tmpSample.SetWeight(MakeSafeWgtName("ppfx_cv_good*spline_tune_good")); // vulnerable to inf weight of spline_tune_good
-	tmpSample.SetPOT(2.35e21);
-	tmpSample.SetScale(2.9431896);
-	
-	//Add Friends
-	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run1MCFHC");
-	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"run1MCFHC");
-
-
-	return tmpSample;
-};
 
 
 Samples LoadRun1FHCInCryoOther( TString mTag ){
@@ -150,7 +131,7 @@ Samples LoadRun1FHCDirt( TString mTag ){
 	tmpSample.SetWeight(MakeSafeWgtName("ppfx_cv_good*spline_tune_good"));
 	tmpSample.SetPOT(1.55e21);
 	tmpSample.SetScale(0.72);
-	
+
 	//Add Friends
 	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run1dirt");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"run1dirt");
@@ -191,109 +172,90 @@ Samples LoadRun1EXT( TString mTag ){
 
 	return ext;
 }
+//}
 
 
 
 //---------------------------
-//-------- Run 2 FHC  ------
+//-------- Run 2a FHC  ------
 //---------------------------
-
+//{
 Samples Loadrun2MCFHCOnepi0( TString mTag ){
-    Samples tmpSample("1#pi^{0}", FDir + "gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root","vertex_tree","mctruth_num_exiting_pi0==1 &&"+COMMONCUT);
+	Samples tmpSample("1#pi^{0}", FDir + "gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root","vertex_tree","mctruth_num_exiting_pi0==1 &&"+COMMONCUT);
 
-    tmpSample.SetPlotStyle(kRed-3,1001);
-    tmpSample.SetPOT(2.47898e+21);
-    tmpSample.SetScale(3);//Have used half for training;
+	tmpSample.SetPlotStyle(kRed-3,1001);
+	tmpSample.SetPOT(2.47898e+21);
+	tmpSample.SetScale(3);//Have used half for training;
 
-    //dirtory, classifier, sample
-    //<directory>/<classifier>_<sample>_app.root
-    tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run2MCFHC");
-    tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run2MCFHC");
-    tmpSample.AddFriend(FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root", "eventweight_tree");
-//    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run2MCFHC");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run2MCFHC");
+	tmpSample.AddFriend(FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root", "eventweight_tree");
+	//    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
 
 
 
-    return tmpSample;
+	return tmpSample;
 };
 
 
 Samples Loadrun2MCFHCNueCC( TString mTag ){
 
-    Samples tmpSample("CC#nu_{e}/#bar{#nu_{e}}", FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==12 && "+COMMONCUT);
+	Samples tmpSample("CC#nu_{e}/#bar{#nu_{e}}", FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==12 && "+COMMONCUT);
 
-    tmpSample.SetPlotStyle(kGreen-8,1001);
-    tmpSample.SetPOT(2.47898e+21);
-    tmpSample.SetScale(3);//Have used half for training;
+	tmpSample.SetPlotStyle(kGreen-8,1001);
+	tmpSample.SetPOT(2.47898e+21);
+	tmpSample.SetScale(3);//Have used half for training;
 
-    //dirtory, classifier, sample
-    //<directory>/<classifier>_<sample>_app.root
-    tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run2MCFHC");
-    tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run2MCFHC");
-    tmpSample.AddFriend(FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root", "eventweight_tree");//gonna need additional weights    
-//    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run2MCFHC");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run2MCFHC");
+	tmpSample.AddFriend(FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root", "eventweight_tree");//gonna need additional weights    
+	//    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
 
 
-    return tmpSample;
+	return tmpSample;
 };
 
 Samples Loadrun2MCFHCNumuCC( TString mTag ){
 
-    Samples tmpSample("CC#nu_{#mu}/#bar{#nu_{#mu}}", FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==14 && "+COMMONCUT);
+	Samples tmpSample("CC#nu_{#mu}/#bar{#nu_{#mu}}", FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==14 && "+COMMONCUT);
 
-    tmpSample.SetPlotStyle(kBlue-6,1001);
-    tmpSample.SetPOT(2.47898e+21);
-    tmpSample.SetScale(3);//Have used half for training;
+	tmpSample.SetPlotStyle(kBlue-6,1001);
+	tmpSample.SetPOT(2.47898e+21);
+	tmpSample.SetScale(3);//Have used half for training;
 
-    //dirtory, classifier, sample
-    //<directory>/<classifier>_<sample>_app.root
-    tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run2MCFHC");
-    tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run2MCFHC");
-    tmpSample.AddFriend(FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root", "eventweight_tree");//gonna need additional weights    
-//    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run2MCFHC");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run2MCFHC");
+	tmpSample.AddFriend(FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root", "eventweight_tree");//gonna need additional weights    
+	//    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
 
 
-    return tmpSample;
+	return tmpSample;
 };
 
 
-
-
-Samples Loadrun2MCFHCOtherCC( TString mTag ){//NOT USED
-
-    Samples tmpSample("Other CC", FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1 ) && mctruth_cc_or_nc==0&&!(fabs(mctruth_nu_pdg)==12) &&!(fabs(mctruth_nu_pdg)==14)&& "+COMMONCUT);
-
-    tmpSample.SetPlotStyle(kGreen-2,1001);
-    tmpSample.SetPOT(2.47898e+21);
-    tmpSample.SetScale(3);//Have used half for training;
-
-    //dirtory, classifier, sample
-    //<directory>/<classifier>_<sample>_app.root
-    tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run2MCFHC");
-    tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run2MCFHC");
-    tmpSample.AddFriend(FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root", "eventweight_tree");//gonna need additional weights    
-//    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
-
-
-    return tmpSample;
-};
 
 
 Samples Loadrun2MCFHCInCryoOther( TString mTag ){
-    Samples tmpSample("InCryoOther", FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1 ) && mctruth_cc_or_nc==1 && "+COMMONCUT);
-    tmpSample.SetPlotStyle(kMagenta+3,1001);
-    tmpSample.SetPOT(2.47898e+21);
-    tmpSample.SetScale(3);
+	Samples tmpSample("InCryoOther", FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1 ) && mctruth_cc_or_nc==1 && "+COMMONCUT);
+	tmpSample.SetPlotStyle(kMagenta+3,1001);
+	tmpSample.SetPOT(2.47898e+21);
+	tmpSample.SetScale(3);
 
-    //dirtory, classifier, sample
-    //<directory>/<classifier>_<sample>_app.root
-    tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run2MCFHC");
-    tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run2MCFHC");
-    tmpSample.AddFriend(FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root", "eventweight_tree");//gonna need additional weights    
-//    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run2MCFHC");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run2MCFHC");
+	tmpSample.AddFriend(FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_FHC_2s0t.root", "eventweight_tree");//gonna need additional weights    
+	//    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
 
 
-    return tmpSample;
+	return tmpSample;
 };
 
 Samples Loadrun2MCFHCDirt( TString mTag ){
@@ -303,7 +265,7 @@ Samples Loadrun2MCFHCDirt( TString mTag ){
 	tmpSample.SetPlotStyle(kOrange-7, 1001);
 	tmpSample.SetPOT(8.6e19);
 	tmpSample.SetScale(0.61);
-	
+
 	//Add Friends
 	tmpSample.AddFriendViaTag_v2(TrainDir, "Pi0CosmicClassifier",			"run2adirt_FHC");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"run2adirt_FHC");
@@ -351,19 +313,21 @@ Samples LoadRun2aFHCEXT( TString mTag ){
 	ext.SetScale(0.98);//Have used 2/3 for training;
 
 
-//	//Add Friends ~ Start
+	//	//Add Friends ~ Start
 	ext.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuMIExtR2a");
 	ext.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier",	"NuMIExtR2a");
 
 	return ext;
 }
+//}
 
 
 
 
 //---------------------------
-//-------- Run 2 RHC  ------
+//-------- Run 2b RHC  ------
 //---------------------------
+//{
 Samples LoadRun2RHCOnepi0( TString mTag ){
 	Samples tmpSample("1#pi^{0}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run2MCOverlay_LightYieldFix_RHC_2s0t.root","vertex_tree","mctruth_num_exiting_pi0==1 &&"+COMMONCUT);
 
@@ -376,7 +340,7 @@ Samples LoadRun2RHCOnepi0( TString mTag ){
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run2MCRHC");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run2MCRHC");
 	tmpSample.AddFriend(FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_RHC_2s0t.root", "eventweight_tree");//gonna need additional weights	
-//	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); // vulnerable to inf/nan weight
+	//	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); // vulnerable to inf/nan weight
 
 
 
@@ -397,7 +361,7 @@ Samples LoadRun2RHCNueCC( TString mTag ){
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run2MCRHC");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run2MCRHC");
 	tmpSample.AddFriend(FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_RHC_2s0t.root", "eventweight_tree");//gonna need additional weights	
-//	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); // vulnerable to inf/nan weight
+	//	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); // vulnerable to inf/nan weight
 
 
 	return tmpSample;
@@ -416,7 +380,7 @@ Samples LoadRun2RHCNumuCC( TString mTag ){
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run2MCRHC");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run2MCRHC");
 	tmpSample.AddFriend(FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_RHC_2s0t.root", "eventweight_tree");//gonna need additional weights	
-//	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); // vulnerable to inf/nan weight
+	//	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); // vulnerable to inf/nan weight
 
 
 	return tmpSample;
@@ -424,26 +388,6 @@ Samples LoadRun2RHCNumuCC( TString mTag ){
 
 
 
-
-Samples LoadRun2RHCOtherCC( TString mTag ){//NOT USED
-
-	Samples tmpSample("Other CC", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run2MCOverlay_LightYieldFix_RHC_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1 ) && mctruth_cc_or_nc==0&&!(fabs(mctruth_nu_pdg)==12) &&!(fabs(mctruth_nu_pdg)==14)&& "+COMMONCUT);
-
-	tmpSample.SetPlotStyle(kGreen-2,1001);
-	tmpSample.SetPOT(5.63E+21);
-	tmpSample.SetScale(2.9823352);//Have used half for training;
-
-	//dirtory, classifier, sample
-	//<directory>/<classifier>_<sample>_app.root
-	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run2MCRHC");
-	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run2MCRHC");
-//Now weights available for Run2 at the moment :(
-//	tmpSample.AddFriend(FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_RHC_2s0t.root", "eventweight_tree");//gonna need additional weights	
-//	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); // vulnerable to inf/nan weight
-
-
-	return tmpSample;
-};
 
 
 Samples LoadRun2RHCInCryoOther( TString mTag ){
@@ -456,8 +400,8 @@ Samples LoadRun2RHCInCryoOther( TString mTag ){
 	//<directory>/<classifier>_<sample>_app.root
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run2MCRHC");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run2MCRHC");
-//	tmpSample.AddFriend(FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_RHC_2s0t.root", "eventweight_tree");//gonna need additional weights	
-//	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); // vulnerable to inf/nan weight
+	//	tmpSample.AddFriend(FDir+"gleeNtuples_numi_run2MCOverlay_LightYieldFix_RHC_2s0t.root", "eventweight_tree");//gonna need additional weights	
+	//	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); // vulnerable to inf/nan weight
 
 
 	return tmpSample;
@@ -471,7 +415,7 @@ Samples LoadRun2RHCDirt( TString mTag ){
 	tmpSample.SetPlotStyle(kOrange-7, 1001);
 	tmpSample.SetPOT(9.17e19);
 	tmpSample.SetScale(0.54);
-	
+
 	//Add Friends
 	tmpSample.AddFriendViaTag_v2(TrainDir, "Pi0CosmicClassifier",			"run2bdirt_RHC");
 	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"run2bdirt_RHC");
@@ -506,5 +450,483 @@ Samples LoadRun2aRHCData( TString mTag ){
 
 	return data;
 };
+//}
 
 
+//---------------------------
+//--- Run 3 Pre16880 RHC  ---
+//---------------------------
+//{
+Samples LoadRun3RHCOnepi0( TString mTag ){
+	Samples tmpSample("1#pi^{0}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run3MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","mctruth_num_exiting_pi0==1 &&"+COMMONCUT);
+
+	tmpSample.SetPlotStyle(kRed-3,1001);
+	tmpSample.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
+	tmpSample.SetPOT(1.99e21);
+	tmpSample.SetScale(2.9193416);//Have used 1/3 for training;
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "NuMIRun3Bkg");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "NuMIRun3Bkg");
+
+	return tmpSample;
+};
+
+
+Samples LoadRun3RHCNueCC( TString mTag ){
+
+	Samples tmpSample("CC#nu_{e}/#bar{#nu_{e}}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run3MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==12 && "+COMMONCUT);
+
+	tmpSample.SetPlotStyle(kGreen-8,1001);
+	tmpSample.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
+	tmpSample.SetPOT(1.99e21);
+	tmpSample.SetScale(2.9193416);//Have used half for training;
+
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "NuMIRun3Bkg");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "NuMIRun3Bkg");
+
+
+	return tmpSample;
+};
+
+Samples LoadRun3RHCNumuCC( TString mTag ){
+
+	Samples tmpSample("CC#nu_{#mu}/#bar{#nu_{#mu}}", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run3MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==14 && "+COMMONCUT);
+
+	tmpSample.SetPlotStyle(kBlue-6,1001);
+	tmpSample.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
+	tmpSample.SetPOT(1.99e21);
+	tmpSample.SetScale(2.9193416);//Have used half for training;
+
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "NuMIRun3Bkg");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "NuMIRun3Bkg");
+
+
+
+	return tmpSample;
+};
+
+
+
+
+Samples LoadRun3RHCInCryoOther( TString mTag ){
+	Samples tmpSample("InCryoOther", "/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run3MCOverlay_reweight_luis_goodweight_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1 ) && mctruth_cc_or_nc==1 && "+COMMONCUT);
+	tmpSample.SetPlotStyle(kMagenta+3,1001);
+	tmpSample.SetWeight("ppfx_cv_good*spline_tune_good"); // vulnerable to inf weight of spline_tune_good
+	tmpSample.SetPOT(1.99e21);
+	tmpSample.SetScale(2.9193416);
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "NuMIRun3Bkg");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "NuMIRun3Bkg");
+
+
+
+	return tmpSample;
+};
+
+
+Samples LoadRun3RHCDirt( TString mTag ){
+
+	Samples tmpSample("Dirt (OutsideCryo)  x.52","/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run3dirt_luis_goodweight_2s0t.root","vertex_tree","run_number<16880");
+
+	tmpSample.SetPlotStyle(kOrange-7, 1001);
+	//	tmpSample.SetWeight("ppfx_cv_good*spline_tune_good");
+	tmpSample.SetPOT(6.01415e20);
+	tmpSample.SetScale(0.52);
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "Dirt");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "Dirt");
+
+
+	return tmpSample;
+};
+
+
+//Data set
+Samples LoadRun3Pre16880RHCData( TString mTag ){
+
+	Samples data("NuMI Data R3b RHC < 16880 run","/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run3data_luis_full_2s0t.root","vertex_tree","run_number<16880");
+	data.SetPOT(4.108e20);
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	data.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "NuMIDataR3b");
+	data.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "NuMIDataR3b");
+
+	return data;
+};
+
+
+
+//}
+
+//---------------------------
+//------- Run 4 b RHC  ------
+//---------------------------
+//{
+Samples Loadrun4bMCOnepi0( TString mTag ){
+	Samples tmpSample("1#pi^{0}", FDir + "gleeNtuples_numi_run4bMCOverlay_reweighted_final_2s0t.root","vertex_tree","mctruth_num_exiting_pi0==1 &&"+COMMONCUT);
+
+	tmpSample.SetPlotStyle(kRed-3,1001);
+	tmpSample.SetPOT(1.54536e+21);
+	tmpSample.SetScale(3);//Have used half for training;
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run4bMC");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run4bMC");
+	tmpSample.AddFriend(FDir+"gleeNtuples_numi_run4bMCOverlay_reweighted_final_2s0t.root", "eventweight_tree");
+	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+
+
+
+	return tmpSample;
+};
+
+
+Samples Loadrun4bMCNueCC( TString mTag ){
+
+	Samples tmpSample("CC#nu_{e}/#bar{#nu_{e}}", FDir+"gleeNtuples_numi_run4bMCOverlay_reweighted_final_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==12 && "+COMMONCUT);
+
+	tmpSample.SetPlotStyle(kGreen-8,1001);
+	tmpSample.SetPOT(1.54536e+21);
+	tmpSample.SetScale(3);//Have used half for training;
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run4bMC");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run4bMC");
+	tmpSample.AddFriend(FDir+"gleeNtuples_numi_run4bMCOverlay_reweighted_final_2s0t.root", "eventweight_tree");//gonna need additional weights    
+	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+
+
+	return tmpSample;
+};
+
+Samples Loadrun4bMCNumuCC( TString mTag ){
+
+	Samples tmpSample("CC#nu_{#mu}/#bar{#nu_{#mu}}", FDir+"gleeNtuples_numi_run4bMCOverlay_reweighted_final_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==14 && "+COMMONCUT);
+
+	tmpSample.SetPlotStyle(kBlue-6,1001);
+	tmpSample.SetPOT(1.54536e+21);
+	tmpSample.SetScale(3);//Have used half for training;
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run4bMC");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run4bMC");
+	tmpSample.AddFriend(FDir+"gleeNtuples_numi_run4bMCOverlay_reweighted_final_2s0t.root", "eventweight_tree");//gonna need additional weights    
+	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+
+
+	return tmpSample;
+};
+
+
+
+Samples Loadrun4bMCInCryoOther( TString mTag ){
+    Samples tmpSample("InCryoOther", FDir+"gleeNtuples_numi_run4bMCOverlay_reweighted_final_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1 ) && mctruth_cc_or_nc==1 && "+COMMONCUT);
+    tmpSample.SetPlotStyle(kMagenta+3,1001);
+    tmpSample.SetPOT(1.54536e+21);
+    tmpSample.SetScale(3);
+
+    //dirtory, classifier, sample
+    //<directory>/<classifier>_<sample>_app.root
+    tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run4bMC");
+    tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run4bMC");
+    tmpSample.AddFriend(FDir+"gleeNtuples_numi_run4bMCOverlay_reweighted_final_2s0t.root", "eventweight_tree");//gonna need additional weights    
+    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+
+
+    return tmpSample;
+};
+
+
+
+Samples Loadrun4bMCDirt( TString mTag ){
+	Samples tmpSample("Dirt  (OutsideCryo) x.52", FDir + "gleeNtuples_numi_run4bdirt_RHC_wMCTruth_2s0t.root","vertex_tree","1");
+
+	tmpSample.SetPlotStyle(kOrange-7,1001);
+	tmpSample.SetPOT(2.63754e+20);
+	tmpSample.SetScale(0.52);//Have used half for training;
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run4bdirt_RHC");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run4bdirt_RHC");
+//	tmpSample.AddFriend(FDir+"gleeNtuples_numi_run4bdirt_RHC_wMCTruth_2s0t.root", "eventweight_tree");
+//	tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+
+
+	return tmpSample;
+};
+
+Samples LoadRun4bRHCData( TString mTag ){
+
+	Samples data("Data NuMI Run4b RHC","/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run4bdata_2s0t.root","vertex_tree", "1");
+	data.SetPOT(2.78e20);
+	data.SetScale(0);
+
+	//Add Friends
+	data.AddFriendViaTag_v2(TrainDir, "Pi0CosmicClassifier",			"NuMIDataR4b");
+	data.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuMIDataR4b");
+
+	return data;
+};
+
+//}
+
+
+//---------------------------
+//------- Run 4 c FHC  ------
+//---------------------------
+//{
+
+Samples Loadrun4cMCOnepi0( TString mTag ){
+    Samples tmpSample("1#pi^{0}", FDir + "gleeNtuples_numi_run4cMCOverlay_2s0t.root","vertex_tree","mctruth_num_exiting_pi0==1 &&"+COMMONCUT);
+
+    tmpSample.SetPlotStyle(kRed-3,1001);
+    tmpSample.SetPOT(8.43891e+20);
+    tmpSample.SetScale(3);//Have used half for training;
+
+    //dirtory, classifier, sample
+    //<directory>/<classifier>_<sample>_app.root
+    tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run4cMC");
+    tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run4cMC");
+    tmpSample.AddFriend(FDir+"gleeNtuples_numi_run4cMCOverlay_2s0t.root", "eventweight_tree");
+    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+
+
+
+    return tmpSample;
+};
+
+
+Samples Loadrun4cMCNueCC( TString mTag ){
+
+    Samples tmpSample("CC#nu_{e}/#bar{#nu_{e}}", FDir+"gleeNtuples_numi_run4cMCOverlay_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==12 && "+COMMONCUT);
+
+    tmpSample.SetPlotStyle(kGreen-8,1001);
+    tmpSample.SetPOT(8.43891e+20);
+    tmpSample.SetScale(3);//Have used half for training;
+
+    //dirtory, classifier, sample
+    //<directory>/<classifier>_<sample>_app.root
+    tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run4cMC");
+    tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run4cMC");
+    tmpSample.AddFriend(FDir+"gleeNtuples_numi_run4cMCOverlay_2s0t.root", "eventweight_tree");//gonna need additional weights    
+    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+
+
+    return tmpSample;
+};
+
+Samples Loadrun4cMCNumuCC( TString mTag ){
+
+    Samples tmpSample("CC#nu_{#mu}/#bar{#nu_{#mu}}", FDir+"gleeNtuples_numi_run4cMCOverlay_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==14 && "+COMMONCUT);
+
+    tmpSample.SetPlotStyle(kBlue-6,1001);
+    tmpSample.SetPOT(8.43891e+20);
+    tmpSample.SetScale(3);//Have used half for training;
+
+    //dirtory, classifier, sample
+    //<directory>/<classifier>_<sample>_app.root
+    tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run4cMC");
+    tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run4cMC");
+    tmpSample.AddFriend(FDir+"gleeNtuples_numi_run4cMCOverlay_2s0t.root", "eventweight_tree");//gonna need additional weights    
+    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+
+
+    return tmpSample;
+};
+
+
+Samples Loadrun4cMCInCryoOther( TString mTag ){
+    Samples tmpSample("InCryoOther", FDir+"gleeNtuples_numi_run4cMCOverlay_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1 ) && mctruth_cc_or_nc==1 && "+COMMONCUT);
+    tmpSample.SetPlotStyle(kMagenta+3,1001);
+    tmpSample.SetPOT(8.43891e+20);
+    tmpSample.SetScale(3);
+
+    //dirtory, classifier, sample
+    //<directory>/<classifier>_<sample>_app.root
+    tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run4cMC");
+    tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run4cMC");
+    tmpSample.AddFriend(FDir+"gleeNtuples_numi_run4cMCOverlay_2s0t.root", "eventweight_tree");//gonna need additional weights    
+    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+
+
+    return tmpSample;
+};
+
+
+
+Samples Loadrun4cMCDirt( TString mTag ){
+	Samples tmpSample("Dirt  (OutsideCryo) x.52", FDir + "gleeNtuples_numi_run4cdirt_FHC_2s0t.root","vertex_tree","1");
+
+    tmpSample.SetPlotStyle(kOrange-7,1001);
+    tmpSample.SetPOT(1.55181e+20);
+	tmpSample.SetScale(0.52);
+
+    //dirtory, classifier, sample
+    //<directory>/<classifier>_<sample>_app.root
+    tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run4cdirt_FHC");
+    tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run4cdirt_FHC");
+    tmpSample.AddFriend(FDir+"gleeNtuples_numi_run4cdirt_FHC_2s0t.root", "eventweight_tree");
+//    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune")); //Not available
+
+
+
+    return tmpSample;
+};
+
+
+
+
+
+Samples LoadRun4cFHCData( TString mTag ){
+
+	Samples data("Data NuMI Run4c FHC","/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run4cdata_2s0t.root","vertex_tree", "run_number>21396");
+	data.SetPOT(1.68e20);
+	data.SetScale(0);
+
+	//Add Friends
+	data.AddFriendViaTag_v2(TrainDir, "Pi0CosmicClassifier",			"NuMIDataR4c");
+	data.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuMIDataR4c");
+
+	return data;
+};
+
+
+//}
+
+
+//---------------------------
+//-------- Run 5 FHC  -------
+//---------------------------
+//{
+
+Samples Loadrun5MCOnepi0( TString mTag ){
+    Samples tmpSample("1#pi^{0}", FDir + "gleeNtuples_numi_run5MCOverlay_2s0t.root","vertex_tree","mctruth_num_exiting_pi0==1 &&"+COMMONCUT);
+
+    tmpSample.SetPlotStyle(kRed-3,1001);
+    tmpSample.SetPOT(1.90108e+21);
+    tmpSample.SetScale(3);//Have used half for training;
+
+    //dirtory, classifier, sample
+    //<directory>/<classifier>_<sample>_app.root
+    tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run5MC");
+    tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run5MC");
+//    tmpSample.AddFriend(FDir+"gleeNtuples_numi_run5MCOverlay_2s0t.root", "eventweight_tree");
+//    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+
+
+
+    return tmpSample;
+};
+
+
+Samples Loadrun5MCNueCC( TString mTag ){
+
+    Samples tmpSample("CC#nu_{e}/#bar{#nu_{e}}", FDir+"gleeNtuples_numi_run5MCOverlay_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==12 && "+COMMONCUT);
+
+    tmpSample.SetPlotStyle(kGreen-8,1001);
+    tmpSample.SetPOT(1.90108e+21);
+    tmpSample.SetScale(3);//Have used half for training;
+
+    //dirtory, classifier, sample
+    //<directory>/<classifier>_<sample>_app.root
+    tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run5MC");
+    tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run5MC");
+//    tmpSample.AddFriend(FDir+"gleeNtuples_numi_run5MCOverlay_2s0t.root", "eventweight_tree");//gonna need additional weights    
+//    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+
+
+    return tmpSample;
+};
+
+Samples Loadrun5MCNumuCC( TString mTag ){
+
+    Samples tmpSample("CC#nu_{#mu}/#bar{#nu_{#mu}}", FDir+"gleeNtuples_numi_run5MCOverlay_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1)&&mctruth_cc_or_nc==0&& fabs(mctruth_nu_pdg)==14 && "+COMMONCUT);
+
+    tmpSample.SetPlotStyle(kBlue-6,1001);
+    tmpSample.SetPOT(1.90108e+21);
+    tmpSample.SetScale(3);//Have used half for training;
+
+    //dirtory, classifier, sample
+    //<directory>/<classifier>_<sample>_app.root
+    tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run5MC");
+    tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run5MC");
+//    tmpSample.AddFriend(FDir+"gleeNtuples_numi_run5MCOverlay_2s0t.root", "eventweight_tree");//gonna need additional weights    
+//    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+
+
+    return tmpSample;
+};
+
+
+Samples Loadrun5MCInCryoOther( TString mTag ){
+    Samples tmpSample("InCryoOther", FDir+"gleeNtuples_numi_run5MCOverlay_2s0t.root","vertex_tree","!(mctruth_num_exiting_pi0==1 ) && mctruth_cc_or_nc==1 && "+COMMONCUT);
+    tmpSample.SetPlotStyle(kMagenta+3,1001);
+    tmpSample.SetPOT(1.90108e+21);
+    tmpSample.SetScale(3);
+
+    //dirtory, classifier, sample
+    //<directory>/<classifier>_<sample>_app.root
+    tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run5MC");
+    tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run5MC");
+//    tmpSample.AddFriend(FDir+"gleeNtuples_numi_run5MCOverlay_2s0t.root", "eventweight_tree");//gonna need additional weights    
+//    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+
+
+    return tmpSample;
+};
+
+
+
+
+Samples Loadrun5MCDirt( TString mTag ){
+	Samples tmpSample("Dirt  (OutsideCryo) x.62", FDir + "gleeNtuples_numi_run5dirt_FHC_0lifetimeRemoval_2s0t.root","vertex_tree","1");
+
+    tmpSample.SetPlotStyle(kOrange-7,1001);
+    tmpSample.SetPOT(3.56471e+20);
+	tmpSample.SetScale(0.62);
+
+    //dirtory, classifier, sample
+    //<directory>/<classifier>_<sample>_app.root
+    tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "run5dirt_FHC");
+    tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "run5dirt_FHC");
+//    tmpSample.AddFriend(FDir+"gleeNtuples_numi_run5dirt_FHC_0lifetimeRemoval_2s0t.root", "eventweight_tree");
+//    tmpSample.SetWeight(MakeSafeWgtName("weightSplineTimesTune"));
+
+
+
+    return tmpSample;
+};
+
+
+Samples LoadRun5FHCData( TString mTag ){
+
+	Samples data("Data NuMI Run5 FHC","/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run5data_final_2s0t.root","vertex_tree", "1");
+	data.SetPOT(2.35e20);
+	data.SetScale(0);
+
+	//Add Friends
+	data.AddFriendViaTag_v2(TrainDir, "Pi0CosmicClassifier",			"NuMIDataR5");
+	data.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuMIDataR5");
+
+	return data;
+};
+
+
+//}

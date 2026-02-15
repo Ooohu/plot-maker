@@ -450,8 +450,8 @@ TLatex *GetEstimators( TH1D* data, TH1D* MC){
 //																			MC->Chi2Test(data,"UW P"));
 
 
-	TString text_chi2; text_chi2.Form("#chi^{2}/n#it{DOF}=%.2f/%d p=%.2g   ", data->Chi2Test(MC,"UW CHI2"), 
-																			MC->GetNbinsX()-1, 
+	TString text_chi2; text_chi2.Form("Stat.-Only #chi^{2}/n#it{DOF}=%.2f/%d p=%.2g   ", data->Chi2Test(MC,"WW CHI2"), 
+																			MC->GetNbinsX(), 
 																			data->Chi2Test(MC,"UW P"));
 
 	//soruce code at https://root.cern.ch/doc/master/TH1_8cxx_source.html#l01995

@@ -21,6 +21,7 @@ void TTree2CovMatrix_TEMPLATE(){
 //	std::stringstream text_buffer;
 	
 	Samples sampleCV						= LoadTEMPLATE	(tag[0]);
+	Samples sampleAttn						= LoadFATTN		(tag[0]);
 	Samples sampleLYDown					= LoadFLYD		(tag[0]);
 	Samples sampleAlternativeSCMap			= LoadFASC		(tag[0]);
 	Samples sampleAlternativeRecombination	= LoadFARECO	(tag[0]);
@@ -29,7 +30,7 @@ void TTree2CovMatrix_TEMPLATE(){
 	Samples sampleWireModThetaXZ			= LoadFWMTXZ	(tag[0]);
 	Samples sampleWireModThetaYZ			= LoadFWMTYZ	(tag[0]);
 	Samples sampleWireModYZ				    = LoadFWMYZ		(tag[0]);
-	std::vector<Samples> vecSamples = { sampleLYDown, sampleAlternativeSCMap, sampleAlternativeRecombination, sampleLYRayleigh, sampleWireModX, sampleWireModThetaXZ, sampleWireModThetaYZ, sampleWireModYZ };
+	std::vector<Samples> vecSamples = { sampleAttn, sampleLYDown, sampleAlternativeSCMap, sampleAlternativeRecombination, sampleLYRayleigh, sampleWireModX, sampleWireModThetaXZ, sampleWireModThetaYZ, sampleWireModYZ };
 
 
 
@@ -63,7 +64,7 @@ void TTree2CovMatrix_TEMPLATE(){
 		//Prepare signals, overlay them;
 		sampleCV.AddDefinition(Precut);
 		TH1D* hsampleCV = drawTH1D(sampleCV, temp_var);
-		hsampleCV->Scale(PlotPOT/sampleCV.GetPOT());
+		hsampleCV->Scale(sampleCV.GetScale()*PlotPOT/sampleCV.GetPOT());
 //		hsampleCV->SetFillColorAlpha( sampleCV.GetCol(), 0.9); 
 //		hsampleCV->SetLineWidth(3);
 //		hsampleCV->SetLineColor(sampleCV.GetCol());
@@ -88,9 +89,9 @@ void TTree2CovMatrix_TEMPLATE(){
 			Color_t  t_c = sampleColor(colorIndex++);//this_color
 			hist->SetLineColorAlpha(t_c, 0.7);
 			hist->SetMarkerColorAlpha( t_c, 0.7);
-			hist->SetMarkerStyle(colorIndex + markerIndexOffset);
+//			hist->SetMarkerStyle(colorIndex + markerIndexOffset);
 			//		std::cout<<"Total evts: "<<hist->Integral()<<std::endl;
-			hist->Scale(PlotPOT/sample.GetPOT());
+			hist->Scale(sample.GetScale()*PlotPOT/sample.GetPOT());
 
 			leg_title = sample.GetSampleName();// + Form(" %.1lf",hist->Integral());
 			sample_labels.push_back(leg_title);

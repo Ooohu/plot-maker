@@ -26,15 +26,15 @@ for i in "${!tags[@]}"; do
   nge=${NGe[i]}
   nre=${NRe[i]}
   nfl=${NFl[i]}
+  out=TTree2Multisim_${tag}.C
 
   sed -e "s/TEMPLATE/${tag}/g" \
       -e "s/NGENIE/${nge}/g" \
       -e "s/NREINT/${nre}/g" \
       -e "s/NFLUX/${nfl}/g" \
       "$template" \
-    > "TTree2Multisim_${tag}.C"
-  
-  out=TTree2Multisim_${tag}.C
+     > "${out}"
+
   root -l -b -q ${out}
   echo "Save scripts! ${out}" 
   mv ${out} ./Saved_scripts

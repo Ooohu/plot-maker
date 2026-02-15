@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-tags=(Run1FHC run2MCFHC)
-dtags=(Run1FHC Run2aFHC)
+tags=(Run1FHC run2MCFHC Run2RHC Run3RHC         run4bMC  run4cMC  run5MC)
+dtags=(Run1FHC Run2aFHC Run2bRHC Run3Pre16880RHC Run4bRHC Run4cFHC Run5FHC)
 
-#tags=(Run2RHC)
-#dtags=(Run2bRHC)
+#tags=(run4bMC)
+#dtags=(Run4bRHC)
 
 template=TTree2StackOverlays_axion3massPoints_TEMPLATE.C
 
@@ -13,13 +13,14 @@ for i in "${!tags[@]}"; do
   echo -e "Processing tag: ${tags}\n"
   tag=${tags[i]}
   dtag=${dtags[i]}
+  out=TTree2StackOverlays_axion3massPoints_${tag}.C
 
   sed -e "s/TEMPLATE/${tag}/g" \
       -e "s/dTAG/${dtag}/g" \
       "$template" \
-    > "TTree2StackOverlays_axion3massPoints_${tag}.C"
+    > "${out}"
 
-  root -l -b -q TTree2StackOverlays_axion3massPoints_${tag}.C
-  echo "Save scripts!"
-  mv TTree2StackOverlays_axion3massPoints_${tag}.C ./Saved_scripts
+  root -l -b -q ${out}
+  echo "Save scripts! ${out}" 
+  mv ${out} ./Saved_scripts
 done
