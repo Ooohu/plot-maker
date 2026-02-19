@@ -41,7 +41,7 @@ void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 
 	Samples dirt		= LoadTEMPLATEDirt		(axiontag);
 
-	Samples ext			= LoadJumboEXT		(axiontag);
+	Samples ext			= LoadETAG		(axiontag);
 
 	Samples data		= LoaddTAGData		(axiontag);
 	std::vector<Samples> vecSamples = { Onepi0, NueCC, NumuCC, InCryoOther, dirt, ext};
