@@ -44,24 +44,6 @@ TTree* GetTree(TString filename, TString treename)
 
 
 // Text Modifier
-TString RandomName() {
-	static TRandom3 rng(0); // seed=0 -> random seed based on time
-	TString name = "hist";
-	for (int i = 0; i < 10; i++) {
-		char c = 'a' + rng.Integer(26);  // random letter a-z
-		name += c;
-	}
-	return name;
-}
-
-
-
-TString MakeSafeWgtName(const TString& weightBranch){
-    // Returns a TString that replaces any NaN/Inf or negative weight with 0
-	return Form("(TMath::Finite(%s) && %s > 0 ? %s : 0)", 
-			weightBranch.Data(), weightBranch.Data(), weightBranch.Data());
-}
-
 TString MakeSafeName(TString input){
 	std::string safe_name = input.Data();
 
@@ -86,6 +68,94 @@ TString MakeSafeName(TString input){
 
 	return safe_name.c_str();
 };
+
+
+std::map<TString, TString> varAlias = {
+    {"reco_vertex_size", "vt"},
+	{"reco_asso_tracks", "trk"},
+	{"reco_asso_showers", "shr"},
+    {"reco_vertex_dist_to_SCB", "fv"},
+    {"Pi0CosmicClassifier", "pi0CBDT"}
+};
+
+TString ApplyAlias(TString cut)
+{
+    for (const auto& it : varAlias) {
+        cut.ReplaceAll(it.first, it.second);
+    }
+    return cut;
+}
+
+
+TString CanonicalizeCut(TString cut)
+{
+    // 1. Remove spaces
+
+	TString tmp_cut = MakeSafeName( 
+			ApplyAlias(cut) 
+			);
+
+    // 2. Split by &&
+    TObjArray* tokens = tmp_cut.Tokenize("&&");
+
+    std::vector<TString> parts;
+
+    for (int i = 0; i < tokens->GetEntries(); ++i) {
+        TString part = ((TObjString*)tokens->At(i))->GetString();
+        parts.push_back(part);
+    }
+
+    delete tokens;
+
+    // 3. Sort alphabetically
+    std::sort(parts.begin(), parts.end(),
+              [](const TString& a, const TString& b) {
+                  return a.CompareTo(b) < 0;
+              });
+
+    // 4. Rebuild canonical string
+    TString result;
+    for (size_t i = 0; i < parts.size(); ++i) {
+        if (i > 0) result += "&&";
+        result += parts[i];
+    }
+
+    return result;
+}
+
+TString MakeSuffix(TString cut)
+{//Canonicalize text
+    TString canonical = CanonicalizeCut(cut);
+
+    canonical.ReplaceAll("&&", "_");
+    canonical.ReplaceAll("<=", "le");
+    canonical.ReplaceAll(">=", "ge");
+    canonical.ReplaceAll("<", "lt");
+    canonical.ReplaceAll(">", "gt");
+    canonical.ReplaceAll("==", "eq");
+    canonical.ReplaceAll(".", "p");
+
+    return canonical;
+}
+
+
+TString RandomName() {
+	static TRandom3 rng(0); // seed=0 -> random seed based on time
+	TString name = "hist";
+	for (int i = 0; i < 10; i++) {
+		char c = 'a' + rng.Integer(26);  // random letter a-z
+		name += c;
+	}
+	return name;
+}
+
+
+
+TString MakeSafeWgtName(const TString& weightBranch){
+    // Returns a TString that replaces any NaN/Inf or negative weight with 0
+	return Form("(TMath::Finite(%s) && %s > 0 ? %s : 0)", 
+			weightBranch.Data(), weightBranch.Data(), weightBranch.Data());
+}
 
 //JSON producer, produced via WriteJSON( "JSON_output/test.json", store); 
 struct CVErr {

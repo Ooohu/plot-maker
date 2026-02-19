@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-tags=(Run1FHC run2MCFHC Run2RHC Run3RHC         run4bMC  run4cMC  run5MC)
-dtags=(Run1FHC Run2aFHC Run2bRHC Run3Pre16880RHC Run4bRHC Run4cFHC Run5FHC)
+#tags=(Run1FHC run2MCFHC Run2RHC Run3RHC         run4bMC  run4cMC  run5MC)
+#dtags=(Run1FHC Run2aFHC Run2bRHC Run3Pre16880RHC Run4bRHC Run4cFHC Run5FHC)
 
-#tags=(run4bMC)
-#dtags=(Run4bRHC)
+tags=(run4bMC)
+dtags=(Run4bRHC)
 
 template=TTree2StackOverlays_axion3massPoints_TEMPLATE.C
 

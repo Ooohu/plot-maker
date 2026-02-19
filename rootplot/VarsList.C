@@ -6,6 +6,7 @@
 std::vector< Vars> SetMultipleVars(){
 
 	//Vertex Foundamentals
+	Vars varRecoST("10*Ntracks + NShowers","10*reco_asso_tracks + reco_asso_showers", {60, 0, 60});
     Vars varX("Reco Vertex X", "reco_vertex_x", {15,-20,270} );//LOGY - true
     Vars varY("Reco Vertex Y", "reco_vertex_y", {15,-150,150});//LOGY - true
     Vars varZ("Reco Vertex Z", "reco_vertex_z", {15,-50,1100});//LOGY - true
@@ -61,7 +62,8 @@ std::vector< Vars> SetMultipleVars(){
 //	std::vector< Vars> allVars = {var_bdtPionAma0146L};
 //	std::vector< Vars> allVars = {varCosOpnAng};
 
-    std::vector< Vars> allVars = {varShrKalmandEdx21, varShrKalmandEdx22, varAI, varNME, varNMP,  varNMBeta, varNMBetaL, varMass,  varMassC, varMassCl, varCosOpnAng, varShrCosBeta1,  varShrBeta1, varShrTheta1, varShrCosBeta2, varShrE1, varShrE1l,  varShrE2, var_photonl1, var_photonl1l, var_photonl2, var_photonl2l, var_yness1, var_yness2, varX,varY, varZ, varRecoFlash, var_bdtCosmicPionL, var_bdtPionAma0146L};
+    std::vector< Vars> allVars = {varX,varY, varZ, varRecoFlash, varRecoST};
+//    std::vector< Vars> allVars = {varShrKalmandEdx21, varShrKalmandEdx22, varAI, varNME, varNMP,  varNMBeta, varNMBetaL, varMass,  varMassC, varMassCl, varCosOpnAng, varShrCosBeta1,  varShrBeta1, varShrTheta1, varShrCosBeta2, varShrE1, varShrE1l,  varShrE2, var_photonl1, var_photonl1l, var_photonl2, var_photonl2l, var_yness1, var_yness2, varX,varY, varZ, varRecoFlash, var_bdtCosmicPionL, var_bdtPionAma0146L};
 
 
 

@@ -6,10 +6,13 @@
 #include <fstream>
 #include <sstream>
 
-//#include "VarsList.C"
-#include "VarsList_TEMPLATE.C"
 #include "LoadSamples_Signals.h"
-#include "LoadSamples_Full.h"
+
+//#include "LoadSamples_Full.h"
+//#include "VarsList_TEMPLATE.C"
+
+#include "LoadSamples_Raw.h" //raw samples no 2s0t cut
+#include "VarsList.C"
 
 #include "CommonCut.C"
 
@@ -193,7 +196,8 @@ void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 
 		WriteJSON( JSONfileName.Data(), store);
 
-		ExportPNG_StackDataTwoSignal_wLabel({haxion0093, haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) + "_CutTag"+ Precut.CountChar('&') , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
+		ExportPNG_StackDataTwoSignal_wLabel({haxion0093, haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) + "__"+ MakeSuffix(Precut) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
+		//ExportPNG_StackDataTwoSignal_wLabel({haxion0093, haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) + "_CutTag"+ Precut.CountChar('&') , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
 
 	}//Next variable
 
