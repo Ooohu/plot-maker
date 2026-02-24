@@ -6,7 +6,7 @@
 std::vector< Vars> SetMultipleVars(){
 
 	//Vertex Foundamentals
-	Vars varRecoST("10*Ntracks + NShowers","10*reco_asso_tracks + reco_asso_showers", {60, 0, 60});
+	Vars varRecoST("10*Ntracks + NShowers","10*reco_asso_tracks + reco_asso_showers", {60, 0, 60}, true);
     Vars varX("Reco Vertex X", "reco_vertex_x", {15,-20,270} );//LOGY - true
     Vars varY("Reco Vertex Y", "reco_vertex_y", {15,-150,150});//LOGY - true
     Vars varZ("Reco Vertex Z", "reco_vertex_z", {15,-50,1100});//LOGY - true

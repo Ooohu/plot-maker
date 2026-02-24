@@ -11,11 +11,12 @@ TString GetCut(){
 //	Precut +="&&( reco_flash_time[0] > 5)";//CutTag4
 
 //	Precut +="&&( Pi0CosmicClassifier > 0.5 )";//CutTag6
+//	Precut +="&&( Pi0CosmicClassifier > 0.3 )";//CutTag6
 
 //	Precut +="&&( Pi0CosmicClassifier < 0.3 )";
-//	Precut +="&&( Pi0CosmicClassifier > 0 )"; //CutTag8
-//
-	return Precut;		
+
+
+	return Precut;
 }
 
 double ILikeThisPOT( Samples& mc){
