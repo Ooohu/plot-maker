@@ -1,19 +1,20 @@
 #!/usr/bin/env bash
 
-tags=(R1_CVFHC R2a_CVFHC)
-NGe=(600 600)
-NRe=(1000 1000)
-NFl=(0 600)
+#tags=(Run1FHCAll Run2MCFHCAll Run2RHCAll Run3bRHCAll Run4bRHCAll Run4cFHCAll Run5FHCAll)
+#NGe=(6 6 6 6 6 6 6)
+#NRe=(10 10 10 10 10 10 10)
+#NFl=(6 6 6 6 6 6 6)
+#
+tags=(Run1FHCAll Run2MCFHCAll Run2RHCAll Run3bRHCAll Run4bRHCAll Run4cFHCAll Run5FHCAll)
+NGe=(600 600 600 600 600 600 600)
+NRe=(1000 1000 1000 1000 1000 1000 1000)
+NFl=(600 600 600 600 600 600 600)
 
-#tags=(R2a_CVFHC)
-#NGe=(10)
-#NRe=(10)
-#NFl=(10)
 
-#tags=(R2b_CVRHC)
-#NGe=(10)
+#tags=(Run1FHCAll)
+#NGe=(6)
 #NRe=(10)
-#NFl=(10)
+#NFl=(6)
 
 
 

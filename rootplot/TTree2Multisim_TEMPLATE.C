@@ -4,7 +4,8 @@
 #include <fstream>
 #include <sstream>
 
-#include "LoadSamples_sys.h"
+//#include "LoadSamples_sys.h"
+#include "LoadSamples_Full.h"
 #include "VarsList.C"
 
 #include "CommonCut.C"
@@ -53,8 +54,8 @@ void TTree2Multisim_TEMPLATE(){
 		if(NumUNIGenie>0){//GenieVariatinos
 			auto hists = makeHists_RDF(
 					sampleCV, temp_var, 
-					"weightSplineTimesTune", 
-					"weightSplineTimesTune*weightsGenie",
+					"ppfx_cv*weightSplineTimesTune", 
+					"ppfx_cv*weightSplineTimesTune*weightsGenie",
 					NumUNIGenie);//CV weight & universe weights (added [k] iteration later on
 
 			// --- Precompute scale factor ---
@@ -88,7 +89,7 @@ void TTree2Multisim_TEMPLATE(){
 			// --- Draw everything ---
 			draw_variations_v2(
 					cv, universes, leg,
-					MakeSafeName(Label + "_GenieVariations_" + temp_var.GetAxisLabel()) + "_CutTag" + Precut.CountChar('&'),
+					MakeSafeName(Label + "_GenieVariations_" + temp_var.GetAxisLabel()) + "__" + MakeSuffix(Precut),
 					temp_var.GetAxisLabel(),
 					Form("MC Backgrounds in %gPOT", PlotPOT),
 					temp_var.GetIsLog()
@@ -104,8 +105,8 @@ void TTree2Multisim_TEMPLATE(){
 		if(NumUNIReInt>0){//ReIntVariatinos
 			auto hists = makeHists_RDF(
 					sampleCV, temp_var, 
-					"weightSplineTimesTune", 
-					"weightSplineTimesTune*weightsReint",
+					"ppfx_cv*weightSplineTimesTune", 
+					"ppfx_cv*weightSplineTimesTune*weightsReint",
 					NumUNIReInt);//CV weight & universe weights (added [k] iteration later on
 
 			// --- Precompute scale factor ---
@@ -140,7 +141,7 @@ void TTree2Multisim_TEMPLATE(){
 			// --- Draw everything ---
 			draw_variations_v2(
 					cv, universes, leg,
-					MakeSafeName(Label + "_ReIntVariations_" + temp_var.GetAxisLabel()) + "_CutTag" + Precut.CountChar('&'),
+					MakeSafeName(Label + "_ReIntVariations_" + temp_var.GetAxisLabel()) + "__" + MakeSuffix(Precut),
 					temp_var.GetAxisLabel(),
 					Form("MC Backgrounds in %gPOT", PlotPOT),
 					temp_var.GetIsLog()
@@ -155,8 +156,8 @@ void TTree2Multisim_TEMPLATE(){
 		if(NumUNIFlux>0){//FluxVariatinos
 			auto hists = makeHists_RDF(
 					sampleCV, temp_var, 
-					"weightSplineTimesTune", 
-					"weightSplineTimesTune*weightsFlux",
+					"ppfx_cv*weightSplineTimesTune", 
+					"ppfx_cv*weightSplineTimesTune*weightsFlux",
 					NumUNIFlux);//CV weight & universe weights (added [k] iteration later on
 
 			// --- Precompute scale factor ---
@@ -190,7 +191,7 @@ void TTree2Multisim_TEMPLATE(){
 			// --- Draw everything ---
 			draw_variations_v2(
 					cv, universes, leg,
-					MakeSafeName(Label + "_FluxVariations_" + temp_var.GetAxisLabel()) + "_CutTag" + Precut.CountChar('&'),
+					MakeSafeName(Label + "_FluxVariations_" + temp_var.GetAxisLabel()) + "__" + MakeSuffix(Precut),
 					temp_var.GetAxisLabel(),
 					Form("MC Backgrounds in %gPOT", PlotPOT),
 					temp_var.GetIsLog()

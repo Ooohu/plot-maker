@@ -170,7 +170,7 @@ TH2D* BuildCovarianceMatrix(const TH1D* hCV, const std::vector<TH1D*>& variation
     }
 
     // Calculate covariance
-
+	std::cout<<"Fractional Uncer, ";
     for (int tndex= 1; tndex < totalbins + 1; ++tndex) {//Get the CV
         double cv_i = hCV->GetBinContent( (tndex-1)%nbins + 1); //want 1,2,3; 1,2,3; 
         double var_i = h_concat->GetBinContent( tndex);
@@ -186,13 +186,45 @@ TH2D* BuildCovarianceMatrix(const TH1D* hCV, const std::vector<TH1D*>& variation
             double cov = diff_i * diff_j;
 
             hCov->SetBinContent(tndex, undex, cov);
+			if(tndex==undex) std::cout<<sqrt(cov)/cv_i<<",";
+			if(undex % nvars ==0) std::cout<<std::endl;
             //            std::cout<<"("<<tndex<<","<<undex<<")="<<cov<<std::endl;
             //            std::cout<<"       "<<"cv_i:"<<cv_i<<" cv_j:"<<cv_j<<" var_i:"<<var_i<<" var_j:"<<var_j<<std::endl;
         }
 		if(tndex % 1000==0) std::cout<<">> Next Bin"<<std::endl;
     }
+	std::cout<<std::endl;
 
     return hCov;
+}
+
+void PrintFractionalUncertainties(const TH1D* hCV,
+                                  const std::vector<TH1D*>& variations)
+{
+    const int nbins = hCV->GetNbinsX();
+    const int nvars = variations.size();
+
+    for (int ivar = 0; ivar < nvars; ++ivar) {
+
+        std::cout << "(variation" << ivar+1 << "),";
+
+        for (int ibin = 1; ibin <= nbins; ++ibin) {
+
+            double cv  = hCV->GetBinContent(ibin);
+            double var = variations[ivar]->GetBinContent(ibin);
+
+            double frac = 0.0;
+            if (cv != 0.0)
+                frac = std::abs(var - cv) / cv;
+
+            std::cout << frac;
+
+            if (ibin != nbins)
+                std::cout << ",";
+        }
+
+        std::cout << std::endl;
+    }
 }
 
 void ExportPNG_Overlays(
@@ -782,7 +814,7 @@ void    draw_CovMatrix(const TH1D* CV,
             std::cout << std::sqrt(val) << ", ";
         }
 
-        std::cout<<"\nTotal fractional uncertainties (not exclude stat. unc.): ";
+        std::cout<<"\nTotal fractional uncertainties (not exclude stat. unc.), ";
         for (size_t i = 0; i < VarOfBins.size(); ++i) {
             std::cout << std::sqrt(VarOfBins[i]) /CV->GetBinContent(i+1) << ", ";
         }

@@ -108,12 +108,14 @@ void TTree2CovMatrix_TEMPLATE(){
 		//Adjust legend text size
 		leg->SetTextSize(0.05);
 
+		PrintFractionalUncertainties( hsampleCV, allhists);
+
 //			ExportPNG_StackDataTwoSignal_wLabel({hsampleCV}, hs, hsampleCV, hsampleCV, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
-		draw_variations( hsampleCV, allhists, leg, MakeSafeName(Label+ "_DetVariations_" +temp_var.GetAxisLabel() ) + "_CutTag"+ Precut.CountChar('&'), temp_var.GetAxisLabel(), "Event Rate at 2E21 POT", temp_var.GetIsLog());
+		draw_variations( hsampleCV, allhists, leg, MakeSafeName(Label+ "_DetVariations_" +temp_var.GetAxisLabel() ) + "__" + MakeSuffix(Precut), temp_var.GetAxisLabel(), "Event Rate at 2E21 POT", temp_var.GetIsLog());
 
 //		draw_FractionalDifference( hsampleCV, allhists, leg, MakeSafeName(Label+ "_FracDiff_" +temp_var.GetAxisLabel() ), temp_var.GetAxisLabel(), "%Diff respected to CV");
 
-		draw_CovMatrix( hsampleCV, allhists,  MakeSafeName(Label+"_CovMatrix_"+temp_var.GetAxisLabel()) + "_CutTag"+ Precut.CountChar('&') , sample_labels, "Covariance Matrix");
+//		draw_CovMatrix( hsampleCV, allhists,  MakeSafeName(Label+"_CovMatrix_"+temp_var.GetAxisLabel()) + "_CutTag"+ Precut.CountChar('&') , sample_labels, "Covariance Matrix");
 
 	}//Next variable
 

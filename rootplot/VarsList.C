@@ -49,7 +49,9 @@ std::vector< Vars> SetMultipleVars(){
 	//BDT
     double bins = 10;
     Vars var_bdtCosmicPionL("Pion - Cosmic Classifier (Log y)","Pi0CosmicClassifier",        {bins,0,1}, true);
-    Vars var_bdtPionAma0146L("ma0146 - Pion Accurate Classifier (Log y)","ma0146PionAccurateClassifier",        {bins,0,1}, true);
+//    Vars var_bdtPionAma0146L("ma0146 - Pion Accurate Classifier (Log y)","ma0146PionAccurateClassifier",        {bins,0,1}, true);
+//    Vars var_bdtPionAma0146L("ma0146 - Pion Accurate Classifier (Log y)","ma0146PionAccurateClassifier",        {bins,0,1}, true, {0.2668,0.2370,0.3746,0.3445,0.3871,0.2877,0.3421,0.3775,0.2851,0.3693});//min sys
+    Vars var_bdtPionAma0146L("ma0146 - Pion Accurate Classifier (Log y)","ma0146PionAccurateClassifier",        {bins,0,1}, true, {0.5889,1.9494,1.1523,1.5593,2.4119,4.6827,1.0199,2.1418,1.2236,1.4420});//max sys
     Vars var_bdtPionAma03L("ma03 - Pion Accurate Classifier (Log y)","ma03PionAccurateClassifier",        {bins,0,1}, true);
     Vars var_bdtPionAma04L("ma04 - Pion Accurate Classifier (Log y)","ma04PionAccurateClassifier",        {bins,0,1}, true);
     Vars var_bdtPionAma052L("ma052 - Pion Accurate Classifier (Log y)","ma052PionAccurateClassifier",        {bins,0,1}, true);
@@ -63,8 +65,8 @@ std::vector< Vars> SetMultipleVars(){
 //	std::vector< Vars> allVars = {varCosOpnAng};
 
 //    std::vector< Vars> allVars = {varX};
-    std::vector< Vars> allVars = {varX,varY, varZ, varRecoFlash, varRecoST};
-//    std::vector< Vars> allVars = {varShrKalmandEdx21, varShrKalmandEdx22, varAI, varNME, varNMP,  varNMBeta, varNMBetaL, varMass,  varMassC, varMassCl, varCosOpnAng, varShrCosBeta1,  varShrBeta1, varShrTheta1, varShrCosBeta2, varShrE1, varShrE1l,  varShrE2, var_photonl1, var_photonl1l, var_photonl2, var_photonl2l, var_yness1, var_yness2, varX,varY, varZ, varRecoFlash, var_bdtCosmicPionL, var_bdtPionAma0146L};
+//    std::vector< Vars> allVars = {varX,varY, varZ, varRecoFlash, varRecoST};
+    std::vector< Vars> allVars = {varShrKalmandEdx21, varShrKalmandEdx22, varAI, varNME, varNMP,  varNMBeta, varNMBetaL, varMass,  varMassC, varMassCl, varCosOpnAng, varShrCosBeta1,  varShrBeta1, varShrTheta1, varShrCosBeta2, varShrE1, varShrE1l,  varShrE2, var_photonl1, var_photonl1l, var_photonl2, var_photonl2l, var_yness1, var_yness2, varX,varY, varZ, varRecoFlash, var_bdtCosmicPionL, var_bdtPionAma0146L};
 
 
 

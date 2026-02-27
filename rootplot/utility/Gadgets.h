@@ -348,30 +348,46 @@ std::string PrintSysError(const TH1D* hCV,
         uncStream.str() + "\n" +
         fracStream.str() + "\n";
 
-    std::cout << result << std::endl;
+//    std::cout << result << std::endl;
 
     return result;
 }
 
 
-
 std::string PrintHist(TH1D* tmp_hist){
-//		std::cout<<" sum: "<<tmp_hist->Integral()<<std::endl;
-	std::stringstream tmptext_buffer;
 
-	tmptext_buffer<<"\nBin: ";
-	for(int i=1; i<tmp_hist->GetNbinsX()+1; i++){
-		tmptext_buffer << tmp_hist->GetBinContent(i) << ",";
-	}
+    std::stringstream ss;
 
-	tmptext_buffer<<"\nSErr: ";
-	for(int i=1; i<tmp_hist->GetNbinsX()+1; i++){
-		tmptext_buffer << tmp_hist->GetBinError(i) << ",";
-	}
-	tmptext_buffer<<std::endl;
+    const int nbins = tmp_hist->GetNbinsX();
 
-	return tmptext_buffer.str();
+    // ===== CV (bin contents) =====
+    ss << "Summary CV";
+    for(int i = 1; i <= nbins; ++i){
+        ss << "," << tmp_hist->GetBinContent(i);
+    }
+    ss << "\n";
+
+    // ===== Absolute uncertainties =====
+    ss << "Summary Uncertainty";
+    for(int i = 1; i <= nbins; ++i){
+        ss << "," << tmp_hist->GetBinError(i);
+    }
+    ss << "\n";
+
+//    // ===== Fractional uncertainties =====
+//    ss << "Summary Fractional uncertainties";
+//    for(int i = 1; i <= nbins; ++i){
+//        double content = tmp_hist->GetBinContent(i);
+//        double error   = tmp_hist->GetBinError(i);
+//
+//        double frac = (content != 0.0) ? error / content : 0.0;
+//        ss << "," << frac;
+//    }
+//    ss << "\n";
+
+    return ss.str();
 }
+
 
 void PrintRow( const std::vector<double>& vals)
 {
@@ -520,7 +536,7 @@ TLatex *GetEstimators( TH1D* data, TH1D* MC){
 //																			MC->Chi2Test(data,"UW P"));
 
 
-	TString text_chi2; text_chi2.Form("Stat.-Only #chi^{2}/n#it{DOF}=%.2f/%d p=%.2g   ", data->Chi2Test(MC,"WW CHI2"), 
+	TString text_chi2; text_chi2.Form("#chi^{2}/n#it{DOF}=%.2f/%d p=%.2g   ", data->Chi2Test(MC,"WW CHI2"), 
 																			MC->GetNbinsX(), 
 																			data->Chi2Test(MC,"UW P"));
 

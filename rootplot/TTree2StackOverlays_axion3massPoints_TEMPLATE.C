@@ -8,9 +8,9 @@
 
 #include "LoadSamples_Signals.h"
 
-//#include "LoadSamples_Full.h"
+#include "LoadSamples_Full.h"
 
-#include "LoadSamples_Raw.h" //raw samples no 2s0t cut
+//#include "LoadSamples_Raw.h" //raw samples no 2s0t cut
 #include "VarsList.C"
 
 #include "CommonCut.C"
