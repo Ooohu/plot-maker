@@ -492,6 +492,22 @@ Samples LoadRun2aRHCData( TString mTag ){
 
 	return data;
 };
+
+Samples LoadRun2bEXT( TString mTag ){
+
+	Samples ext("Run2b EXT",FDir + "gleeNtuples_numi_run2bEXT_2s0t.root","vertex_tree",COMMONCUT);
+	ext.SetPlotStyle(kGreen-6, 3333);
+	ext.SetPOT(5.25e20);
+	ext.SetScale(0.98*3);
+
+
+	//	//Add Friends ~ Start
+	ext.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuMIExtR2b");
+	ext.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier",	"NuMIExtR2b");
+
+	return ext;
+}
+
 //}
 
 
@@ -600,12 +616,12 @@ Samples LoadRun3RHCInCryoOther( TString mTag ){
 
 Samples LoadRun3RHCDirt( TString mTag ){
 
-	Samples tmpSample("Dirt (OutsideCryo)  x.52","/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run3dirt_luis_goodweight_2s0t.root","vertex_tree","run_number<16880");
+	Samples tmpSample("Dirt (OutsideCryo)  x.54","/pnfs/uboone/persistent/users/klin/MCC9/ntuples/liteTtrees_2s0t/gleeNtuples_numi_run3dirt_luis_goodweight_2s0t.root","vertex_tree","run_number<16880");
 
 	tmpSample.SetPlotStyle(kOrange-7, 1001);
 	//	tmpSample.SetWeight(MakeSafeWgtName("ppfx_cv*weightSplineTimesTune"));
 	tmpSample.SetPOT(6.01415e20);
-	tmpSample.SetScale(0.52);
+	tmpSample.SetScale(0.54);
 
 	//dirtory, classifier, sample
 	//<directory>/<classifier>_<sample>_app.root
@@ -630,6 +646,21 @@ Samples LoadRun3Pre16880RHCData( TString mTag ){
 
 	return data;
 };
+
+Samples LoadRun3Pre16880EXT( TString mTag ){
+
+	Samples ext("Run3b EXT < 16880 run", FDir + "gleeNtuples_numi_run3EXT_luis_2s0t.root","vertex_tree","run_number<16880 &&"+COMMONCUT);
+	ext.SetPlotStyle(kGreen-6, 3333);
+	ext.SetPOT(4.22e20*19381337.925/8742594.0);//from POT tool, 9.35e20
+	ext.SetScale(0.98*3);
+
+	ext.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuMIExtR3b");
+	ext.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier",	"NuMIExtR3b");
+
+	return ext;
+}
+
+
 
 
 
@@ -768,6 +799,20 @@ Samples LoadRun4bRHCData( TString mTag ){
 	return data;
 };
 
+Samples LoadRun4bEXT( TString mTag ){
+
+	Samples ext("Run4b EXT",FDir + "gleeNtuples_numi_run4bEXT_final_2s0t.root","vertex_tree",COMMONCUT);
+	ext.SetPlotStyle(kGreen-6, 3333);
+	ext.SetPOT(5.85e20);
+	ext.SetScale(0.98*3);
+
+
+	//	//Add Friends ~ Start
+	ext.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuMIExtR4b");
+	ext.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier",	"NuMIExtR4b");
+
+	return ext;
+}
 //}
 
 
@@ -911,6 +956,23 @@ Samples LoadRun4cFHCData( TString mTag ){
 };
 
 
+Samples LoadRun4cEXT( TString mTag ){
+
+	Samples ext("Run4c EXT",FDir + "gleeNtuples_numi_run4cEXT_2s0t.root","vertex_tree",COMMONCUT);
+	ext.SetPlotStyle(kGreen-6, 3333);
+	ext.SetPOT(4.62e20);
+	ext.SetScale(0.98*3);
+
+
+	//	//Add Friends ~ Start
+	ext.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuMIExtR4c");
+	ext.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier",	"NuMIExtR4c");
+
+	return ext;
+}
+
+
+
 //}
 
 
@@ -1051,5 +1113,40 @@ Samples LoadRun5FHCData( TString mTag ){
 	return data;
 };
 
+Samples LoadRun5EXT( TString mTag ){
+
+	Samples ext("Run5 EXT",FDir + "gleeNtuples_numi_run5EXT_0lifetimeRemoval_2s0t.root","vertex_tree",COMMONCUT);
+	ext.SetPlotStyle(kGreen-6, 3333);
+	ext.SetPOT(9e20);
+	ext.SetScale(0.98*3);
+
+
+	//	//Add Friends ~ Start
+	ext.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"NuMIExtR5");
+	ext.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier",	"NuMIExtR5");
+
+	return ext;
+}
+
+
 
 //}
+//
+//---------------------------
+//-------- Combined  ------
+//---------------------------
+Samples LoadAllMC( TString mTag ){
+	Samples tmpSample("Combined MC", FDirNew+"AllMC_R1toR5.root","vertex_tree","1");
+
+
+	tmpSample.SetPlotStyle(kBlue+4,1001);
+	tmpSample.SetWeight(MakeSafeWgtName("ppfx_cv*weightSplineTimesTune"));
+	tmpSample.SetPOT(2e21);//Arbitrary POT
+
+	//Add Friends
+	tmpSample.AddFriend(FDirNew+"AllMC_R1toR5.root", "eventweight_tree");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier",	"AllNu");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "AllNu");
+
+	return tmpSample;
+};

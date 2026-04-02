@@ -104,6 +104,8 @@ TH1D* drawTH1D(Samples &sample, Vars &var)
 
     //default is (nbins, bmin, bmax);
     TH1D* h = new TH1D(RandomName(), "", binnings[0], binnings[1], binnings[2]);
+    h->Sumw2();//fix error bar?
+
     if(!ttree){
         std::cout<<"Did not find TTree "<< sample.GetBranchName()<<" from "<<sample.GetFilePath()<<std::endl;
         return h;
@@ -154,7 +156,7 @@ TH2D* BuildCovarianceMatrix(const TH1D* hCV, const std::vector<TH1D*>& variation
     int nbins = hCV->GetNbinsX();
     int totalbins = nbins*nvars;
 
-	//don't know why, the following line will sometime make the code quiet quietly
+    //don't know why, the following line will sometime make the code quiet quietly
     TH2D* hCov = new TH2D("hCov"+RandomName(), "Matrix", totalbins, 0.5, totalbins+0.5, totalbins, 0.5, totalbins+0.5);
 //    hCov->SetDirectory(nullptr);
     TH1D* h_concat = new TH1D("h_concat", "Concatenated Histogram", totalbins, 0.5, totalbins + 0.5);
@@ -170,13 +172,13 @@ TH2D* BuildCovarianceMatrix(const TH1D* hCV, const std::vector<TH1D*>& variation
     }
 
     // Calculate covariance
-	std::cout<<"Fractional Uncer, ";
+    std::cout<<"Fractional Uncer, ";
     for (int tndex= 1; tndex < totalbins + 1; ++tndex) {//Get the CV
         double cv_i = hCV->GetBinContent( (tndex-1)%nbins + 1); //want 1,2,3; 1,2,3; 
         double var_i = h_concat->GetBinContent( tndex);
 
         for (int undex= 1; undex < totalbins + 1; ++undex) {//Get the 2nd CV
-			if(undex % 1000==0 && tndex % 1000==0) std::cout<<"\r Check progress "<<undex<<" / "<<totalbins<<" of "<<tndex<<std::flush;
+            if(undex % 1000==0 && tndex % 1000==0) std::cout<<"\r Check progress "<<undex<<" / "<<totalbins<<" of "<<tndex<<std::flush;
             double cv_j = hCV->GetBinContent( (undex - 1)%nbins + 1);
             double var_j = h_concat->GetBinContent( undex);
 
@@ -186,14 +188,14 @@ TH2D* BuildCovarianceMatrix(const TH1D* hCV, const std::vector<TH1D*>& variation
             double cov = diff_i * diff_j;
 
             hCov->SetBinContent(tndex, undex, cov);
-			if(tndex==undex) std::cout<<sqrt(cov)/cv_i<<",";
-			if(undex % nvars ==0) std::cout<<std::endl;
+            if(tndex==undex) std::cout<<sqrt(cov)/cv_i<<",";
+            if(undex % nvars ==0) std::cout<<std::endl;
             //            std::cout<<"("<<tndex<<","<<undex<<")="<<cov<<std::endl;
             //            std::cout<<"       "<<"cv_i:"<<cv_i<<" cv_j:"<<cv_j<<" var_i:"<<var_i<<" var_j:"<<var_j<<std::endl;
         }
-		if(tndex % 1000==0) std::cout<<">> Next Bin"<<std::endl;
+        if(tndex % 1000==0) std::cout<<">> Next Bin"<<std::endl;
     }
-	std::cout<<std::endl;
+    std::cout<<std::endl;
 
     return hCov;
 }
@@ -488,7 +490,7 @@ void draw_variations_wRatio(TH1D* CV,
     // =========================
     // Canvas
     // =========================
-    TCanvas* c = new TCanvas("c", "Variations", 1000, 800);
+    TCanvas* c = new TCanvas("c", "Variations", 1000, 600);
 
     // ---- Pad geometry (55:45)
     const double split = 0.45;  // bottom height fraction
@@ -553,6 +555,7 @@ void draw_variations_wRatio(TH1D* CV,
     CV->SetMaximum(max * 1.2);
     CV->Draw("HISTSAME");
 
+
     // =====================================================
     // BOTTOM PAD : Percent Difference (Var - CV)/CV
     // =====================================================
@@ -562,7 +565,7 @@ void draw_variations_wRatio(TH1D* CV,
     hFrame->Reset();
     hFrame->SetTitle("");
 
-    hFrame->GetYaxis()->SetTitle("Fractional Unvertainties");
+    hFrame->GetYaxis()->SetTitle("% Diff.");
     hFrame->GetYaxis()->SetNdivisions(505);
     hFrame->GetYaxis()->SetTitleSize(0.09);
     hFrame->GetYaxis()->SetLabelSize(0.075);
@@ -572,10 +575,46 @@ void draw_variations_wRatio(TH1D* CV,
     hFrame->GetXaxis()->SetTitleSize(0.10);
     hFrame->GetXaxis()->SetLabelSize(0.085);
 
-    hFrame->SetMinimum(-0.3);
-    hFrame->SetMaximum(0.3);
+    // ---- NEW RANGE: ±100%
+    hFrame->SetMinimum(-1.0);
+    hFrame->SetMaximum(1.0);
 
     hFrame->Draw();
+
+    int nbins = CV->GetNbinsX();
+
+    // ---- Statistical uncertainty band (around 0)
+    TH1D* hStat = (TH1D*)CV->Clone("hStat");
+    hStat->Reset();
+
+    for (int b = 1; b <= nbins; ++b) {
+        double cv  = CV->GetBinContent(b);
+        double err = CV->GetBinError(b);
+
+        if (cv != 0) {
+            double fracErr = err / cv;
+            hStat->SetBinContent(b, 0.0);           // centered at 0
+            hStat->SetBinError(b, fracErr);         // ± stat/CV
+        } else {
+            hStat->SetBinContent(b, 0.0);
+            hStat->SetBinError(b, 0.0);
+        }
+    }
+
+    // Style: gray hatched band
+    hStat->SetFillColor(kGray+1);
+    hStat->SetFillStyle(3004);   // hatched
+    hStat->SetLineColor(kGray+1);
+
+    // Draw as error band
+    hStat->Draw("E2 SAME");
+
+    // ---- Quadrature sum histogram
+    TH1D* hQuad = (TH1D*)CV->Clone("hQuad");
+    hQuad->Reset();
+
+    // ---- Store all diff hists (optional, for clarity)
+    std::vector<TH1D*> diffs;
 
     colorIndex = 0;
 
@@ -591,13 +630,66 @@ void draw_variations_wRatio(TH1D* CV,
             diff->SetLineColor(sampleColor(colorIndex++));
 
         diff->Draw("HISTSAME");
+        diffs.push_back(diff);
     }
 
-    // zero reference line
+    // ---- Compute quadrature sum bin-by-bin
+	std::cout<<"Frac Ucer,"<<std::endl;
+    for (int b = 1; b <= nbins; ++b) {
+        double sumsq = 0.0;
+
+        for (auto* d : diffs) {
+            double val = d->GetBinContent(b);
+            if (std::isfinite(val))
+                sumsq += val * val;
+        }
+
+        double quad = std::sqrt(sumsq);
+        hQuad->SetBinContent(b, quad);
+		std::cout<<quad<<",";
+    }
+	std::cout<<std::endl;
+
+    // ---- Draw +quad and -quad
+    TH1D* hQuadNeg = (TH1D*)hQuad->Clone("hQuadNeg");
+    hQuadNeg->Scale(-1.0);
+
+    hQuad->SetLineColor(kBlack);
+    hQuad->SetLineWidth(3);
+
+    hQuadNeg->SetLineColor(kBlack);
+    hQuadNeg->SetLineWidth(3);
+
+    hQuad->Draw("HISTSAME");
+    hQuadNeg->Draw("HISTSAME");
+
+    // ---- Zero reference line
     TLine* line = new TLine(CV->GetXaxis()->GetXmin(),0.0,
-                            CV->GetXaxis()->GetXmax(),0.0);
+            CV->GetXaxis()->GetXmax(),0.0);
     line->SetLineStyle(3);
     line->Draw();
+
+    // ---- ±30% gray reference lines
+    TLine* line30p = new TLine(CV->GetXaxis()->GetXmin(), 0.3,
+            CV->GetXaxis()->GetXmax(), 0.3);
+    TLine* line30n = new TLine(CV->GetXaxis()->GetXmin(), -0.3,
+            CV->GetXaxis()->GetXmax(), -0.3);
+
+    line30p->SetLineColor(kCyan-5);
+    line30p->SetLineStyle(7);
+    line30n->SetLineColor(kCyan-5);
+    line30n->SetLineStyle(7);
+
+    line30p->Draw();
+    line30n->Draw();
+
+    // ---- Add legend entry (bottom-left)
+    TLegend* legBot = new TLegend(0.05, 0.05, 0.35, 0.20);
+    legBot->SetBorderSize(0);
+    legBot->SetFillStyle(0);
+	legBot->AddEntry(hStat, "CV Stat. Unc.", "f");//Label the stat. Unc.
+    legBot->AddEntry(hQuad, "Quadrature Sum", "l");
+    legBot->Draw();
 
     // =====================================================
     // LEGEND PAD
@@ -858,6 +950,132 @@ HistPack makeHists_RDF(
 
     ROOT::RDataFrame df(*sample.GetSampleTree());
 
+    // ================= Base Filter =================
+    auto df_base = df.Filter(sample.GetDefinition().Data());
+    std::cout << "Filter with "
+              << sample.GetDefinition().Data() << std::endl;
+
+    // Histogram model for CV
+    ROOT::RDF::TH1DModel model(
+        Form("h_%s_%s_CV",
+             sample.GetSampleName().Data(),
+             var.GetVarName().Data()),
+        "",
+        (int)bins[0], bins[1], bins[2]
+    );
+
+    HistPack out;
+
+    // Simplify complicated expression
+    TString newBranchName = "Dummy";
+
+    // =====================================================
+    // 1️⃣ Define variable and CV weight FIRST
+    // =====================================================
+    auto df_common = df_base
+        .Define(newBranchName.Data(), var.GetVarName().Data())
+        .Define("w_cv", cvWeight.Data());
+
+    // =====================================================
+    // 2️⃣ Apply CV filter ONCE (shared by CV + universes)
+    // =====================================================
+    auto df_filtered =
+        df_common.Filter("TMath::Finite(w_cv) && w_cv > 0");
+
+    // =====================================================
+    // 3️⃣ CV DEBUG
+    // =====================================================
+    if(Nuniv<10){//CHECK CV
+        std::cout << "\n===== CV DIAGNOSTIC =====" << std::endl;
+        std::cout << "Variable expression: " << var.GetVarName() << std::endl;
+        std::cout << "CV weight expression: " << cvWeight << std::endl;
+
+        auto vals  = df_filtered.Take<double>(newBranchName.Data());
+        auto wgts  = df_filtered.Take<float>("w_cv");
+
+        std::cout << "\nFirst 5 CV entries:\n";
+
+        for (size_t i = 0; i < std::min<size_t>(5, vals->size()); ++i) {
+            std::cout << "Entry " << i
+                << "  value = " << vals->at(i)
+                << "  weight = " << wgts->at(i)
+                << std::endl;
+        }
+    }
+    // =====================================================
+    // 4️⃣ CV Histogram
+    // =====================================================
+    out.cv = df_filtered.Histo1D(
+        model,
+        newBranchName.Data(),
+        "w_cv"
+    );
+
+    // =====================================================
+    // 5️⃣ Systematic Universes (ALIGNED WITH CV)
+    // =====================================================
+    for (int k = 0; k < Nuniv; ++k) {
+
+        TString wname = Form("w_u%d", k);
+
+        TString currentW =
+            MakeSafeWgtName(
+                Form("%s[%d]/1000",
+                     univWeightExpr.Data(), k)
+            );
+
+        auto df_u =
+            df_filtered
+            .Define(wname.Data(), currentW.Data());
+
+        // ---------------- DEBUG ----------------
+        if (k<4 & Nuniv< 10) {
+            std::cout << "==== Universe "
+                      << k << " ====\n";
+            std::cout << "Uni. weight expression: " << currentW << std::endl;
+
+            auto vals = df_u.Take<double>(newBranchName.Data());
+            auto wgts = df_u.Take<float>(wname.Data());
+
+            for (size_t i = 0; i <  std::min<size_t>(5, vals->size()); ++i) {
+                std::cout << "Entry " << i
+                          << "  value = " << vals->at(i)
+                          << "  weight = " << wgts->at(i)
+                          << "\n";
+            }
+        }
+
+        out.univ.push_back(
+            df_u.Histo1D(
+                ROOT::RDF::TH1DModel(
+                    Form("h_%s_%s_u%d",
+                         sample.GetSampleName().Data(),
+                         newBranchName.Data(), k),
+                    "",
+                    (int)bins[0], bins[1], bins[2]
+                ),
+                newBranchName.Data(),
+                wname.Data()
+            )
+        );
+    }
+
+    return out;
+}
+
+HistPack makeHists_RDF_OLD(
+        Samples& sample,
+        Vars& var,
+        const TString& cvWeight,
+        const TString& univWeightExpr, // e.g. "sysWeight"
+        int Nuniv
+        )
+{
+    std::vector<double> bins = var.GetBinning();
+
+    ROOT::RDataFrame df(*sample.GetSampleTree());
+
+
     auto df_base = df.Filter(sample.GetDefinition().Data());
     std::cout<<"Filter with "<<sample.GetDefinition().Data()<<std::endl;
 
@@ -878,6 +1096,24 @@ HistPack makeHists_RDF(
     auto df_var = df_base.Define(newBranchName.Data(),
             var.GetVarName().Data()); // var.GetVarName() can be a complicated expression
 
+    if(true){//CHECK CV
+        std::cout << "\n===== CV DIAGNOSTIC =====" << std::endl;
+        std::cout << "Variable expression: " << var.GetVarName() << std::endl;
+        std::cout << "CV weight expression: " << cvWeight << std::endl;
+        auto df_debug = df_var.Define("w_cv", cvWeight.Data());
+
+        auto vals  = df_debug.Take<double>(newBranchName.Data());
+        auto wgts  = df_debug.Take<float>("w_cv");
+
+        std::cout << "\nFirst 5 CV entries:\n";
+
+        for (size_t i = 0; i < std::min<size_t>(5, vals->size()); ++i) {
+            std::cout << "Entry " << i
+                << "  value = " << vals->at(i)
+                << "  weight = " << wgts->at(i)
+                << std::endl;
+        }
+    }
     // CV histogram
     auto df_cv = df_var
         .Define("w_cv", cvWeight.Data())
@@ -909,6 +1145,24 @@ HistPack makeHists_RDF(
     for (int k = 0; k < Nuniv; ++k) {
         TString wname = Form("w_u%d", k);
         TString currentW = MakeSafeWgtName(Form("%s[%d]/1000", univWeightExpr.Data(), k));
+        if(true){
+            // ---- DEBUG: show first 5 entries ----
+            auto df_debug =
+                df_var
+                .Define(wname.Data(), currentW.Data());
+            std::cout << "==== Universe " << k << " ====" << std::endl;
+
+            auto vals  = df_debug.Take<double>(newBranchName.Data());
+            auto wgts  = df_debug.Take<float>(wname.Data());
+
+            for (size_t i = 0; i < std::min<size_t>(5, vals->size()); ++i) {
+                std::cout << "Entry " << i
+                    << "  value = " << vals->at(i)
+                    << "  weight = " << wgts->at(i)
+                    << std::endl;
+            }
+
+        }
         out.univ.push_back(
                 df_var
                 .Define(wname.Data(), currentW.Data())
@@ -926,35 +1180,10 @@ HistPack makeHists_RDF(
                 );
     }
 
-    //    // ---- CV histogram
-    //    out.cv = df_base
-    //        .Define("w", MakeSafeWgtName(cvWeight).Data())
-    //        .Histo1D(model, var.GetVarName().Data(), "w");
-    //
-    //    // ---- Systematic universes
-    //    for (int k = 0; k < Nuniv; ++k) {
-    //        TString currentW =  MakeSafeWgtName(Form("%s[%d]/1000", univWeightExpr.Data(), k));
-    //        out.univ.push_back(
-    //                df_base
-    //                .Define("w", currentW.Data())
-    //                .Histo1D(
-    //                    ROOT::RDF::TH1DModel(
-    //                        Form("h_%s_%s_u%d",
-    //                            sample.GetSampleName().Data(),
-    //                            var.GetVarName().Data(), k),
-    //                        "",
-    //                        (int)bins[0], bins[1], bins[2]
-    //                        ),
-    //                    var.GetVarName().Data(),
-    //                    "w"
-    //                    )
-    //                );
-    //        if(k<2)std::cout <<__LINE__<< "univ integral: " << out.univ.back()->Integral() << std::endl;
-    //    }
-
     return out;
 }
 
+//This one is replaced with v3 with bottom plots added.
 void draw_variations_v2( 
         TH1D* hist_cv,
         std::vector<TH1D*> hist_univ,
@@ -964,7 +1193,7 @@ void draw_variations_v2(
         TString YaxisTitle= "Events", 
         bool logY = false){
 
-	std::cout<<"Summary of var:"<<SafeName<<std::endl;
+    std::cout<<"Summary of var:"<<SafeName<<std::endl;
     TCanvas* c = new TCanvas("c","c",800,600);
     TPad *padT = new TPad("padT","padT",0.1 , 0.8        ,0.9 ,   1); //Pad for legend, invaid margin 0.05 below; xlow, ylow,xup,yup 
     TPad *padH = new TPad("padH","padH",0 , 0.05        ,1 ,   0.8);//Pad for Histograms, 
@@ -1008,6 +1237,199 @@ void draw_variations_v2(
     delete c;
 }
 
+
+void draw_variations_v3( 
+        TH1D* hist_cv,
+        std::vector<TH1D*> hist_univ,
+        TLegend *leg, 
+        TString SafeName,  
+        TString XaxisTitle, 
+        TString YaxisTitle= "Events", 
+        bool logY = false){
+
+    if (!hist_cv) {
+        std::cerr << "Error: CV histogram is null.\n";
+        return;
+    }
+
+    gStyle->SetOptStat(0);
+
+    // =========================
+    // Canvas & Pads
+    // =========================
+    TCanvas* c = new TCanvas("c","c",900,700);
+
+    const double split = 0.35;
+
+    TPad* padTop = new TPad("padTop","",0.0,split,1.0,1.0);
+    TPad* padBot = new TPad("padBot","",0.0,0.0,1.0,split);
+
+    padTop->SetBottomMargin(0.02);
+    padTop->SetLeftMargin(0.12);
+    padTop->SetRightMargin(0.05);
+    padTop->SetTopMargin(0.08);
+    if (logY) padTop->SetLogy();
+
+    padBot->SetTopMargin(0.02);
+    padBot->SetBottomMargin(0.30);
+    padBot->SetLeftMargin(0.12);
+    padBot->SetRightMargin(0.05);
+
+    padTop->Draw();
+    padBot->Draw();
+
+    // =====================================================
+    // TOP PAD : CV + Variations
+    // =====================================================
+    padTop->cd();
+
+    hist_cv->SetLineColor(kBlack);
+    hist_cv->SetLineWidth(2);
+    hist_cv->SetTitle("");
+
+    hist_cv->GetXaxis()->SetLabelSize(0);
+    hist_cv->GetXaxis()->SetTitle("");
+
+    hist_cv->GetYaxis()->SetTitle(YaxisTitle);
+    hist_cv->GetYaxis()->SetTitleSize(0.05);
+    hist_cv->GetYaxis()->SetLabelSize(0.045);
+
+    double max = hist_cv->GetMaximum();
+
+    for (auto& u : hist_univ) {
+        if (!u) continue;
+        if (u->GetMaximum() > max) max = u->GetMaximum();
+    }
+
+    hist_cv->SetMaximum(1.3 * max);
+    hist_cv->Draw("HIST E");
+
+    for (auto& u : hist_univ) {
+        if (!u) continue;
+        u->SetLineWidth(2);
+        u->Draw("HISTSAME");
+    }
+
+    hist_cv->Draw("HISTSAME");
+
+    // ---- Move legend to upper-left
+	leg->SetTextSize(0.05);
+    leg->SetX1(0.3);
+    leg->SetY1(0.80);
+    leg->SetX2(0.70);
+    leg->SetY2(0.9);
+    leg->Draw();
+
+    // =====================================================
+    // BOTTOM PAD : Fractional Uncertainties
+    // =====================================================
+    padBot->cd();
+
+    TH1D* hFrame = (TH1D*)hist_cv->Clone("hFrame");
+    hFrame->Reset();
+    hFrame->SetTitle("");
+
+    hFrame->GetYaxis()->SetTitle("Frac. Uncertainties");
+    hFrame->GetYaxis()->SetNdivisions(505);
+    hFrame->GetYaxis()->SetTitleSize(0.09);
+    hFrame->GetYaxis()->SetLabelSize(0.075);
+    hFrame->GetYaxis()->SetTitleOffset(0.55);
+
+    hFrame->GetXaxis()->SetTitle(XaxisTitle);
+    hFrame->GetXaxis()->SetTitleSize(0.10);
+    hFrame->GetXaxis()->SetLabelSize(0.085);
+
+    // ---- Requested range
+    hFrame->SetMinimum(0.0);
+    hFrame->SetMaximum(0.5);
+
+    hFrame->Draw();
+
+    int nbins = hist_cv->GetNbinsX();
+    int Nuniv = hist_univ.size();
+
+    // =====================================================
+    // STATISTICAL UNCERTAINTY (gray band)
+    // =====================================================
+    TH1D* hStat = (TH1D*)hist_cv->Clone("hStat");
+    hStat->Reset();
+
+    for (int b = 1; b <= nbins; ++b) {
+        double cv  = hist_cv->GetBinContent(b);
+        double err = hist_cv->GetBinError(b);
+
+        if (cv != 0) {
+            hStat->SetBinContent(b, 0.0);
+            hStat->SetBinError(b, err / cv);
+        }
+    }
+
+    hStat->SetFillColor(kGray+1);
+    hStat->SetFillStyle(3004);
+    hStat->SetLineColor(kGray+1);
+    hStat->Draw("E2 SAME");
+
+    // =====================================================
+    // SYSTEMATIC (Quadrature sum with 1/N factor)
+    // =====================================================
+    TH1D* hSys = (TH1D*)hist_cv->Clone("hSys");
+    hSys->Reset();
+
+    for (int b = 1; b <= nbins; ++b) {
+
+        double cv = hist_cv->GetBinContent(b);
+        if (cv == 0) continue;
+
+        double sumsq = 0.0;
+
+        for (auto& u : hist_univ) {
+            if (!u) continue;
+
+            double diff = (u->GetBinContent(b) - cv) / cv;
+            if (std::isfinite(diff))
+                sumsq += diff * diff;
+        }
+
+        double sys = 0.0;
+        if (Nuniv > 0)
+            sys = std::sqrt(sumsq / Nuniv);  // <-- 1/N factor
+
+        hSys->SetBinContent(b, sys);
+    }
+
+    hSys->SetLineColor(kBlack);
+    hSys->SetLineWidth(3);
+    hSys->Draw("HISTSAME");
+
+    // ---- 30% gray reference lines
+    TLine* line30p = new TLine(hist_cv->GetXaxis()->GetXmin(), 0.3,
+            hist_cv->GetXaxis()->GetXmax(), 0.3);
+
+    line30p->SetLineColor(kCyan-5);
+    line30p->SetLineStyle(7);
+    line30p->SetLineWidth(2);
+    line30p->Draw();
+
+    // =====================================================
+    // Bottom legend
+    // =====================================================
+    TLegend* legBot = new TLegend(0.05, 0.05, 0.35, 0.20);
+    legBot->SetBorderSize(0);
+    legBot->SetFillStyle(0);
+
+    legBot->AddEntry(hStat, "CV Stat. Unc.", "f");
+    legBot->AddEntry(hSys,  "Sys. Frac. Unc.", "l");
+
+    legBot->Draw();
+
+    // =====================================================
+    // SAVE
+    // =====================================================
+    c->SaveAs("output/" + SafeName + ".pdf");
+    c->SaveAs("output/" + SafeName + ".png");
+
+    delete c;
+}
 
 
 

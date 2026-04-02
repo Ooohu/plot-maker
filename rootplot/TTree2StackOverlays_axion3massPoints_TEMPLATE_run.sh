@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
 
-tags=(Run1FHC run2MCFHC Run2RHC Run3RHC         run4bMC  run4cMC  run5MC)
+tags=(Run1FHC run2MCFHC Run2RHC Run3RHC         )
+Costags=(Run1EXT Run2aEXT Run2bEXT Run3Pre16880EXT)
+dtags=(Run1FHC Run2aFHC Run2bRHC Run3Pre16880RHC )
+
+#tags=(Run1FHC run2MCFHC Run2RHC Run3RHC         run4bMC  run4cMC  run5MC)
 #Costags=(Run1EXT Run2aEXT Run2bEXT Run3Pre16880EXT Run4bEXT Run4cEXT Run5EXT)
-dtags=(Run1FHC Run2aFHC Run2bRHC Run3Pre16880RHC Run4bRHC Run4cFHC Run5FHC)
+#dtags=(Run1FHC Run2aFHC Run2bRHC Run3Pre16880RHC Run4bRHC Run4cFHC Run5FHC)
 
-Costags=(JumboEXT JumboEXT JumboEXT JumboEXT JumboEXT JumboEXT JumboEXT)
+#Costags=(JumboEXT JumboEXT JumboEXT JumboEXT JumboEXT JumboEXT JumboEXT)
 
-#tags=(Run3RHC)
-#Costags=(Run3Pre16880EXT)
-#dtags=(Run3Pre16880RHC)
+#tags=(run2MCFHC)
+#Costags=(Run2aEXT)
+#dtags=(Run2aFHC)
 
 template=TTree2StackOverlays_axion3massPoints_TEMPLATE.C
 

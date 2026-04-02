@@ -75,7 +75,10 @@ std::map<TString, TString> varAlias = {
 	{"reco_asso_tracks", "trk"},
 	{"reco_asso_showers", "shr"},
     {"reco_vertex_dist_to_SCB", "fv"},
-    {"Pi0CosmicClassifier", "pi0CBDT"}
+    {"Pi0CosmicClassifier", "pi0CBDT"},
+    {"(reco_track_dirx*(128.175-reco_vertex_x)+reco_track_diry*(0-reco_vertex_y)+reco_track_dirz*(518.4-reco_vertex_z))", "TtRV"},
+	{"((reco_shower_energy_max[0] + reco_shower_energy_max[1]) / sqrt(2.0*reco_shower_energy_max[0]*reco_shower_energy_max[1]*(1.0-(reco_shower_dirx[0]*reco_shower_dirx[1] + reco_shower_diry[0]*reco_shower_diry[1] + reco_shower_dirz[0]*reco_shower_dirz[1]))))", "EovM"}
+
 };
 
 TString ApplyAlias(TString cut)
@@ -308,12 +311,14 @@ std::string PrintSysError(const TH1D* hCV,
     const int nVars = variations.size();
 
     std::ostringstream cvStream;
+    std::ostringstream var1Stream;
     std::ostringstream uncStream;
     std::ostringstream fracStream;
 
     cvStream  << "\nSummary CV: ";
+    var1Stream  << "\nSummary 1st Var: ";
     uncStream << "\nSummary Uncertainty: ";
-    fracStream<< "\nSummary Fractional uncertainties: ";
+    fracStream<< "\nSummary Fractional uncertainties, ";
 
     for (int i = 1; i <= nBins; ++i) {
 
@@ -322,6 +327,7 @@ std::string PrintSysError(const TH1D* hCV,
 
         for (const auto& var : variations) {
             if (!var) continue;
+			if(sqSum==0) var1Stream  << std::setprecision(3) << var->GetBinContent(i);	
             double diff = var->GetBinContent(i) - cv;
             sqSum += diff * diff;
         }
@@ -332,12 +338,13 @@ std::string PrintSysError(const TH1D* hCV,
         double frac = (cv != 0.0) ? sys / cv : 0.0;
 
         // Append values
-        cvStream   << cv;
-        uncStream  << sys;
-        fracStream << frac;
+        cvStream   << std::setprecision(3) <<  cv;
+        uncStream  << std::setprecision(3) <<  sys;
+        fracStream << std::setprecision(3) <<  frac;
 
         if (i != nBins) {
             cvStream   << ",";
+			var1Stream << ",";
             uncStream  << ",";
             fracStream << ",";
         }
@@ -345,6 +352,7 @@ std::string PrintSysError(const TH1D* hCV,
 
     std::string result =
         cvStream.str() + "\n" +
+		var1Stream.str() + "\n" +
         uncStream.str() + "\n" +
         fracStream.str() + "\n";
 
@@ -361,7 +369,7 @@ std::string PrintHist(TH1D* tmp_hist){
     const int nbins = tmp_hist->GetNbinsX();
 
     // ===== CV (bin contents) =====
-    ss << "Summary CV";
+    ss << "Summary_CV_bins";
     for(int i = 1; i <= nbins; ++i){
         ss << "," << tmp_hist->GetBinContent(i);
     }
@@ -484,7 +492,11 @@ void SetHashStyle(TH1D* hist){
 	hist->SetLineColor(kBlack);
 }
 
-double Chi2Poisson(const TH1D* hData, const TH1D* hMC) {
+//Assume the distribution is Poisson, take mean=variance
+double Chi2PoissonLikelihood(const TH1D* hData, const TH1D* hMC) {
+
+	if(hData->Integral()*hMC->Integral()==0) return 0;
+
 	int nbins = hData->GetNbinsX();
 	double chi2 = 0.0;
 
@@ -503,22 +515,39 @@ double Chi2Poisson(const TH1D* hData, const TH1D* hMC) {
 	return chi2;
 }
 
+
+//Assume the distribution is Gaussian, take std as independent quantity.
 double Chi2Gaussian(const TH1D* hData, const TH1D* hMC) {
-	int nbins = hData->GetNbinsX();
-	double chi2 = 0.0;
 
-	for (int i = 1; i <= nbins; i++) {
-		double O = hData->GetBinContent(i);
-		double E = hMC->GetBinContent(i);
-		double sigmaO = hData->GetBinError(i);  // observed error
-		double sigmaE = hMC->GetBinError(i);  // expected error (optional)
+    if (hData->Integral() == 0 || hMC->Integral() == 0) return 0;
 
-		// Variance estimate: here I use observed counts O
-		double sigma2 = (O > 0) ? sigmaE*sigmaE : 1.0;  // avoid divide by zero
+    int nbins = hData->GetNbinsX();
+    double chi2 = 0.0;
 
-		chi2 += (O - E) * (O - E) / sigma2;
-	}
-	return chi2;
+    for (int i = 1; i <= nbins; i++) {
+
+        double O = hData->GetBinContent(i);
+        double E = hMC->GetBinContent(i);
+
+        // Skip bins with no information
+        if (O == 0 && E == 0) continue;
+
+        double sigmaO = hData->GetBinError(i);
+        double sigmaE = hMC->GetBinError(i);
+
+        // Combine variances (best practice)
+        double sigma2 = sigmaO*sigmaO + sigmaE*sigmaE;
+
+        // Fallback if both are zero
+        if (sigma2 <= 0) {
+            // reasonable fallback: use Poisson expectation scale
+            sigma2 = std::max(1.0, E);
+        }
+
+        chi2 += (O - E)*(O - E) / sigma2;
+    }
+
+    return chi2;
 }
 
 
@@ -528,24 +557,38 @@ TLatex *GetEstimators( TH1D* data, TH1D* MC){
 	TLatex *estimators;//Data/MC ratio, KS Test, Chi^2/(nDoF), Chi^2 p-value;
 	double histdata_num = data->Integral();
 	double histMC_num = MC->Integral();
+	int nDof =  MC->GetNbinsX();
+
 	TString text_ratio; text_ratio.Form("Data/MC=%.2f   ",histdata_num/histMC_num); 
 
 	TString text_ks; text_ks.Form("KS: %.2f   ", MC->KolmogorovTest(data)); 
-//	TString text_chi2; text_chi2.Form("#chi^{2}/n#it{DOF}=%.2f/%d p=%.2g   ", MC->Chi2Test(data,"UW CHI2"), 
+
+	//soruce code at https://root.cern.ch/doc/master/TH1_8cxx_source.html#l01995
+	std::cout<<"Chi2Test MC->Chi2Test(Data):"<< MC->Chi2Test(data,"WU P")<<std::endl;
+	std::cout<<"Chi2Test Data->Chi2Test(MC):"<< data->Chi2Test(MC,"WU P")<<std::endl;
+
+
+	std::cout<<"Manual check (Poisson ): "<<Chi2PoissonLikelihood (data, MC)<<" p="<< TMath::Prob(Chi2PoissonLikelihood (data, MC), nDof)<<std::endl;
+	std::cout<<"Manual check (Gaussian): "<<Chi2Gaussian(data, MC)<<" p="<< TMath::Prob(Chi2Gaussian(data, MC), nDof)<<std::endl;
+
+//Choose one stat. to use
+//	TString text_chi2; text_chi2.Form("#chi^{2}/n#it{DoF}=%.2f/%d p=%.2g   ", MC->Chi2Test(data,"UW CHI2"), 
 //																			MC->GetNbinsX()-1, 
 //																			MC->Chi2Test(data,"UW P"));
 
 
-	TString text_chi2; text_chi2.Form("#chi^{2}/n#it{DOF}=%.2f/%d p=%.2g   ", data->Chi2Test(MC,"WW CHI2"), 
-																			MC->GetNbinsX(), 
-																			data->Chi2Test(MC,"UW P"));
+//	TString text_chi2; text_chi2.Form("#chi^{2}/n#it{DoF}=%.2f/%d p=%.2g   ", data->Chi2Test(MC,"WW CHI2"), 
+//																			MC->GetNbinsX(), 
+//																			data->Chi2Test(MC,"UW P"));
 
-	//soruce code at https://root.cern.ch/doc/master/TH1_8cxx_source.html#l01995
-	std::cout<<"Chi2Test MC->Chi2Test(Data) "<< MC->Chi2Test(data,"WU CHI2")<<std::endl;
-	std::cout<<"Chi2Test Data->Chi2Test(MC) "<< data->Chi2Test(MC,"WU CHI2")<<std::endl;
 
-	std::cout<<"Manual check (Poisson ): "<<Chi2Poisson (data, MC)<<std::endl;
-	std::cout<<"Manual check (Gaussian): "<<Chi2Gaussian(data, MC)<<std::endl;
+	//Manual version
+	double chi2 = Chi2Gaussian(data, MC);
+
+	TString text_chi2; text_chi2.Form("#chi^{2}/n#it{DoF}=%.2f/%d p=%.2g   ", chi2, 
+																			nDof, 
+																			TMath::Prob(chi2, nDof));
+
 
 
 //	//chi2 will ignore 0 values, so replace it with something super small would be good.
@@ -565,7 +608,7 @@ TLatex *GetEstimators( TH1D* data, TH1D* MC){
 //
 //
 //	TString text_ks; text_ks.Form("KS: %.2f   ", MC_copy->KolmogorovTest(data_copy)); 
-//	TString text_chi2; text_chi2.Form("#chi^{2}/n#it{DOF}=%.2f/%d p=%.2g   ", MC_copy->Chi2Test(data_copy,"UW CHI2"), 
+//	TString text_chi2; text_chi2.Form("#chi^{2}/n#it{DoF}=%.2f/%d p=%.2g   ", MC_copy->Chi2Test(data_copy,"UW CHI2"), 
 //																			MC_copy->GetNbinsX()-1, 
 //																			MC_copy->Chi2Test(data_copy,"UW P"));
 //

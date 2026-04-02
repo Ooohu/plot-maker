@@ -3,6 +3,7 @@
 //static gives internal linkage
 static const TString COMMONCUT="1";//"subrun_number%3==0";//I didn't train on these files, so no subrun cuts
 static const TString FDir="/pnfs/uboone/persistent/users/klin/MCC9/ntuples/systemaics/";
+static const TString FDir_2s0t="/pnfs/uboone/persistent/users/klin/MCC9/ntuples/systemaics/liteTtrees_2s0t/";
 static const TString TrainDir="/exp/uboone/app/users/klin/2024Jun_ub_AxionAnalysis/BDTTool/hellstroms_hive/hive/build_axion_general_v2/NuMIAllMC_2s0t_Jan2026/";
 
 
@@ -1287,3 +1288,152 @@ Samples LoadR5_DetVarWireModYZ( TString mTag ){
 
 
 
+// ------------------------------
+// ---- Combined DetVar Files ---
+// ------------------------------
+//{
+
+
+Samples LoadCV_2s0t_6runs( TString mTag ){
+	Samples tmpSample("CV_6runs",FDir_2s0t+"/klin_NuMI_sys_CV_2s0t_6runs.root","vertex_tree",COMMONCUT);
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "CV_2s0t_6runs");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "CV_2s0t_6runs");
+
+	tmpSample.SetPOT(9.37E+21);
+
+	return tmpSample;
+};
+
+
+Samples LoadDetVarAlternativeRecombination_2s0t_4runs( TString mTag ){
+	Samples tmpSample("DetVarAlternativeRecombination_4runs",FDir_2s0t+"/klin_NuMI_sys_DetVarAlternativeRecombination_2s0t_4runs.root","vertex_tree",COMMONCUT);
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "DetVarAlternativeRecombination_2s0t_4runs");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "DetVarAlternativeRecombination_2s0t_4runs");
+
+	tmpSample.SetPOT(8.71671E+21);
+
+	return tmpSample;
+};
+
+
+Samples LoadDetVarAlternativeSCMap_2s0t_5runs( TString mTag ){
+	Samples tmpSample("DetVarAlternativeSCMap_5runs",FDir_2s0t+"/klin_NuMI_sys_DetVarAlternativeSCMap_2s0t_5runs.root","vertex_tree",COMMONCUT);
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "DetVarAlternativeSCMap_2s0t_5runs");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "DetVarAlternativeSCMap_2s0t_5runs");
+
+	tmpSample.SetPOT(9.26E+21);
+
+	return tmpSample;
+};
+
+
+Samples LoadDetVarAttenuation_2s0t_5runs( TString mTag ){
+	Samples tmpSample("DetVarAttenuation_5runs",FDir_2s0t+"/klin_NuMI_sys_DetVarAttenuation_2s0t_5runs.root","vertex_tree",COMMONCUT);
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "DetVarAttenuation_2s0t_5runs");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "DetVarAttenuation_2s0t_5runs");
+
+	tmpSample.SetPOT(9.46E+21);
+
+	return tmpSample;
+};
+
+
+Samples LoadDetVarLYDown_2s0t_6runs( TString mTag ){
+	Samples tmpSample("DetVarLYDown_6runs",FDir_2s0t+"/klin_NuMI_sys_DetVarLYDown_2s0t_6runs.root","vertex_tree",COMMONCUT);
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "DetVarLYDown_2s0t_6runs");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "DetVarLYDown_2s0t_6runs");
+
+	tmpSample.SetPOT(7.82E+21);
+
+	return tmpSample;
+};
+
+
+Samples LoadDetVarLYRayleigh_2s0t_6runs( TString mTag ){
+	Samples tmpSample("DetVarLYRayleigh_6runs",FDir_2s0t+"/klin_NuMI_sys_DetVarLYRayleigh_2s0t_6runs.root","vertex_tree",COMMONCUT);
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "DetVarLYRayleigh_2s0t_6runs");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "DetVarLYRayleigh_2s0t_6runs");
+
+	tmpSample.SetPOT(6.77E+21);
+
+	return tmpSample;
+};
+
+
+Samples LoadDetVarWireModThetaXZ_2s0t_6runs( TString mTag ){
+	Samples tmpSample("DetVarWireModThetaXZ_6runs",FDir_2s0t+"/klin_NuMI_sys_DetVarWireModThetaXZ_2s0t_6runs.root","vertex_tree",COMMONCUT);
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "DetVarWireModThetaXZ_2s0t_6runs");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "DetVarWireModThetaXZ_2s0t_6runs");
+
+	tmpSample.SetPOT(7.01E+21);
+
+	return tmpSample;
+};
+
+
+Samples LoadDetVarWireModThetaYZ_2s0t_6runs( TString mTag ){
+	Samples tmpSample("DetVarWireModThetaYZ_6runs",FDir_2s0t+"/klin_NuMI_sys_DetVarWireModThetaYZ_2s0t_6runs.root","vertex_tree",COMMONCUT);
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "DetVarWireModThetaYZ_2s0t_6runs");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "DetVarWireModThetaYZ_2s0t_6runs");
+
+	tmpSample.SetPOT(9.27E+21);
+
+	return tmpSample;
+};
+
+
+Samples LoadDetVarWireModX_2s0t_6runs( TString mTag ){
+	Samples tmpSample("DetVarWireModX_6runs",FDir_2s0t+"/klin_NuMI_sys_DetVarWireModX_2s0t_6runs.root","vertex_tree",COMMONCUT);
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "DetVarWireModX_2s0t_6runs");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "DetVarWireModX_2s0t_6runs");
+
+	tmpSample.SetPOT(9.31E+21);
+
+	return tmpSample;
+};
+
+
+Samples LoadDetVarWireModYZ_2s0t_6runs( TString mTag ){
+	Samples tmpSample("DetVarWireModYZ_6runs",FDir_2s0t+"/klin_NuMI_sys_DetVarWireModYZ_2s0t_6runs.root","vertex_tree",COMMONCUT);
+
+	//dirtory, classifier, sample
+	//<directory>/<classifier>_<sample>_app.root
+	tmpSample.AddFriendViaTag_v2(TrainDir,  mTag+"PionAccurateClassifier", "DetVarWireModYZ_2s0t_6runs");
+	tmpSample.AddFriendViaTag_v2(TrainDir,  "Pi0CosmicClassifier", "DetVarWireModYZ_2s0t_6runs");
+
+	tmpSample.SetPOT(9.31E+21);
+
+	return tmpSample;
+};
+
+
+
+
+//}

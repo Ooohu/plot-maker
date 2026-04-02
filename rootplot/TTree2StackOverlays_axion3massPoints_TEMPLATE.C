@@ -27,6 +27,7 @@ void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 	// PREPARE SAMPLES -----------------------------------------------------------------
 	TString axiontag = tag[0];//"ma003";
 	TString JSONfileName="JSON_output/"+axiontag+"_TEMPLATE.json";
+//	TString Label = "NuMIaxions_3mp_TEMPLATE"+axiontag+"_";
 	TString Label = "NuMIaxions_3mp2s0t_TEMPLATE"+axiontag+"_";
 
 	Samples axion0093		= LoadAxions0093	(axiontag);
@@ -104,7 +105,7 @@ void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 		THStack *hs = new THStack(RandomName(), "");// Create Stack
 		TH1D* errorHist = nullptr;// Create a empty hist for storing all bkgs
 		TH1D* MCOnly = nullptr;
-		TH1D* FVMCOnly = nullptr;
+		TH1D* nonDirtMCOnly = nullptr;
 
 		for (size_t i = 0; i < vecSamples.size(); ++i) {
 
@@ -125,27 +126,31 @@ void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 
 			// BEFORE last two samples: snapshot FVMC-only
 			if (i + 2 == vecSamples.size() && !MCOnly) {
-				FVMCOnly = (TH1D*)errorHist->Clone("FVMCOnly");
-				FVMCOnly->SetDirectory(nullptr);
-				std::cout << "FVMCOnly snapshot created\n";
-				PrintHist(FVMCOnly);
+				nonDirtMCOnly = (TH1D*)errorHist->Clone("nonDirtMCOnly");
+				nonDirtMCOnly->SetDirectory(nullptr);
+				std::cout << "\nnonDirtMCOnly snapshot created:\n";
+				std::cout<<PrintHist(nonDirtMCOnly);
 			}
 
 			// BEFORE last sample: snapshot MC-only
 			if (i + 1 == vecSamples.size() && !MCOnly) {
 				MCOnly = (TH1D*)errorHist->Clone("MCOnly");
 				MCOnly->SetDirectory(nullptr);
-				std::cout << "MCOnly snapshot created\n";
-				PrintHist(MCOnly);
+				std::cout << "\nMCOnly snapshot created:\n";
+				std::cout<<PrintHist(MCOnly);
 			}
 			// Build summed histogram
 			if (errorHist) {
+				std::cout<<"Add category: "<<leg_title<<std::endl;
 				errorHist->Add(hist);
 			} else {
 				errorHist = (TH1D*)hist->Clone("errorHist");
 				errorHist->SetDirectory(nullptr);
 			}
 		}
+
+		std::cout<<"\nAll Backgrounds :\n"<<PrintHist(errorHist)<<std::endl;
+		std::cout<<std::endl;
 
 		//--> Draw histogram: data overlay
 		data.AddDefinition(Precut);
@@ -175,7 +180,7 @@ void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 //			std::vector<double> fr = {0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1};
 			std::vector<double> fr = temp_var.GetFracSys();
 
-			AddFractionalSystematics( errorHist, fr, FVMCOnly);
+			AddFractionalSystematics( errorHist, fr, nonDirtMCOnly);
 
 			mc_leg_title = Form("Stat. & Sys. Uncertainties | Bkg Sum: %.1lf",errorHist->Integral());
 

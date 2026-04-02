@@ -46,6 +46,8 @@ public:
 			// Check friend tree
 			if (auto* friendTree = this->s_ttree->GetFriend(friend_name)) {
 				nEntriesFriend = friendTree->GetEntries();
+				TTree* tmp_friend = GetTree( friend_path, friend_name);
+				s_ttree_friends.push_back( tmp_friend);
 			}
 		}
 
@@ -102,6 +104,7 @@ public:
 
 		if(!gSystem->AccessPathName(fDir)){
 			this->AddFriend(frdTFile, frdTTree);
+//			std::cout<<"Add a friend from file: "<<frdTFile<<std::endl;
 		} else{
 			std::cout<<frdTFile<<" does not exist"<<std::endl;
 		}
@@ -162,6 +165,7 @@ public:
 	double GetPOT(){ return this->s_POT;};
 	double GetScale(){ return this->s_scale;};
 	TTree* GetSampleTree(){ return this->s_ttree;}
+	std::vector<TTree*> GetSampleTreeFriends(){ return this->s_ttree_friends;}
 	TString GetSampleName(){ return this->s_SampleName;}
 	TString GetWeight(){ return this->s_weight;}
 	TString GetFilePath(){ return this->s_file_path;}
@@ -196,6 +200,7 @@ private:
 	int s_fillstyle = 0;
 
 	TTree* s_ttree;
+	std::vector< TTree* > s_ttree_friends;
 };
 
 #endif

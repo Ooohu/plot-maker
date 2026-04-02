@@ -5,9 +5,9 @@
 #include <sstream>
 
 #include "LoadSamples_sys.h"
-#include "LoadStyles.h"
+//#include "LoadStyles.h"
 //#include "VarsList_BDT.C"
-#include "VarsList_R3.C"
+#include "VarsList.C"
 
 #include "CommonCut.C"
 
@@ -23,16 +23,17 @@ void TTree2CovMatrix_sysR3bPre16880(){
 //	std::stringstream text_buffer;
 	
 	Samples sampleCV						= LoadR3b_CVRHC						(tag[0]);
+	Samples sampleAttn						= LoadR3b_DetVarAttenuation		(tag[0]);
 	Samples sampleLYDown					= LoadR3b_DetVarLYDown					(tag[0]);
 	Samples sampleAlternativeSCMap			= LoadR3b_DetVarAlternativeSCMap			(tag[0]);
 	Samples sampleAlternativeRecombination	= LoadR3b_DetVarAlternativeRecombination (tag[0]);
 	Samples sampleLYRayleigh				= LoadR3b_DetVarLYRayleigh				(tag[0]);
 	Samples sampleWireModX					= LoadR3b_DetVarWireModX					(tag[0]);
-//	Samples sampleWireModThetaXZ			= LoadR3b_DetVarWireModThetaXZ			(tag[0]);
+	Samples sampleWireModThetaXZ			= LoadR3b_DetVarWireModThetaXZ			(tag[0]);
 	Samples sampleWireModThetaYZ			= LoadR3b_DetVarWireModThetaYZ			(tag[0]);
 	Samples sampleWireModYZ				    = LoadR3b_DetVarWireModYZ				(tag[0]);
-	std::vector<Samples> vecSamples = { sampleLYDown, sampleAlternativeSCMap, sampleAlternativeRecombination, sampleLYRayleigh, sampleWireModX, sampleWireModThetaYZ, sampleWireModYZ };
-//	std::vector<Samples> vecSamples = { sampleLYDown, sampleAlternativeSCMap, sampleAlternativeRecombination, sampleLYRayleigh, sampleWireModX, sampleWireModThetaXZ, sampleWireModThetaYZ, sampleWireModYZ };
+//	std::vector<Samples> vecSamples = { sampleLYDown, sampleAlternativeSCMap, sampleAlternativeRecombination, sampleLYRayleigh, sampleWireModX, sampleWireModThetaYZ, sampleWireModYZ };
+	std::vector<Samples> vecSamples = { sampleLYDown, sampleAttn, sampleAlternativeSCMap, sampleAlternativeRecombination, sampleLYRayleigh, sampleWireModX, sampleWireModThetaXZ, sampleWireModThetaYZ, sampleWireModYZ };
 
 
 

@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "LoadSamples_sys.h"
+//#include "LoadSamples_sys_sig.h"
 #include "VarsList.C"
 
 #include "CommonCut.C"
@@ -16,7 +17,7 @@ void TTree2CovMatrix_TEMPLATE(){
 
 	TString Label = "Sys_Unisim_TEMPLATE";
 
-	std::vector< TString > tag={"ma0146"};
+	std::vector< TString > tag={"MASSTAG"};
 	//	std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
 //	std::stringstream text_buffer;
 	
@@ -38,6 +39,9 @@ void TTree2CovMatrix_TEMPLATE(){
 	// PREPARE SAMPLES -----------------------------------------------------------------
 //	double PlotPOT = 2.37E20;//R1
 	double PlotPOT = 2E21;
+
+	bool AreaNormalized = true;
+	double additionalScale = 0;
 
 	// PRECUT --------------------------------------------------------------------------------
 //	TString Precut = "(reco_asso_tracks == 0 && reco_asso_showers == 2)";
@@ -64,7 +68,15 @@ void TTree2CovMatrix_TEMPLATE(){
 		//Prepare signals, overlay them;
 		sampleCV.AddDefinition(Precut);
 		TH1D* hsampleCV = drawTH1D(sampleCV, temp_var);
-		hsampleCV->Scale(sampleCV.GetScale()*PlotPOT/sampleCV.GetPOT());
+		double scaleCV = sampleCV.GetScale()*PlotPOT/sampleCV.GetPOT();
+		hsampleCV->Scale(scaleCV);
+
+		if(AreaNormalized){
+			additionalScale = 1.0/ hsampleCV->Integral();	
+			hsampleCV->Scale(additionalScale);
+		}
+
+
 //		hsampleCV->SetFillColorAlpha( sampleCV.GetCol(), 0.9); 
 //		hsampleCV->SetLineWidth(3);
 //		hsampleCV->SetLineColor(sampleCV.GetCol());
@@ -91,7 +103,7 @@ void TTree2CovMatrix_TEMPLATE(){
 			hist->SetMarkerColorAlpha( t_c, 0.7);
 //			hist->SetMarkerStyle(colorIndex + markerIndexOffset);
 			//		std::cout<<"Total evts: "<<hist->Integral()<<std::endl;
-			hist->Scale(sample.GetScale()*PlotPOT/sample.GetPOT());
+			hist->Scale(sample.GetScale() * PlotPOT / sample.GetPOT() * (AreaNormalized ? additionalScale : 1.0));
 
 			leg_title = sample.GetSampleName();// + Form(" %.1lf",hist->Integral());
 			sample_labels.push_back(leg_title);
@@ -111,7 +123,10 @@ void TTree2CovMatrix_TEMPLATE(){
 		PrintFractionalUncertainties( hsampleCV, allhists);
 
 //			ExportPNG_StackDataTwoSignal_wLabel({hsampleCV}, hs, hsampleCV, hsampleCV, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
-		draw_variations( hsampleCV, allhists, leg, MakeSafeName(Label+ "_DetVariations_" +temp_var.GetAxisLabel() ) + "__" + MakeSuffix(Precut), temp_var.GetAxisLabel(), "Event Rate at 2E21 POT", temp_var.GetIsLog());
+		draw_variations_wRatio( hsampleCV, allhists, leg, MakeSafeName(Label+ "_DetVariations_" +temp_var.GetAxisLabel() ) + "__" + MakeSuffix(Precut), temp_var.GetAxisLabel(), 
+		(AreaNormalized)? "Event Rate (Area-Normalized to CV)":Form("Event Rate in %gPOT", PlotPOT),
+		temp_var.GetIsLog());
+//		draw_variations( hsampleCV, allhists, leg, MakeSafeName(Label+ "_DetVariations_" +temp_var.GetAxisLabel() ) + "__" + MakeSuffix(Precut), temp_var.GetAxisLabel(), "Event Rate at 2E21 POT", temp_var.GetIsLog());
 
 //		draw_FractionalDifference( hsampleCV, allhists, leg, MakeSafeName(Label+ "_FracDiff_" +temp_var.GetAxisLabel() ), temp_var.GetAxisLabel(), "%Diff respected to CV");
 

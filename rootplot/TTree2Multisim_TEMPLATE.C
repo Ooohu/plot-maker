@@ -6,6 +6,7 @@
 
 //#include "LoadSamples_sys.h"
 #include "LoadSamples_Full.h"
+//#include "LoadSamples_Raw.h"
 #include "VarsList.C"
 
 #include "CommonCut.C"
@@ -27,6 +28,7 @@ void TTree2Multisim_TEMPLATE(){
 	int NumUNIGenie = NGENIE;//600
 	int NumUNIReInt = NREINT;//1000
 	int NumUNIFlux = NFLUX;//600
+	bool AreaNormalized = true;
 
 
 
@@ -55,14 +57,13 @@ void TTree2Multisim_TEMPLATE(){
 			auto hists = makeHists_RDF(
 					sampleCV, temp_var, 
 					"ppfx_cv*weightSplineTimesTune", 
-					"ppfx_cv*weightSplineTimesTune*weightsGenie",
+					"ppfx_cv*weightsGenie",
 					NumUNIGenie);//CV weight & universe weights (added [k] iteration later on
-
-			// --- Precompute scale factor ---
-			double scale = sampleCV.GetScale() * PlotPOT / sampleCV.GetPOT();
 
 			// --- Style and scale CV ---
 			TH1D* cv = hists.cv.GetPtr();
+
+			double scale = (AreaNormalized)? 1.0/cv->Integral():sampleCV.GetScale() * PlotPOT / sampleCV.GetPOT();
 			cv->SetDirectory(0);//Not solving the problem, so may not work;
 			MakeBeautiHistCV(cv);
 			cv->Scale(scale);
@@ -84,14 +85,14 @@ void TTree2Multisim_TEMPLATE(){
 			TLegend* leg = LoadLegend();
 			leg->SetTextSize(0.15);
 			leg->AddEntry(cv, sampleCV.GetSampleName(), "fl");
-			leg->AddEntry(hists.univ[0].GetPtr(), Form("#splitline{%dVariations:}{Genie XSec.}", NumUNIGenie), "fl");
+			leg->AddEntry(hists.univ[0].GetPtr(), Form("#splitline{%d Variations:}{Genie XSec.}", NumUNIGenie), "fl");
 
 			// --- Draw everything ---
-			draw_variations_v2(
+			draw_variations_v3(
 					cv, universes, leg,
 					MakeSafeName(Label + "_GenieVariations_" + temp_var.GetAxisLabel()) + "__" + MakeSuffix(Precut),
 					temp_var.GetAxisLabel(),
-					Form("MC Backgrounds in %gPOT", PlotPOT),
+					(AreaNormalized)? "Event Rate (Area-Normalized to CV)":Form("Event Rate in %gPOT", PlotPOT),
 					temp_var.GetIsLog()
 					);
 
@@ -109,11 +110,10 @@ void TTree2Multisim_TEMPLATE(){
 					"ppfx_cv*weightSplineTimesTune*weightsReint",
 					NumUNIReInt);//CV weight & universe weights (added [k] iteration later on
 
-			// --- Precompute scale factor ---
-			double scale = sampleCV.GetScale() * PlotPOT / sampleCV.GetPOT();
 
 			// --- Style and scale CV ---
 			TH1D* cv = hists.cv.GetPtr();
+			double scale = (AreaNormalized)? 1.0/cv->Integral():sampleCV.GetScale() * PlotPOT / sampleCV.GetPOT();
 			cv->SetDirectory(0);
 			MakeBeautiHistCV(cv);
 			cv->Scale(scale);
@@ -136,14 +136,14 @@ void TTree2Multisim_TEMPLATE(){
 			TLegend* leg = LoadLegend();
 			leg->SetTextSize(0.15);
 			leg->AddEntry(cv, sampleCV.GetSampleName(), "fl");
-			leg->AddEntry(hists.univ[0].GetPtr(), "#splitline{Variations:}{ReInt XSec.}", "fl");
+			leg->AddEntry(hists.univ[0].GetPtr(), Form("#splitline{%d Variations:}{ReInt}", NumUNIReInt), "fl");
 
 			// --- Draw everything ---
-			draw_variations_v2(
+			draw_variations_v3(
 					cv, universes, leg,
 					MakeSafeName(Label + "_ReIntVariations_" + temp_var.GetAxisLabel()) + "__" + MakeSuffix(Precut),
 					temp_var.GetAxisLabel(),
-					Form("MC Backgrounds in %gPOT", PlotPOT),
+					(AreaNormalized)? "Event Rate (Area-Normalized to CV)":Form("Event Rate in %gPOT", PlotPOT),
 					temp_var.GetIsLog()
 					);
 
@@ -157,14 +157,12 @@ void TTree2Multisim_TEMPLATE(){
 			auto hists = makeHists_RDF(
 					sampleCV, temp_var, 
 					"ppfx_cv*weightSplineTimesTune", 
-					"ppfx_cv*weightSplineTimesTune*weightsFlux",
+					"weightSplineTimesTune*weightsFlux",
 					NumUNIFlux);//CV weight & universe weights (added [k] iteration later on
-
-			// --- Precompute scale factor ---
-			double scale = sampleCV.GetScale() * PlotPOT / sampleCV.GetPOT();
 
 			// --- Style and scale CV ---
 			TH1D* cv = hists.cv.GetPtr();
+			double scale = (AreaNormalized)? 1.0/cv->Integral():sampleCV.GetScale() * PlotPOT / sampleCV.GetPOT();
 			cv->SetDirectory(0);
 			MakeBeautiHistCV(cv);
 			cv->Scale(scale);
@@ -186,14 +184,14 @@ void TTree2Multisim_TEMPLATE(){
 			TLegend* leg = LoadLegend();
 			leg->SetTextSize(0.15);
 			leg->AddEntry(cv, sampleCV.GetSampleName(), "fl");
-			leg->AddEntry(hists.univ[0].GetPtr(), "#splitline{Variations:}{Flux XSec.}", "fl");
+			leg->AddEntry(hists.univ[0].GetPtr(), Form("#splitline{%d Variations:}{Flux}", NumUNIFlux), "fl");
 
 			// --- Draw everything ---
-			draw_variations_v2(
+			draw_variations_v3(
 					cv, universes, leg,
 					MakeSafeName(Label + "_FluxVariations_" + temp_var.GetAxisLabel()) + "__" + MakeSuffix(Precut),
 					temp_var.GetAxisLabel(),
-					Form("MC Backgrounds in %gPOT", PlotPOT),
+					(AreaNormalized)? "Event Rate (Area-Normalized to CV)":Form("Event Rate in %gPOT", PlotPOT),
 					temp_var.GetIsLog()
 					);
 

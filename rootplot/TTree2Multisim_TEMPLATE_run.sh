@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
 
 #tags=(Run1FHCAll Run2MCFHCAll Run2RHCAll Run3bRHCAll Run4bRHCAll Run4cFHCAll Run5FHCAll)
-#NGe=(6 6 6 6 6 6 6)
+#NGe=(10 10 10 10 10 10 10)
 #NRe=(10 10 10 10 10 10 10)
 #NFl=(6 6 6 6 6 6 6)
+#NRe=(0 0 0 0 0 0 0)
+#NFl=(0 0 0 0 0 0 0)
 #
-tags=(Run1FHCAll Run2MCFHCAll Run2RHCAll Run3bRHCAll Run4bRHCAll Run4cFHCAll Run5FHCAll)
-NGe=(600 600 600 600 600 600 600)
-NRe=(1000 1000 1000 1000 1000 1000 1000)
-NFl=(600 600 600 600 600 600 600)
+tags=(AllMC Run1FHCAll Run2MCFHCAll Run2RHCAll Run3bRHCAll Run4bRHCAll Run4cFHCAll Run5FHCAll)
+NGe=(600 600 600 600 600 600 600 600)
+NRe=(1000 1000 1000 1000 1000 1000 1000 1000)
+NFl=(600 600 600 600 600 600 600 600)
 
 
-#tags=(Run1FHCAll)
+#tags=(Run4bRHCAll)
 #NGe=(6)
 #NRe=(10)
-#NFl=(6)
+#NFl=(10)
 
 
 

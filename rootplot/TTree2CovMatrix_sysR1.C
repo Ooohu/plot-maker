@@ -5,7 +5,8 @@
 #include <sstream>
 
 #include "LoadSamples_sys.h"
-#include "VarsList_Run1FHC.C"
+#include "VarsList.C"
+//#include "VarsList_Run1FHC.C"
 
 #include "CommonCut.C"
 
@@ -21,7 +22,7 @@ void TTree2CovMatrix_sysR1(){
 //	std::stringstream text_buffer;
 	
 //	Samples sampleCV						= LoadR1_CVRHC						(tag[0]);
-	Samples sampleCV						= LoadR1_CVFHC						(tag[0]);
+	Samples sampleCV						= LoadR1_DetVarCV	(tag[0]);
 	Samples sampleLYDown					= LoadR1_DetVarLYDown					(tag[0]);
 	Samples sampleAlternativeSCMap			= LoadR1_DetVarAlternativeSCMap			(tag[0]);
 	Samples sampleAlternativeRecombination	= LoadR1_DetVarAlternativeRecombination (tag[0]);
