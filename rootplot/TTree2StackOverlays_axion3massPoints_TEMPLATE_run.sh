@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-#mtags=(ma0093 ma011 ma0146 ma03 ma04 ma052 ma068 ma084 ma003)
-mtags=(ma0093 ma0146 ma084)
+mtags=(ma0093 ma011 ma0146 ma03 ma04 ma052 ma068 ma084 ma003)
+#mtags=(ma0093 ma0146 ma084)
 
 tags=(Run1FHC run2MCFHC Run2RHC Run3RHC         )
 Costags=(Run1EXT Run2aEXT Run2bEXT Run3Pre16880EXT)
@@ -20,7 +20,7 @@ template=TTree2StackOverlays_axion3massPoints_TEMPLATE.C
 
 for i in "${!tags[@]}"; do
 
-  mtag=${mtags[0]}
+  mtag=${mtags[3]}
   tag=${tags[i]}
   dtag=${dtags[i]}
   costag=${Costags[i]}

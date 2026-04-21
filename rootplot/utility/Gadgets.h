@@ -730,6 +730,4 @@ void AddFractionalSystematics(TH1D* errorHist,
 
 
 
-
-
 #endif

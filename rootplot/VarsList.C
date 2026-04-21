@@ -72,9 +72,10 @@ std::vector< Vars> SetMultipleVars(){
 //	std::vector< Vars> allVars = {var_bdtPionAma011L};
 //	std::vector< Vars> allVars = {var_bdtPionAma0146tL};
 //	std::vector< Vars> allVars = {var_bdtPionAma0146L};
-//	std::vector< Vars> allVars = {var_bdtPionAma03L};
+	std::vector< Vars> allVars = {var_bdtPionAma03L};
 //	std::vector< Vars> allVars = {var_bdtPionAma04L};
 //	std::vector< Vars> allVars = {var_bdtPionAma052L};
+//	std::vector< Vars> allVars = {var_bdtPionAma068L};
 //	std::vector< Vars> allVars = {var_bdtPionAma084L};
 //	std::vector< Vars> allVars = {var_bdtPionAma0146L, var_bdtPionAma03L, var_bdtPionAma084L};
 //	std::vector< Vars> allVars = {var_bdtPionAma003L, var_bdtPionAma0146L, var_bdtPionAma03L, var_bdtPionAma04L, var_bdtPionAma052L, var_bdtPionAma068L, var_bdtPionAma084L, var_bdtPionAma011L};

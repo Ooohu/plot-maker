@@ -18,7 +18,7 @@ Samples LoadAxions011(TString mTag){
                   "singlephotonana/vertex_tree", COMMONCUT_s);
 
     axion.SetScale(10000/46500.0);
-    axion.SetPlotStyle(kOrange, 0);
+    axion.SetPlotStyle(kTeal, 0);
     axion.SetPOT(2e21);
 
 //    axion.AddFriendViaTag_v2(TrainDir_s, mTag+"PionClassifier", "Axionma011");
@@ -69,7 +69,7 @@ Samples LoadAxions03(TString mTag){
                   "singlephotonana/vertex_tree", COMMONCUT_s);
 
     axion.SetScale(10000/28850.0);
-    axion.SetPlotStyle(kOrange, 0);
+    axion.SetPlotStyle(kTeal, 0);
     axion.SetPOT(2e21);
 
 //    axion.AddFriendViaTag_v2(TrainDir_s, mTag+"PionClassifier", "Axionma03");
@@ -84,7 +84,7 @@ Samples LoadAxions04(TString mTag){
                   "singlephotonana/vertex_tree", COMMONCUT_s);
 
     axion.SetScale(10000/41580.0);
-    axion.SetPlotStyle(kOrange, 0);
+    axion.SetPlotStyle(kTeal, 0);
     axion.SetPOT(2e21);
 
 //    axion.AddFriendViaTag_v2(TrainDir_s, mTag+"PionClassifier", "Axionma04");
@@ -99,7 +99,7 @@ Samples LoadAxions052(TString mTag){
                   "singlephotonana/vertex_tree", COMMONCUT_s);
 
     axion.SetScale(10000/41265.0);
-    axion.SetPlotStyle(kOrange, 0);
+    axion.SetPlotStyle(kTeal, 0);
     axion.SetPOT(2e21);
 
 //    axion.AddFriendViaTag_v2(TrainDir_s, mTag+"PionClassifier", "Axionma052");
@@ -114,7 +114,7 @@ Samples LoadAxions068(TString mTag){
                   "singlephotonana/vertex_tree", COMMONCUT_s);
 
     axion.SetScale(10000/42680.0);
-    axion.SetPlotStyle(kOrange, 0);
+    axion.SetPlotStyle(kTeal, 0);
     axion.SetPOT(2e21);
 
 //    axion.AddFriendViaTag_v2(TrainDir_s, mTag+"PionClassifier", "Axionma068");

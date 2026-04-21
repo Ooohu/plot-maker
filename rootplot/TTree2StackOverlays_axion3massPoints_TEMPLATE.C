@@ -15,6 +15,7 @@
 
 #include "CommonCut.C"
 
+
 void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 	//Configure class Samples: name, input file, tree name, cut
 	//Samples directory /pnfs/uboone/persistent/users/klin/MCC9/ntuples
@@ -30,12 +31,12 @@ void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 	TString Label = "NuMIaxions_3mp2s0t_TEMPLATE_";
 //	TString Label = "NuMIaxions_3mp2s0t_TEMPLATE"+axiontag+"_";
 
-	Samples axion0093		= LoadAxions0093	(axiontag);
-	Samples axion0146		= LoadAxions0146	(axiontag);
-	Samples axion084		= LoadAxions084	(axiontag);
-
-	//these signals may not neede to be plotted.
-	Samples axion03		= LoadAxions03	(axiontag);
+//	Samples axion0093		= LoadAxions0093	(axiontag);
+//	Samples axion0146		= LoadAxions0146	(axiontag);
+//	Samples axion084		= LoadAxions084	(axiontag);
+//
+//	//these signals may not neede to be plotted.
+//	Samples axion03		= LoadAxions03	(axiontag);
 
 	Samples Onepi0		= LoadTEMPLATEOnepi0 (axiontag);
 	Samples NueCC		= LoadTEMPLATENueCC (axiontag);
@@ -49,8 +50,42 @@ void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 	Samples data		= LoaddTAGData		(axiontag);
 	std::vector<Samples> vecSamples = { Onepi0, NueCC, NumuCC, InCryoOther, dirt, ext};
 
+	//Many signals to handle
+	struct AxionEntry {
+		Samples* sample;
+		std::string name;   // e.g. "ma0093"
+	};
 
-	// POT of Chice-----
+	// -------------------------------
+	// Load samples (keep explicit)
+	// -------------------------------
+	Samples axion0093 = LoadAxions0093(axiontag);
+	Samples axion011  = LoadAxions011(axiontag);
+	Samples axion0146 = LoadAxions0146(axiontag);
+	Samples axion03   = LoadAxions03(axiontag);
+	Samples axion04   = LoadAxions04(axiontag);
+	Samples axion052   = LoadAxions052(axiontag);
+	Samples axion068   = LoadAxions068(axiontag);
+	Samples axion084  = LoadAxions084(axiontag);
+
+	// -------------------------------
+	// Registry
+	// -------------------------------
+	std::vector<AxionEntry> axions = {
+		{ &axion0093, "ma0093" },
+		{ &axion011,  "ma011"  },
+		{ &axion0146, "ma0146" },
+		{ &axion03,   "ma03"   },
+		{ &axion04,   "ma04"   },
+		{ &axion052,   "ma052"   },
+		{ &axion068,   "ma068"   },
+		{ &axion084,  "ma084"  }
+	};
+
+	std::map<std::string, TH1D*>    histMap;
+
+
+	// POT of Choice-----
 	double PlotPOT = ILikeThisPOT( data );
 
 	// PRECUT --------------------------------------------------------------------------------
@@ -64,61 +99,104 @@ void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 	//--> Draw Stacked Histograms
 	JSONStore store;
 
+
+	bool use0146 = (axiontag == "ma0093" || axiontag == "ma084");//Style helper
+
 	for(Vars & temp_var : allVar){
 		TLegend *leg = LoadLegend(); //Add legends
 		TString leg_title ;
 
+
+		for (auto &a : axions) {
+
+			Samples &sample = *(a.sample);
+
+			sample.AddDefinition(Precut);
+
+			TH1D* h = drawTH1D(sample, temp_var);
+
+			h->Scale(sample.GetScale() * PlotPOT / sample.GetPOT());
+
+			h->SetFillColorAlpha(sample.GetCol(), 0.9);
+			h->SetLineWidth(3);
+			h->SetLineColor(sample.GetCol());
+
+
+			if (a.name == "ma0093" ||
+					a.name == (use0146 ? "ma0146" : axiontag.Data()) ||
+					a.name == "ma084") {
+
+				leg_title = sample.GetSampleName() + Form(" %.1lf", h->Integral());
+				leg->AddEntry(h, leg_title, "fl");
+			}
+
+
+
+			// -------------------------------
+			// global access
+			// -------------------------------
+			histMap[a.name]   = h;
+
+			// -------------------------------
+			// store results
+			// -------------------------------
+			store[Label.Data()]
+				[temp_var.GetAxisLabel().Data()]
+				[sample.GetSampleName().Data()] =
+				{ HistToCV(h), HistToErr(h) };
+		}
+
 		//Prepare signals, overlay them;
-		axion0093.AddDefinition(Precut);
-		TH1D* haxion0093 = drawTH1D(axion0093, temp_var);
-		haxion0093->Scale(axion0093.GetScale()*PlotPOT/axion0093.GetPOT());
-		haxion0093->SetFillColorAlpha( axion0093.GetCol(), 0.9); 
-		haxion0093->SetLineWidth(3);
-		haxion0093->SetLineColor(axion0093.GetCol());
-		leg_title = axion0093.GetSampleName() + Form(" %.1lf",haxion0093->Integral());
-		leg->AddEntry( haxion0093, leg_title, "fl");
-	
-		store[Label.Data()][temp_var.GetAxisLabel().Data()][axion0146.GetSampleName().Data()] = 
-		{HistToCV(  haxion0093), HistToErr( haxion0093)};
-
-		axion0146.AddDefinition(Precut);
-		TH1D* haxion0146 = drawTH1D(axion0146, temp_var);
-		haxion0146->Scale(axion0146.GetScale()*PlotPOT/axion0146.GetPOT());
-		haxion0146->SetFillColorAlpha( axion0146.GetCol(), 0.9); 
-		haxion0146->SetLineWidth(3);
-		haxion0146->SetLineColor(axion0146.GetCol());
-		leg_title = axion0146.GetSampleName() + Form(" %.1lf",haxion0146->Integral());
-		leg->AddEntry( haxion0146, leg_title, "fl");
-
-		store[Label.Data()][temp_var.GetAxisLabel().Data()][axion0146.GetSampleName().Data()] = 
-		{HistToCV(  haxion0146), HistToErr( haxion0146)};
-
-		axion084.AddDefinition(Precut);
-		TH1D* haxion084 = drawTH1D(axion084, temp_var);
-		haxion084->Scale(axion084.GetScale()*PlotPOT/axion084.GetPOT());
-		haxion084->SetFillColorAlpha( axion084.GetCol(), 0.9); 
-		haxion084->SetLineWidth(3);
-		haxion084->SetLineColor(axion084.GetCol());
-		leg_title = axion084.GetSampleName() + Form(" %.1lf",haxion084->Integral());
-		leg->AddEntry( haxion084, leg_title, "fl");
-
-
-		store[Label.Data()][temp_var.GetAxisLabel().Data()][axion084.GetSampleName().Data()] = 
-		{HistToCV(  haxion084), HistToErr( haxion084)};
-
-
-		//Need more signal samples, but don't need to plot them.
-		axion03.AddDefinition(Precut);
-		TH1D* haxion03 = drawTH1D(axion03, temp_var);
-		haxion03->Scale(axion03.GetScale()*PlotPOT/axion03.GetPOT());
-		haxion03->SetFillColorAlpha( axion03.GetCol(), 0.9); 
-		haxion03->SetLineWidth(3);
-		haxion03->SetLineColor(axion03.GetCol());
-		leg_title = axion03.GetSampleName() + Form(" %.1lf",haxion03->Integral());
-//		leg->AddEntry( haxion03, leg_title, "fl");
-	
-		store[Label.Data()][temp_var.GetAxisLabel().Data()][axion03.GetSampleName().Data()] = 
-		{HistToCV(  haxion03), HistToErr( haxion03)};
+//		axion0093.AddDefinition(Precut);
+//		TH1D* haxion0093 = drawTH1D(axion0093, temp_var);
+//		haxion0093->Scale(axion0093.GetScale()*PlotPOT/axion0093.GetPOT());
+//		haxion0093->SetFillColorAlpha( axion0093.GetCol(), 0.9); 
+//		haxion0093->SetLineWidth(3);
+//		haxion0093->SetLineColor(axion0093.GetCol());
+//		leg_title = axion0093.GetSampleName() + Form(" %.1lf",haxion0093->Integral());
+//		leg->AddEntry( haxion0093, leg_title, "fl");
+//	
+//		store[Label.Data()][temp_var.GetAxisLabel().Data()][axion0146.GetSampleName().Data()] = 
+//		{HistToCV(  haxion0093), HistToErr( haxion0093)};
+//
+//		axion0146.AddDefinition(Precut);
+//		TH1D* haxion0146 = drawTH1D(axion0146, temp_var);
+//		haxion0146->Scale(axion0146.GetScale()*PlotPOT/axion0146.GetPOT());
+//		haxion0146->SetFillColorAlpha( axion0146.GetCol(), 0.9); 
+//		haxion0146->SetLineWidth(3);
+//		haxion0146->SetLineColor(axion0146.GetCol());
+//		leg_title = axion0146.GetSampleName() + Form(" %.1lf",haxion0146->Integral());
+//		leg->AddEntry( haxion0146, leg_title, "fl");
+//
+//		store[Label.Data()][temp_var.GetAxisLabel().Data()][axion0146.GetSampleName().Data()] = 
+//		{HistToCV(  haxion0146), HistToErr( haxion0146)};
+//
+//		axion084.AddDefinition(Precut);
+//		TH1D* haxion084 = drawTH1D(axion084, temp_var);
+//		haxion084->Scale(axion084.GetScale()*PlotPOT/axion084.GetPOT());
+//		haxion084->SetFillColorAlpha( axion084.GetCol(), 0.9); 
+//		haxion084->SetLineWidth(3);
+//		haxion084->SetLineColor(axion084.GetCol());
+//		leg_title = axion084.GetSampleName() + Form(" %.1lf",haxion084->Integral());
+//		leg->AddEntry( haxion084, leg_title, "fl");
+//
+//
+//		store[Label.Data()][temp_var.GetAxisLabel().Data()][axion084.GetSampleName().Data()] = 
+//		{HistToCV(  haxion084), HistToErr( haxion084)};
+//
+//
+//		//Need more signal samples, but don't need to plot them.
+//		axion03.AddDefinition(Precut);
+//		TH1D* haxion03 = drawTH1D(axion03, temp_var);
+//		haxion03->Scale(axion03.GetScale()*PlotPOT/axion03.GetPOT());
+//		haxion03->SetFillColorAlpha( axion03.GetCol(), 0.9); 
+//		haxion03->SetLineWidth(3);
+//		haxion03->SetLineColor(axion03.GetCol());
+//		leg_title = axion03.GetSampleName() + Form(" %.1lf",haxion03->Integral());
+////		leg->AddEntry( haxion03, leg_title, "fl");
+//	
+//		store[Label.Data()][temp_var.GetAxisLabel().Data()][axion03.GetSampleName().Data()] = 
+//		{HistToCV(  haxion03), HistToErr( haxion03)};
 
 
 
@@ -221,7 +299,12 @@ void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 
 		WriteJSON( JSONfileName.Data(), store);
 
-		ExportPNG_StackDataTwoSignal_wLabel({haxion0093, haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) + "__"+ MakeSuffix(Precut) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
+		ExportPNG_StackDataTwoSignal_wLabel(
+		{histMap["ma0093"], 
+		histMap[(axiontag == "ma0093" || axiontag == "ma084") ? "ma0146" : axiontag.Data()],
+		histMap["ma084"]
+		}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) + "__"+ MakeSuffix(Precut) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
+//		ExportPNG_StackDataTwoSignal_wLabel({haxion0093, haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) + "__"+ MakeSuffix(Precut) , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
 		//ExportPNG_StackDataTwoSignal_wLabel({haxion0093, haxion0146, haxion084}, hs, hdata, errorHist, leg, MakeSafeName(Label+temp_var.GetAxisLabel() ) + "_CutTag"+ Precut.CountChar('&') , temp_var.GetAxisLabel(), Form("Events in %gPOT", PlotPOT), temp_var.GetIsLog());
 
 	}//Next variable
