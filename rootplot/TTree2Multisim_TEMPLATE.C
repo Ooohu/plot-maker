@@ -19,7 +19,7 @@ void TTree2Multisim_TEMPLATE(){
 	//DIR /pnfs/uboone/persistent/users/klin/MCC9/ntuples
 
 	TString Label = "Sys_Multisim_TEMPLATE";
-	std::vector< TString > tag={"ma0146"};
+	std::vector< TString > tag={"MASSTAG"};
 	//    std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
 	//    std::stringstream text_buffer;
 

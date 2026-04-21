@@ -17,7 +17,7 @@ Samples LoadAxions011(TString mTag){
                   "/pnfs/uboone/persistent/users/klin/MCC9/axions_localgpvm_storage/singlemasspoint/axions_numiRun1_mesonmixing_ma011_v1_zlt40m.root",
                   "singlephotonana/vertex_tree", COMMONCUT_s);
 
-    axion.SetScale(1000/46500.0);
+    axion.SetScale(10000/46500.0);
     axion.SetPlotStyle(kOrange, 0);
     axion.SetPOT(2e21);
 
@@ -33,7 +33,7 @@ Samples LoadAxions0093(TString mTag){
                   "/pnfs/uboone/persistent/users/klin/MCC9/axions_localgpvm_storage/singlemasspoint/axions_numiRun1_mesonmixing_ma0093_v1_zlt40m.root",
                   "singlephotonana/vertex_tree", COMMONCUT_s);
 
-    axion.SetScale(1000/46500.0);
+    axion.SetScale(10000/46500.0);
     axion.SetPlotStyle(kOrange, 0);
     axion.SetPOT(2e21);
 
@@ -52,7 +52,7 @@ Samples LoadAxions0146(TString mTag){
                   "/pnfs/uboone/persistent/users/klin/MCC9/axions_localgpvm_storage/singlemasspoint/axions_numiRun1_mesonmixing_ma0146_v1_zlt40m.root",
                   "singlephotonana/vertex_tree", COMMONCUT_s);
 
-    axion.SetScale(1000/35700.0);
+    axion.SetScale(10000/35700.0);
     axion.SetPlotStyle(kTeal, 0);
     axion.SetPOT(2e21);
 
@@ -68,7 +68,7 @@ Samples LoadAxions03(TString mTag){
                   "/pnfs/uboone/persistent/users/klin/MCC9/axions_localgpvm_storage/singlemasspoint/axions_numiRun1_mesonmixing_ma03_v1_zlt40m.root",
                   "singlephotonana/vertex_tree", COMMONCUT_s);
 
-    axion.SetScale(1000/28850.0);
+    axion.SetScale(10000/28850.0);
     axion.SetPlotStyle(kOrange, 0);
     axion.SetPOT(2e21);
 
@@ -83,7 +83,7 @@ Samples LoadAxions04(TString mTag){
                   "/pnfs/uboone/persistent/users/klin/MCC9/axions_localgpvm_storage/singlemasspoint/axions_numiRun1_mesonmixing_ma04_v1_zlt40m.root",
                   "singlephotonana/vertex_tree", COMMONCUT_s);
 
-    axion.SetScale(1000/41580.0);
+    axion.SetScale(10000/41580.0);
     axion.SetPlotStyle(kOrange, 0);
     axion.SetPOT(2e21);
 
@@ -98,7 +98,7 @@ Samples LoadAxions052(TString mTag){
                   "/pnfs/uboone/persistent/users/klin/MCC9/axions_localgpvm_storage/singlemasspoint/axions_numiRun1_mesonmixing_ma052_v1_zlt40m.root",
                   "singlephotonana/vertex_tree", COMMONCUT_s);
 
-    axion.SetScale(1000/41265.0);
+    axion.SetScale(10000/41265.0);
     axion.SetPlotStyle(kOrange, 0);
     axion.SetPOT(2e21);
 
@@ -113,7 +113,7 @@ Samples LoadAxions068(TString mTag){
                   "/pnfs/uboone/persistent/users/klin/MCC9/axions_localgpvm_storage/singlemasspoint/axions_numiRun1_mesonmixing_ma068_v1_zlt40m.root",
                   "singlephotonana/vertex_tree", COMMONCUT_s);
 
-    axion.SetScale(1000/42680.0);
+    axion.SetScale(10000/42680.0);
     axion.SetPlotStyle(kOrange, 0);
     axion.SetPOT(2e21);
 
@@ -128,7 +128,7 @@ Samples LoadAxions084(TString mTag){
                   "/pnfs/uboone/persistent/users/klin/MCC9/axions_localgpvm_storage/singlemasspoint/axions_numiRun1_mesonmixing_ma084_v1_zlt40m.root",
                   "singlephotonana/vertex_tree", COMMONCUT_s);
 
-    axion.SetScale(1000/46800.0);
+    axion.SetScale(10000/46800.0);
     axion.SetPlotStyle(kMagenta, 0);
     axion.SetPOT(2e21);
 

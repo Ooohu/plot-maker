@@ -28,8 +28,8 @@ TString GetCut(){
 
 double ILikeThisPOT( Samples& mc){
 
-//	double pot = mc.GetPOT();
-	double pot = 1e21;
+	double pot = mc.GetPOT();
+//	double pot = 1e21;
 //	double pot = 2e21;  // expect this as the full POT
 	return pot;
 }

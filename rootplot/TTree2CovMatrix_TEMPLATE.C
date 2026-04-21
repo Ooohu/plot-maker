@@ -4,8 +4,8 @@
 #include <fstream>
 #include <sstream>
 
-#include "LoadSamples_sys.h"
-//#include "LoadSamples_sys_sig.h"
+//#include "LoadSamples_sys.h"
+#include "LoadSamples_sys_sig.h"
 #include "VarsList.C"
 
 #include "CommonCut.C"
@@ -31,7 +31,7 @@ void TTree2CovMatrix_TEMPLATE(){
 	Samples sampleWireModThetaXZ			= LoadFWMTXZ	(tag[0]);
 	Samples sampleWireModThetaYZ			= LoadFWMTYZ	(tag[0]);
 	Samples sampleWireModYZ				    = LoadFWMYZ		(tag[0]);
-	std::vector<Samples> vecSamples = { sampleAttn, sampleLYDown, sampleAlternativeSCMap, sampleAlternativeRecombination, sampleLYRayleigh, sampleWireModX, sampleWireModThetaXZ, sampleWireModThetaYZ, sampleWireModYZ };
+	std::vector<Samples> vecSamples = { sampleAttn, sampleLYRayleigh, sampleLYDown, sampleAlternativeSCMap, sampleAlternativeRecombination, sampleWireModX, sampleWireModYZ,  sampleWireModThetaXZ, sampleWireModThetaYZ};
 
 
 

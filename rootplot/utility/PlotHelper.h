@@ -565,7 +565,7 @@ void draw_variations_wRatio(TH1D* CV,
     hFrame->Reset();
     hFrame->SetTitle("");
 
-    hFrame->GetYaxis()->SetTitle("% Diff.");
+    hFrame->GetYaxis()->SetTitle("Frac. Diff.");
     hFrame->GetYaxis()->SetNdivisions(505);
     hFrame->GetYaxis()->SetTitleSize(0.09);
     hFrame->GetYaxis()->SetLabelSize(0.075);
@@ -622,8 +622,18 @@ void draw_variations_wRatio(TH1D* CV,
         if (!variations[i]) continue;
 
         TH1D* diff = (TH1D*)variations[i]->Clone(Form("diff_%zu", i));
-        diff->Add(CV, -1.0);    // variation - CV
-        diff->Divide(CV);       // (variation - CV) / CV
+        diff->Reset();
+        
+        for (int b = 1; b <= nbins; ++b) {
+            double cv  = CV->GetBinContent(b);
+            double var = variations[i]->GetBinContent(b);
+        
+            if (cv != 0.0) {
+                diff->SetBinContent(b, (var - cv) / cv);
+            } else {
+                diff->SetBinContent(b, 0.0);  // or skip / mark invalid
+            }
+        }
         diff->SetLineWidth(2);
 
         if (variations.size() == static_cast<size_t>(leg->GetNRows()) + 1)
@@ -660,8 +670,11 @@ void draw_variations_wRatio(TH1D* CV,
     hQuadNeg->SetLineColor(kBlack);
     hQuadNeg->SetLineWidth(3);
 
+
+	hQuad->SetMaximum(hQuad->GetMaximum()*1.2);
     hQuad->Draw("HISTSAME");
     hQuadNeg->Draw("HISTSAME");
+
 
     // ---- Zero reference line
     TLine* line = new TLine(CV->GetXaxis()->GetXmin(),0.0,
@@ -748,6 +761,7 @@ void draw_FractionalDifference(TH1D* CV, const std::vector<TH1D*>& variations,
         TH1D* hdiff = (TH1D*)variations[i]->Clone();
         hdiff->Add(CV, -1.0);
         hdiff->Divide(CV);
+
 
         if (!hfirst) hfirst = hdiff; // store the first one drawn
 

@@ -19,8 +19,7 @@ void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 	//Configure class Samples: name, input file, tree name, cut
 	//Samples directory /pnfs/uboone/persistent/users/klin/MCC9/ntuples
 
-	std::vector< TString > tag={"ma0146"};
-	//	std::vector< TString > tag={ "ma003", "ma0093", "ma011", "ma0146", "ma03", "ma04", "ma052", "ma068", "ma084"};
+	std::vector< TString > tag={"MASSTAG"};
 
 	bool show_training = false;
 
@@ -28,11 +27,15 @@ void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 	TString axiontag = tag[0];//"ma003";
 	TString JSONfileName="JSON_output/"+axiontag+"_TEMPLATE.json";
 //	TString Label = "NuMIaxions_3mp_TEMPLATE"+axiontag+"_";
-	TString Label = "NuMIaxions_3mp2s0t_TEMPLATE"+axiontag+"_";
+	TString Label = "NuMIaxions_3mp2s0t_TEMPLATE_";
+//	TString Label = "NuMIaxions_3mp2s0t_TEMPLATE"+axiontag+"_";
 
 	Samples axion0093		= LoadAxions0093	(axiontag);
 	Samples axion0146		= LoadAxions0146	(axiontag);
 	Samples axion084		= LoadAxions084	(axiontag);
+
+	//these signals may not neede to be plotted.
+	Samples axion03		= LoadAxions03	(axiontag);
 
 	Samples Onepi0		= LoadTEMPLATEOnepi0 (axiontag);
 	Samples NueCC		= LoadTEMPLATENueCC (axiontag);
@@ -68,17 +71,19 @@ void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 		//Prepare signals, overlay them;
 		axion0093.AddDefinition(Precut);
 		TH1D* haxion0093 = drawTH1D(axion0093, temp_var);
-		haxion0093->Scale(axion0093.GetScale()*PlotPOT/data.GetPOT());
+		haxion0093->Scale(axion0093.GetScale()*PlotPOT/axion0093.GetPOT());
 		haxion0093->SetFillColorAlpha( axion0093.GetCol(), 0.9); 
 		haxion0093->SetLineWidth(3);
 		haxion0093->SetLineColor(axion0093.GetCol());
 		leg_title = axion0093.GetSampleName() + Form(" %.1lf",haxion0093->Integral());
 		leg->AddEntry( haxion0093, leg_title, "fl");
 	
+		store[Label.Data()][temp_var.GetAxisLabel().Data()][axion0146.GetSampleName().Data()] = 
+		{HistToCV(  haxion0093), HistToErr( haxion0093)};
 
 		axion0146.AddDefinition(Precut);
 		TH1D* haxion0146 = drawTH1D(axion0146, temp_var);
-		haxion0146->Scale(axion0146.GetScale()*PlotPOT/data.GetPOT());
+		haxion0146->Scale(axion0146.GetScale()*PlotPOT/axion0146.GetPOT());
 		haxion0146->SetFillColorAlpha( axion0146.GetCol(), 0.9); 
 		haxion0146->SetLineWidth(3);
 		haxion0146->SetLineColor(axion0146.GetCol());
@@ -90,7 +95,7 @@ void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 
 		axion084.AddDefinition(Precut);
 		TH1D* haxion084 = drawTH1D(axion084, temp_var);
-		haxion084->Scale(axion084.GetScale()*PlotPOT/data.GetPOT());
+		haxion084->Scale(axion084.GetScale()*PlotPOT/axion084.GetPOT());
 		haxion084->SetFillColorAlpha( axion084.GetCol(), 0.9); 
 		haxion084->SetLineWidth(3);
 		haxion084->SetLineColor(axion084.GetCol());
@@ -100,6 +105,22 @@ void TTree2StackOverlays_axion3massPoints_TEMPLATE(){//TEMPLATE key: Run1FHC
 
 		store[Label.Data()][temp_var.GetAxisLabel().Data()][axion084.GetSampleName().Data()] = 
 		{HistToCV(  haxion084), HistToErr( haxion084)};
+
+
+		//Need more signal samples, but don't need to plot them.
+		axion03.AddDefinition(Precut);
+		TH1D* haxion03 = drawTH1D(axion03, temp_var);
+		haxion03->Scale(axion03.GetScale()*PlotPOT/axion03.GetPOT());
+		haxion03->SetFillColorAlpha( axion03.GetCol(), 0.9); 
+		haxion03->SetLineWidth(3);
+		haxion03->SetLineColor(axion03.GetCol());
+		leg_title = axion03.GetSampleName() + Form(" %.1lf",haxion03->Integral());
+//		leg->AddEntry( haxion03, leg_title, "fl");
+	
+		store[Label.Data()][temp_var.GetAxisLabel().Data()][axion03.GetSampleName().Data()] = 
+		{HistToCV(  haxion03), HistToErr( haxion03)};
+
+
 
 		//Now backgrounds are stacked
 		THStack *hs = new THStack(RandomName(), "");// Create Stack

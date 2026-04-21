@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 mtags=(ma0146 ma03 ma003 ma084)
 
-tags=(CV_2s0t_6runs )
+tags=(CV_2s0t_6runs)
 #tags=(CV_2s0t_6runs R1_DetVarCV R2a_CVFHCOLD R2b_CVRHCOLD R3b_CV R4_CV R5_CV)
 
 File1=(DetVarLYDown_2s0t_6runs				R1_DetVarLYDown						R2a_DetVarLYDown					R2b_DetVarLYDown					R3b_DetVarLYDown						R4_DetVarLYDown						R5_DetVarLYDown					)
@@ -16,15 +16,16 @@ File7=(DetVarWireModThetaYZ_2s0t_6runs		R1_DetVarWireModThetaYZ      		R2a_DetVa
 File8=(DetVarWireModYZ_2s0t_6runs			R1_DetVarWireModYZ           		R2a_DetVarWireModYZ					R2b_DetVarWireModYZ					R3b_DetVarWireModYZ						R4_DetVarWireModYZ					R5_DetVarWireModYZ					)
 
 
-#tags=(R3b_CV)
-#File1=(R3b_DetVarLYDown						)
-#File2=(R3b_DetVarAlternativeSCMap			)
-#File3=(R3b_DetVarAlternativeRecombination	)
-#File4=(R3b_DetVarLYRayleigh					)
-#File5=(R3b_DetVarWireModX					)
-#File6=(R3b_DetVarWireModThetaXZ				)
-#File7=(R3b_DetVarWireModThetaYZ				)
-#File8=(R3b_DetVarWireModYZ					)
+#tags=(R5_CV)
+#File1=(R5_DetVarLYDown						)
+#File1a=(R5_DetVarAttenuation						)
+#File2=(R5_DetVarAlternativeSCMap			)
+#File3=(R5_DetVarAlternativeRecombination	)
+#File4=(R5_DetVarLYRayleigh					)
+#File5=(R5_DetVarWireModX					)
+#File6=(R5_DetVarWireModThetaXZ				)
+#File7=(R5_DetVarWireModThetaYZ				)
+#File8=(R5_DetVarWireModYZ					)
 
 template=TTree2CovMatrix_TEMPLATE.C
 
